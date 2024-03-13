@@ -9,6 +9,7 @@ Terraform for
 - WAF (to do)
 - VPC
 - ECR private repo
+- Observability (Grafana + Prometheus + loki)
 
 
 
@@ -25,7 +26,6 @@ Terraform for
 ## Destroy using 
 
 ```terraform destroy --var-file="prod/terraform.tfvars"```
-
 
 
 ## Update eks config locally

@@ -56,14 +56,34 @@ module "eks" {
   eks_managed_node_groups = {
     k8s = {
       instance_types = [
-        "t3.medium"
+        "t3.large"
       ]
 
-      min_size     = 1
-      max_size     = 2
-      desired_size = 2
-
+      min_size     = 2
+      max_size     = 5
+      desired_size = 3
+      iam_role_additional_policies = {
+        "custom-permissions" = aws_iam_policy.extra_policies_cluster.arn # Example using custom policy
+      }
     }
+  }
+}
+
+resource "aws_iam_policy" "extra_policies_cluster" {
+  name   = "extra_policies_cluster"
+  policy = data.aws_iam_policy_document.extra-policy.json
+}
+
+data "aws_iam_policy_document" "extra-policy" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "ec2:CreateVolume",
+      "ec2:CreateTags",
+      "ec2:AttachVolume",
+      "ec2:DetachVolume",
+    ]
+    resources = ["*"]
   }
 }
 

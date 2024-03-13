@@ -1,0 +1,13 @@
+loki:
+  commonConfig:
+    replication_factor: 1
+  storage:
+    type: 'filesystem'
+  auth_enabled: false
+singleBinary:
+  replicas: 1
+backend:
+  autoscaling:
+    maxReplicas: 2
+    minReplicas: 1
+  replicas: 1
