@@ -1,4 +1,4 @@
-cluster_name                      = "test"
+cluster_name                      = "gustavo-cluster"
 enable_eks_karpenter_rollout      = true
 enable_aws_alb_controller_rollout = true
 targetRegion                      = "eu-central-1"

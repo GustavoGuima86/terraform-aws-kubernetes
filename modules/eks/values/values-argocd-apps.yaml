@@ -10,6 +10,17 @@ applications:
       namespace: test
     syncPolicy:
       automated: { }
+  - name: calculationbff
+    project: calcproj
+    source:
+      repoURL: 'https://github.com/GustavoGuima86/calculationbff'
+      path: calculationbff
+      targetRevision: HEAD
+    destination:
+      server: 'https://kubernetes.default.svc'
+      namespace: test
+    syncPolicy:
+      automated: { }
 projects:
   - name: calcproj
     description: this is a test

@@ -87,3 +87,13 @@ variable "db_port" {
   type        = string
   description = "The port number of the database for your application."
 }
+
+variable "istio_version" {
+  type = string
+  default = "1.21.1"  # Update with desired Istio version
+}
+
+variable "istio_namespace" {
+  type = string
+  default = "istio-system"  # Update with desired Istio version
+}

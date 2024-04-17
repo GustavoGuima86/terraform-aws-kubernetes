@@ -25,13 +25,18 @@ Terraform for
 
 ## Destroy using 
 
+```terraform destroy -target module.eks --var-file="prod/terraform.tfvars"```
+
 ```terraform destroy --var-file="prod/terraform.tfvars"```
 
 
 ## Update eks config locally
 
-`aws eks --region eu-central-1 update-kubeconfig --name test`
+`aws eks --region eu-central-1 update-kubeconfig --name gustavo-cluster`
 
+## Get initial ArgoCD password 
 
+user: admin
+password: `kubectl -n test get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d`
 
 

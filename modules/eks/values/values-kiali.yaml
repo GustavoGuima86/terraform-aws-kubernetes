@@ -1,0 +1,26 @@
+deployment:
+  namespace: "test"
+istio_namespace: "istio-system"
+auth:
+  strategy: "anonymous"
+external_services:
+#  grafana:
+#    enabled: true
+#    in_cluster_url: 'http://kube-prometheus-grafana.test:3000/'
+#    # Public facing URL of Grafana
+#    #url: 'http://my-ingress-host/grafana'
+##      dashboards:
+##        - name: "Istio Service Dashboard"
+##          variables:
+##            namespace: "var-namespace"
+##            service: "var-service"
+##        - name: "Istio Workload Dashboard"
+##          variables:
+##            namespace: "var-namespace"
+##            workload: "var-workload"
+##        - name: "Istio Mesh Dashboard"
+##        - name: "Istio Control Plane Dashboard"
+##        - name: "Istio Performance Dashboard"
+##        - name: "Istio Wasm Extension Dashboard"
+  prometheus:
+    url: "http://kube-prometheus-kube-prome-prometheus.test:9090/"
