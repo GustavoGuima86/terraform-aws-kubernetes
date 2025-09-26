@@ -4,8 +4,6 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: ${var.namespace}
-  annotations:
-    istio-injection: enabled
 spec:
   finalizers:
   - kubernetes

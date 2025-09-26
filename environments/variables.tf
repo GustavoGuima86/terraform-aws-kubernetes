@@ -68,6 +68,22 @@ variable "service_name" {
   type        = string
 }
 
+variable "observability_namespace" {
+  type        = string
+  default     = "monitoring"
+  description = "The namespace to use for Kubernetes resources within the EKS cluster."
+}
+
+variable "loki_bucket_name" {
+  type    = string
+  default = "loki-bucket"
+}
+
+variable "mimir_bucket_name" {
+  type    = string
+  default = "mimir-bucket"
+}
+
 
 variable "database_configurations" {
   type = object({

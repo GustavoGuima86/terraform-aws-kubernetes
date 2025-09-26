@@ -11,7 +11,7 @@ resource "helm_release" "secrets-store-csi-driver" {
   name       = "secrets-store-csi-driver"
   repository = "https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts"
   chart      = "secrets-store-csi-driver"
-  version    = "1.3.4"
+  version    = "1.5.3"
   namespace  = "kube-system"
   timeout    = 10 * 60
 
