@@ -8,6 +8,8 @@ spec:
   finalizers:
   - kubernetes
 YAML
+
+  depends_on = [module.karpenter]
 }
 
 resource "kubectl_manifest" "serviceaccounts" {

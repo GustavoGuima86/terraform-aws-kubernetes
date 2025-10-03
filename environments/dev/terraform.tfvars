@@ -1,4 +1,4 @@
-cluster_name                      = "test"
+cluster_name                      = "gustavo"
 enable_eks_karpenter_rollout      = true
 enable_aws_alb_controller_rollout = true
 targetRegion                      = "eu-central-1"
@@ -12,6 +12,7 @@ service_name                      = "calculation"
 database_configurations = {
   db_name        = "testdb"
   engine         = "postgres"
+  engine_version = 17
   port           = 5432
   instance_class = "db.t3.medium"
   storage = {
@@ -37,7 +38,7 @@ database_configurations = {
   maintenance_window              = "sun:05:00-sun:06:00"
   apply_immediately               = true
   parameter_group_configs = {
-    family = "postgres16"
+    family = "postgres17"
     name   = "test-pg"
   }
   multi_az            = false

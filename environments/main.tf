@@ -51,6 +51,13 @@ module "eks" {
   db_url  = module.rds.rds_database_url
 }
 
+# module "ebs-csi-driver" {
+#   source = "../modules/ebs-csi-driver"
+#   cluster_name                       = module.eks.cluster_name                       # Required by providers provider
+#   cluster_endpoint                   = module.eks.cluster_endpoint                   # Required by providers provider
+#   cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data # Required by providers
+# }
+
 module "observability" {
   source                             = "../modules/observability"
   namespace                          = var.observability_namespace
@@ -60,5 +67,13 @@ module "observability" {
   cluster_name                       = module.eks.cluster_name                       # Required by providers provider
   cluster_endpoint                   = module.eks.cluster_endpoint                   # Required by providers provider
   eks_oidc_provider_arn              = module.eks.eks_oidc_provider_arn              # Required by Roles to access S3 from EKS using RBAC / Service account
+  cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data # Required by providers
+}
+
+module "argocd"{
+  source = "../modules/argocd"
+  namespace = var.namespaces
+  cluster_name                       = module.eks.cluster_name                       # Required by providers provider
+  cluster_endpoint                   = module.eks.cluster_endpoint                   # Required by providers provider
   cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data # Required by providers
 }

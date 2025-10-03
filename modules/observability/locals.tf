@@ -11,7 +11,7 @@ locals {
   mimir_name      = "mimir"
   kube_prometheus = "kube-prometheus"
 
-  region = data.aws_region.current.name
+  region = data.aws_region.current.id
 
   values_loki = templatefile("${path.module}/values/values-loki.yaml.tpl", {
     region       = local.region

@@ -9,7 +9,6 @@ resource "helm_release" "argo" {
     file("${path.module}/values/values-argocd.yaml")
   ]
 
-  depends_on = [kubectl_manifest.namespace]
 }
 
 resource "kubectl_manifest" "argo_Ingress" {

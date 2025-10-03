@@ -88,7 +88,7 @@ terraform destroy --var-file="dev/terraform.tfvars"
 ### Connecting to EKS
 Update your kubeconfig to connect to the EKS cluster:
 ```bash
-aws eks --region eu-central-1 update-kubeconfig --name <cluster-name>
+aws eks --region eu-central-1 update-kubeconfig --name gustavo
 ```
 
 ## Future Enhancements
