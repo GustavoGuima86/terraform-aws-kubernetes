@@ -14,11 +14,11 @@ module "karpenter" {
 
 resource "helm_release" "karpenter" {
   name             = "karpenter"
-  namespace = "kube-system"
+  namespace        = "kube-system"
   create_namespace = false
 
-  chart   = "karpenter"
-  version = "1.7.1"
+  chart      = "karpenter"
+  version    = "1.7.1"
   repository = "oci://public.ecr.aws/karpenter"
 
   values = [
@@ -35,6 +35,10 @@ resource "helm_release" "karpenter" {
         enabled = false
       }
     })
+  ]
+
+  depends_on = [
+    module.eks
   ]
 }
 

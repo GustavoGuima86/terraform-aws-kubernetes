@@ -73,6 +73,13 @@ terraform plan --var-file="dev/terraform.tfvars"
 terraform apply --var-file="dev/terraform.tfvars"
 ```
 
+```bash
+aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws
+```
+```bash
+aws eks --region eu-central-1 update-kubeconfig --name gustavo
+```
+
 ### Maintenance
 - Format Terraform files:
 ```bash
@@ -88,7 +95,7 @@ terraform destroy --var-file="dev/terraform.tfvars"
 ### Connecting to EKS
 Update your kubeconfig to connect to the EKS cluster:
 ```bash
-aws eks --region eu-central-1 update-kubeconfig --name gustavo
+:
 ```
 
 ## Future Enhancements

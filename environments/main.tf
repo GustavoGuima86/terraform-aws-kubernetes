@@ -1,4 +1,3 @@
-
 module "ecr" {
   source = "../modules/ecr_repo"
 
@@ -29,6 +28,30 @@ module "rds" {
   vpc_id               = module.vpc.vpc_id
 }
 
+# resource "random_string" "secret_suffix" {
+#   length  = 8
+#   special = false
+#   upper   = false
+# }
+#
+# resource "aws_secretsmanager_secret" "example" {
+#   name        = "my-secret-${random_string.secret_suffix.result}"
+#   description = "Example secret managed by Terraform"
+#
+#   force_overwrite_replica_secret = true
+# }
+
+# ---------------------------------------------------------
+# Store a Secret Value
+# ---------------------------------------------------------
+# resource "aws_secretsmanager_secret_version" "example" {
+#   secret_id     = aws_secretsmanager_secret.example.id
+#   secret_string = jsonencode({
+#     username = "admin"
+#     password = "SuperSecurePassword123!"
+#   })
+# }
+
 module "eks" {
   source = "../modules/eks"
 
@@ -57,7 +80,7 @@ module "eks" {
 #   cluster_endpoint                   = module.eks.cluster_endpoint                   # Required by providers provider
 #   cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data # Required by providers
 # }
-
+#
 module "observability" {
   source                             = "../modules/observability"
   namespace                          = var.observability_namespace

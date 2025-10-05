@@ -72,5 +72,9 @@ resource "helm_release" "aws_load_balancer_controller" {
     }
   ]
 
-  depends_on = [module.aws_lb_controller_pod_identity, module.karpenter]
+  depends_on = [
+    module.aws_lb_controller_pod_identity,
+    module.karpenter,
+    module.eks
+  ]
 }
