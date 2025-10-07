@@ -79,6 +79,9 @@ aws ecr-public get-login-password --region us-east-1 | docker login --username A
 ```bash
 aws eks --region eu-central-1 update-kubeconfig --name gustavo
 ```
+```bash
+kubectl -n test get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
 
 ### Maintenance
 - Format Terraform files:

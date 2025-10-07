@@ -12,7 +12,7 @@ resource "helm_release" "argo" {
 }
 
 resource "kubectl_manifest" "argo_Ingress" {
-  yaml_body  = <<YAML
+  yaml_body = <<YAML
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:

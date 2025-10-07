@@ -3,7 +3,7 @@ resource "aws_db_instance" "rds_instance" {
   db_name                     = var.database_configuration.db_name
   port                        = var.database_configuration.port
   engine                      = var.database_configuration.engine
-  engine_version = var.database_configuration.engine_version
+  engine_version              = var.database_configuration.engine_version
   instance_class              = var.database_configuration.instance_class
   username                    = var.database_configuration.master_username
   manage_master_user_password = true

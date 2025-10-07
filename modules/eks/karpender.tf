@@ -2,9 +2,9 @@ module "karpenter" {
   source  = "terraform-aws-modules/eks/aws//modules/karpenter"
   version = "21.3.1"
 
-  cluster_name = module.eks.cluster_name
-  node_iam_role_use_name_prefix = false
-  node_iam_role_name            = var.cluster_name
+  cluster_name                    = module.eks.cluster_name
+  node_iam_role_use_name_prefix   = false
+  node_iam_role_name              = var.cluster_name
   create_pod_identity_association = true
 
   node_iam_role_additional_policies = {
@@ -43,7 +43,7 @@ resource "helm_release" "karpenter" {
 }
 
 resource "kubectl_manifest" "karpenter_node_class" {
-  yaml_body = <<YAML
+  yaml_body  = <<YAML
 apiVersion: karpenter.k8s.aws/v1
 kind: EC2NodeClass
 metadata:
@@ -65,7 +65,7 @@ YAML
 }
 
 resource "kubectl_manifest" "karpenter_node_pool" {
-  yaml_body = <<YAML
+  yaml_body  = <<YAML
 apiVersion: karpenter.sh/v1
 kind: NodePool
 metadata:

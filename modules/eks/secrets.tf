@@ -2,113 +2,49 @@ data "aws_secretsmanager_secret" "secrets" {
   arn = var.db_secret_arn
 }
 
-# Helm install of the CSI driver
 resource "helm_release" "secrets-store-csi-driver" {
   name       = "secrets-store-csi-driver"
   repository = "https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts"
   chart      = "secrets-store-csi-driver"
-  version    = "1.5.4"
+  version    = "1.3.4"
   namespace  = "kube-system"
   timeout    = 10 * 60
 
   set = [{
     name  = "syncSecret.enabled"
     value = "true"
-  },
-  {
+    }, {
     name  = "enableSecretRotation"
+    value = "true"
+    }, {
+    name  = "provider.aws.podIdentity"
     value = "true"
   }]
 }
 
-# Apply AWS provider manifests
-data "kubectl_file_documents" "aws-secrets-manager" {
-  content = file("${path.module}/secret_manager/aws-secrets-manager.yaml")
+resource "helm_release" "secrets-store-csi-driver-provider-aws" {
+  name       = "secrets-store-csi-driver-provider-aws"
+  repository = "https://aws.github.io/secrets-store-csi-driver-provider-aws"
+  chart      = "secrets-store-csi-driver-provider-aws"
+  namespace  = "kube-system"
+  version    = "2.1.1"
+
+  set = [
+    {
+      name  = "secrets-store-csi-driver.install"
+      value = false
+    },
+    {
+      name  = "serviceAccount.create"
+      value = false
+    }
+  ]
+
+  depends_on = [helm_release.secrets-store-csi-driver]
 }
 
-resource "kubectl_manifest" "aws-secrets-manager" {
-  for_each           = data.kubectl_file_documents.aws-secrets-manager.manifests
-  yaml_body          = each.value
-  server_side_apply  = true
-  force_conflicts    = true
-}
-
-# IAM Role for Pod Identity
-resource "aws_iam_role" "secrets_csi" {
-  name = "secrets-csi-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          Service = "pods.eks.amazonaws.com"
-        }
-        Action = ["sts:AssumeRole", "sts:TagSession"]
-        Condition = {
-          StringEquals = {
-            "eks:cluster-name": module.eks.cluster_name,
-            "aws:SourceAccount": data.aws_caller_identity.current.account_id
-          }
-          StringLike = {
-            "aws:SourceArn": "arn:aws:eks:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:cluster/${module.eks.cluster_name}"
-          }
-        }
-      }
-    ]
-  })
-}
-
-// IAM Policy for Secrets Manager access
-resource "aws_iam_policy" "secrets_csi" {
-  name = "secrets-csi-policy"
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Action = [
-        "secretsmanager:GetSecretValue",
-        "secretsmanager:DescribeSecret",
-      ]
-      Resource = [data.aws_secretsmanager_secret.secrets.arn]
-    }]
-  })
-}
-
-# Attach the policy to the role
-resource "aws_iam_role_policy_attachment" "secrets_csi_attach" {
-  policy_arn = aws_iam_policy.secrets_csi.arn
-  role       = aws_iam_role.secrets_csi.name
-}
-
-# Pod Identity Association
-# resource "aws_eks_pod_identity_association" "secrets_csi" {
-#   cluster_name    = module.eks.cluster_name
-#   namespace       = var.namespace
-#   service_account = "csi-secrets-store-provider-aws"  # Updated to match the ServiceAccount in aws-secrets-manager.yaml
-#   role_arn        = aws_iam_role.secrets_csi.arn
-# }
-
-# Service Account for Secrets CSI
-resource "kubectl_manifest" "secrets_csi_sa" {
-  yaml_body = <<YAML
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: secret-sci
-  namespace: ${var.namespace}
-  annotations:
-    eks.amazonaws.com/role-arn: ${module.aws_ebs_csi_pod_identity.iam_role_arn}
-YAML
-  depends_on = [kubectl_manifest.namespace]
-  server_side_apply = true
-}
-
-# SecretProviderClass definition
 resource "kubectl_manifest" "secrets" {
-  yaml_body = <<YAML
+  yaml_body  = <<YAML
 apiVersion: secrets-store.csi.x-k8s.io/v1
 kind: SecretProviderClass
 metadata:
@@ -118,13 +54,13 @@ spec:
   provider: aws
   parameters:
     objects: |
-      - objectName: ${data.aws_secretsmanager_secret.secrets.arn}
-        objectType: "secretsmanager"
-        jmesPath:
-          - path: username
-            objectAlias: username
-          - path: password
-            objectAlias: password
+        - objectName: ${data.aws_secretsmanager_secret.secrets.arn}
+          objectType: "secretsmanager"
+          jmesPath:
+            - path: username
+              objectAlias: username
+            - path: password
+              objectAlias: password
   secretObjects:
     - secretName: db-secret
       type: Opaque
@@ -137,4 +73,76 @@ YAML
   depends_on = [kubectl_manifest.namespace]
 }
 
+# Service Account with Pod Identity annotation
+resource "kubectl_manifest" "secrets_csi_sa" {
+  yaml_body  = <<YAML
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: secret-sci
+  namespace: ${var.namespace}
+  annotations:
+    eks.amazonaws.com/role-arn: ${module.aws_ebs_csi_pod_identity_secret.iam_role_arn}
+YAML
+  depends_on = [kubectl_manifest.namespace]
+}
 
+module "aws_ebs_csi_pod_identity_secret" {
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "~> 2.0.0"
+
+  name = "aws-ebs-csi-secret"
+
+  # Trust policy conditions for the OIDC provider
+  trust_policy_statements = [
+    {
+      effect = "Allow"
+      principals = [
+        {
+          type        = "Federated"
+          identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${trim(module.eks.cluster_oidc_issuer_url, "https://")}"]
+        }
+      ]
+      actions = ["sts:AssumeRoleWithWebIdentity"]
+      conditions = [
+        {
+          test     = "StringEquals"
+          variable = "${trim(module.eks.cluster_oidc_issuer_url, "https://")}:aud"
+          values   = ["sts.amazonaws.com"]
+        },
+        {
+          test     = "StringEquals"
+          variable = "${trim(module.eks.cluster_oidc_issuer_url, "https://")}:sub"
+          values   = ["system:serviceaccount:${var.namespace}:secret-sci"]
+        }
+      ]
+    }
+  ]
+
+  # Additional policy statements
+  policy_statements = [
+    {
+      sid    = "SecretsAccess"
+      effect = "Allow"
+      actions = [
+        "secretsmanager:GetSecretValue",
+        "secretsmanager:DescribeSecret"
+      ]
+      resources = [data.aws_secretsmanager_secret.secrets.arn]
+    },
+    {
+      sid    = "STSPermissions"
+      effect = "Allow"
+      actions = [
+        "sts:AssumeRoleWithWebIdentity",
+        "sts:GetCallerIdentity"
+      ]
+      resources = ["*"]
+    }
+  ]
+
+  # External secrets configuration
+  attach_external_secrets_policy        = true
+  external_secrets_secrets_manager_arns = [data.aws_secretsmanager_secret.secrets.arn]
+  external_secrets_create_permission    = true
+}

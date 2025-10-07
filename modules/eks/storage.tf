@@ -1,16 +1,16 @@
 module "aws_ebs_csi_pod_identity" {
-  source = "terraform-aws-modules/eks-pod-identity/aws"
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
   version = "~> 2.0.0"
 
   name = "aws-ebs-csi"
 
   attach_aws_ebs_csi_policy = true
 
-  attach_external_secrets_policy        = true
-  // external_secrets_ssm_parameter_arns   = ["arn:aws:ssm:*:*:parameter/foo"]
-  external_secrets_secrets_manager_arns = [data.aws_secretsmanager_secret.secrets.arn]
-  // external_secrets_kms_key_arns         = ["arn:aws:kms:*:*:key/1234abcd-12ab-34cd-56ef-1234567890ab"]
-  external_secrets_create_permission    = true
+  # attach_external_secrets_policy        = true
+  # // external_secrets_ssm_parameter_arns   = ["arn:aws:ssm:*:*:parameter/foo"]
+  # external_secrets_secrets_manager_arns = [data.aws_secretsmanager_secret.secrets.arn]
+  # // external_secrets_kms_key_arns         = ["arn:aws:kms:*:*:key/1234abcd-12ab-34cd-56ef-1234567890ab"]
+  # external_secrets_create_permission    = true
 
 }
 
@@ -25,7 +25,7 @@ resource "kubernetes_storage_class_v1" "ebs_sc" {
   volume_binding_mode = "WaitForFirstConsumer"
   reclaim_policy      = "Delete" # Or "Retain" if you want to keep the EBS volume after PVC is deleted
   parameters = {
-    type = "gp3" # General Purpose SSD (gp3) volume type. You can also use gp2, io1, io2, etc.
+    type   = "gp3" # General Purpose SSD (gp3) volume type. You can also use gp2, io1, io2, etc.
     fsType = "ext4"
   }
 }

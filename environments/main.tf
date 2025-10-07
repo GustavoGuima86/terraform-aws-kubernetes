@@ -93,9 +93,9 @@ module "observability" {
   cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data # Required by providers
 }
 
-module "argocd"{
-  source = "../modules/argocd"
-  namespace = var.namespaces
+module "argocd" {
+  source                             = "../modules/argocd"
+  namespace                          = var.namespaces
   cluster_name                       = module.eks.cluster_name                       # Required by providers provider
   cluster_endpoint                   = module.eks.cluster_endpoint                   # Required by providers provider
   cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data # Required by providers
