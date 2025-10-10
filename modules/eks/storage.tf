@@ -6,12 +6,6 @@ module "aws_ebs_csi_pod_identity" {
 
   attach_aws_ebs_csi_policy = true
 
-  # attach_external_secrets_policy        = true
-  # // external_secrets_ssm_parameter_arns   = ["arn:aws:ssm:*:*:parameter/foo"]
-  # external_secrets_secrets_manager_arns = [data.aws_secretsmanager_secret.secrets.arn]
-  # // external_secrets_kms_key_arns         = ["arn:aws:kms:*:*:key/1234abcd-12ab-34cd-56ef-1234567890ab"]
-  # external_secrets_create_permission    = true
-
 }
 
 resource "kubernetes_storage_class_v1" "ebs_sc" {

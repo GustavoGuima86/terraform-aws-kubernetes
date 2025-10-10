@@ -16,10 +16,7 @@ resource "helm_release" "secrets-store-csi-driver" {
     }, {
     name  = "enableSecretRotation"
     value = "true"
-    }, {
-    name  = "provider.aws.podIdentity"
-    value = "true"
-  }]
+    }]
 }
 
 resource "helm_release" "secrets-store-csi-driver-provider-aws" {
@@ -37,6 +34,9 @@ resource "helm_release" "secrets-store-csi-driver-provider-aws" {
     {
       name  = "serviceAccount.create"
       value = false
+    }, {
+      name  = "podIdentity.enabled"
+      value = true
     }
   ]
 
@@ -93,32 +93,6 @@ module "aws_ebs_csi_pod_identity_secret" {
 
   name = "aws-ebs-csi-secret"
 
-  # Trust policy conditions for the OIDC provider
-  trust_policy_statements = [
-    {
-      effect = "Allow"
-      principals = [
-        {
-          type        = "Federated"
-          identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/${trim(module.eks.cluster_oidc_issuer_url, "https://")}"]
-        }
-      ]
-      actions = ["sts:AssumeRoleWithWebIdentity"]
-      conditions = [
-        {
-          test     = "StringEquals"
-          variable = "${trim(module.eks.cluster_oidc_issuer_url, "https://")}:aud"
-          values   = ["sts.amazonaws.com"]
-        },
-        {
-          test     = "StringEquals"
-          variable = "${trim(module.eks.cluster_oidc_issuer_url, "https://")}:sub"
-          values   = ["system:serviceaccount:${var.namespace}:secret-sci"]
-        }
-      ]
-    }
-  ]
-
   # Additional policy statements
   policy_statements = [
     {
@@ -129,20 +103,32 @@ module "aws_ebs_csi_pod_identity_secret" {
         "secretsmanager:DescribeSecret"
       ]
       resources = [data.aws_secretsmanager_secret.secrets.arn]
-    },
+    }
+  ]
+
+  trust_policy_statements = [
     {
-      sid    = "STSPermissions"
       effect = "Allow"
-      actions = [
-        "sts:AssumeRoleWithWebIdentity",
-        "sts:GetCallerIdentity"
+      principals = [
+        {
+          type        = "Service"
+          identifiers = ["pods.eks.amazonaws.com"]
+        }
       ]
-      resources = ["*"]
+      actions = ["sts:AssumeRole"]
     }
   ]
 
   # External secrets configuration
-  attach_external_secrets_policy        = true
+  attach_external_secrets_policy        = false
   external_secrets_secrets_manager_arns = [data.aws_secretsmanager_secret.secrets.arn]
   external_secrets_create_permission    = true
+}
+
+resource "aws_eks_pod_identity_association" "secrets_csi" {
+  cluster_name = var.cluster_name
+  namespace       = var.namespace
+  service_account = "secret-sci"
+
+  role_arn = module.aws_ebs_csi_pod_identity_secret.iam_role_arn
 }

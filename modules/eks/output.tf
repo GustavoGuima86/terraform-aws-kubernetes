@@ -13,6 +13,11 @@ output "eks_oidc_provider_arn" {
   description = "The ARN of the IAM OIDC provider associated with the EKS cluster."
 }
 
+output "eks_oidc_provider_url" {
+  value       = module.eks.cluster_oidc_issuer_url
+  description = "The URL of the IAM OIDC provider associated with the EKS cluster."
+}
+
 output "cluster_certificate_authority_data" {
   value       = module.eks.cluster_certificate_authority_data
   description = "The base64-encoded certificate authority data for the EKS cluster."

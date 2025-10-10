@@ -8,63 +8,6 @@ resource "aws_s3_bucket" "loki_bucket_ruler" {
   force_destroy = true
 }
 
-resource "aws_iam_policy" "loki_s3_policy" {
-  name        = "loki-s3-policy"
-  description = "Policy for Loki to access specific S3 buckets"
-
-  policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Sid": "VisualEditor",
-      "Effect": "Allow",
-      "Action": [
-        "s3:PutObject",
-        "s3:GetObject",
-        "s3:ListBucket",
-        "s3:DeleteObject"
-      ],
-      "Resource": [
-        "arn:aws:s3:::${local.bucket_loki_chunk}",
-        "arn:aws:s3:::${local.bucket_loki_chunk}/*",
-        "arn:aws:s3:::${local.bucket_loki_ruler}",
-        "arn:aws:s3:::${local.bucket_loki_ruler}/*"
-      ]
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_role" "loki_s3_role" {
-  name = "loki-s3-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          Federated = var.eks_oidc_provider_arn
-        }
-        Action = "sts:AssumeRoleWithWebIdentity"
-        Condition = {
-          StringEquals = {
-            "oidc.eks.${local.region}.amazonaws.com/id/${var.oidc_id}:sub" = "system:serviceaccount:${var.namespace}:${local.sa_loki_name}",
-            "oidc.eks.${local.region}.amazonaws.com/id/${var.oidc_id}:aud" = "sts.amazonaws.com"
-          }
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "loki-policy-attach" {
-  role       = aws_iam_role.loki_s3_role.name
-  policy_arn = aws_iam_policy.loki_s3_policy.arn
-}
-
 resource "helm_release" "loki" {
   name       = "loki"
   namespace  = var.namespace
@@ -86,4 +29,51 @@ resource "helm_release" "promtail" {
     file("${path.module}/values/values-promtail.yaml")
   ]
   depends_on = [helm_release.loki]
+}
+
+module "loki_s3_pod_identity" {
+  source = "terraform-aws-modules/eks-pod-identity/aws"
+
+  name = "loki-s3"
+
+  attach_mountpoint_s3_csi_policy = false
+
+  policy_statements = [
+    {
+      sid    = "LokiS3Access"
+      effect = "Allow"
+      actions = [
+        "s3:PutObject",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:DeleteObject"
+      ]
+      resources = [
+        "arn:aws:s3:::${local.bucket_loki_chunk}",
+        "arn:aws:s3:::${local.bucket_loki_chunk}/*",
+        "arn:aws:s3:::${local.bucket_loki_ruler}",
+        "arn:aws:s3:::${local.bucket_loki_ruler}/*"
+      ]
+    }
+  ]
+  trust_policy_statements = [
+    {
+      effect = "Allow"
+      principals = [
+        {
+          type        = "Service"
+          identifiers = ["pods.eks.amazonaws.com"]
+        }
+      ]
+      actions = ["sts:AssumeRole"]
+    }
+  ]
+}
+
+resource "aws_eks_pod_identity_association" "loki" {
+  cluster_name = var.cluster_name
+  namespace       = var.namespace
+  service_account = local.sa_loki_name
+
+  role_arn = module.loki_s3_pod_identity.iam_role_arn
 }

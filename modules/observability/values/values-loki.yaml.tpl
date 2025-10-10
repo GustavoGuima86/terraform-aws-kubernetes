@@ -66,3 +66,4 @@ bloomCompactor:
   replicas: 0
 bloomGateway:
   replicas: 0
+

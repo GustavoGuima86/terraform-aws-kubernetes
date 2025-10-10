@@ -91,6 +91,7 @@ module "observability" {
   cluster_endpoint                   = module.eks.cluster_endpoint                   # Required by providers provider
   eks_oidc_provider_arn              = module.eks.eks_oidc_provider_arn              # Required by Roles to access S3 from EKS using RBAC / Service account
   cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data # Required by providers
+  eks_oidc_provider_url              = module.eks.eks_oidc_provider_url
 }
 
 module "argocd" {

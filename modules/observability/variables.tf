@@ -27,6 +27,11 @@ variable "eks_oidc_provider_arn" {
   type        = string
 }
 
+variable "eks_oidc_provider_url" {
+  description = "The URL of the IAM OIDC provider associated with the EKS cluster."
+  type        = string
+}
+
 variable "cluster_certificate_authority_data" {
   description = "The base64-encoded certificate authority data for the EKS cluster."
   type        = string
