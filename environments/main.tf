@@ -1,4 +1,3 @@
-
 module "ecr" {
   source = "../modules/ecr_repo"
 
@@ -49,4 +48,25 @@ module "eks" {
 
   db_port = module.rds.rds_database_port
   db_url  = module.rds.rds_database_url
+}
+
+module "observability" {
+  source                             = "../modules/observability"
+  namespace                          = var.observability_namespace
+  loki_bucket_name                   = var.loki_bucket_name
+  mimir_bucket_name                  = var.mimir_bucket_name
+  oidc_id                            = module.eks.oidc_id
+  cluster_name                       = module.eks.cluster_name
+  cluster_endpoint                   = module.eks.cluster_endpoint
+  eks_oidc_provider_arn              = module.eks.eks_oidc_provider_arn
+  cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data
+  eks_oidc_provider_url              = module.eks.eks_oidc_provider_url
+}
+
+module "argocd" {
+  source                             = "../modules/argocd"
+  namespace                          = var.namespaces
+  cluster_name                       = module.eks.cluster_name
+  cluster_endpoint                   = module.eks.cluster_endpoint
+  cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data
 }

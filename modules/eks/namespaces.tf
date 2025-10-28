@@ -4,12 +4,12 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: ${var.namespace}
-  annotations:
-    istio-injection: enabled
 spec:
   finalizers:
   - kubernetes
 YAML
+
+  depends_on = [module.karpenter]
 }
 
 resource "kubectl_manifest" "serviceaccounts" {

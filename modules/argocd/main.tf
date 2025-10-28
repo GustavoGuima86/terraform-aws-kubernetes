@@ -9,11 +9,10 @@ resource "helm_release" "argo" {
     file("${path.module}/values/values-argocd.yaml")
   ]
 
-  depends_on = [kubectl_manifest.namespace]
 }
 
 resource "kubectl_manifest" "argo_Ingress" {
-  yaml_body  = <<YAML
+  yaml_body = <<YAML
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -33,7 +32,6 @@ spec:
       port:
         number: 80
   YAML
-  depends_on = [helm_release.kube_prometheus]
 }
 
 resource "helm_release" "argo_apps" {

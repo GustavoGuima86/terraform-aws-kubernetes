@@ -2,6 +2,7 @@ variable "database_configuration" {
   type = object({
     db_name        = string # the Db name
     engine         = string # The database engine, eg: postgres, mysql
+    engine_version = number
     port           = number # The DB port
     instance_class = string # Define the instance type for the instances, must verify the compatibility per engine
     storage = object({
@@ -31,6 +32,7 @@ variable "database_configuration" {
   default = {
     db_name        = "cashlinkDB"
     engine         = "postgres"
+    engine_version = 17
     port           = 5432
     instance_class = ""
     storage = {

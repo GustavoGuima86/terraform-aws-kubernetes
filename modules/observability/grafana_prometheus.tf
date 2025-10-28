@@ -1,22 +1,28 @@
+resource "kubectl_manifest" "namespace" {
+  yaml_body = <<YAML
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ${var.namespace}
+spec:
+  finalizers:
+  - kubernetes
+YAML
+}
+
 resource "helm_release" "kube_prometheus" {
-  name             = "kube-prometheus"
+  name             = local.kube_prometheus
   namespace        = var.namespace
   create_namespace = "true"
   repository       = "https://prometheus-community.github.io/helm-charts"
   chart            = "kube-prometheus-stack"
   version          = "56.21.1"
 
-  values = [
-    file("${path.module}/values/values-grafana.yaml")
-  ]
-  set {
-    name  = "grafana.adminPassword"
-    value = aws_ssm_parameter.password_grafana.value
-  }
+  values     = [local.values_grafana]
   depends_on = [helm_release.loki]
 }
 
-resource "kubectl_manifest" "Grafana_Ingress" {
+resource "kubectl_manifest" "grafana_ingress" {
   yaml_body  = <<YAML
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -53,30 +59,4 @@ resource "aws_ssm_parameter" "password_grafana" {
 }
 
 
-resource "helm_release" "loki" {
-  name       = "loki"
-  namespace  = var.namespace
-  repository = "https://grafana.github.io/helm-charts"
-  chart      = "loki"
-  version    = "5.43.6"
 
-  values = [
-    file("${path.module}/values/values-loki.yaml")
-  ]
-
-  depends_on = [kubectl_manifest.namespace]
-}
-
-resource "helm_release" "promtail" {
-  name       = "promtail"
-  namespace  = var.namespace
-  repository = "https://grafana.github.io/helm-charts"
-  chart      = "promtail"
-  version    = "6.15.3"
-
-  values = [
-    file("${path.module}/values/values-promtail.yaml")
-  ]
-
-  depends_on = [helm_release.loki]
-}

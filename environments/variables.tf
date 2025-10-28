@@ -68,11 +68,28 @@ variable "service_name" {
   type        = string
 }
 
+variable "observability_namespace" {
+  type        = string
+  default     = "monitoring"
+  description = "The namespace to use for Kubernetes resources within the EKS cluster."
+}
+
+variable "loki_bucket_name" {
+  type    = string
+  default = "loki-bucket"
+}
+
+variable "mimir_bucket_name" {
+  type    = string
+  default = "mimir-bucket"
+}
+
 
 variable "database_configurations" {
   type = object({
     db_name        = string # the Db name
     engine         = string # The database engine, eg: postgres, mysql
+    engine_version = number
     port           = number # The DB port
     instance_class = string # Define the instance type for the instances, must verify the compatibility per engine
     storage = object({
