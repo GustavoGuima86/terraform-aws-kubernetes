@@ -13,7 +13,7 @@ module "eks" {
   kms_key_owners = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
 
   # Enable IRSA
-  enable_irsa = true
+  enable_irsa = false
 
   addons = {
     coredns = {
@@ -43,7 +43,6 @@ module "eks" {
   control_plane_subnet_ids = var.intra_subnets
 
   # Fargate profiles use the cluster primary security group so these are not utilized
-  # create_node_security_group    = true
   access_entries = {
     super-admin = {
       principal_arn = local.SSO_AdministratorAccess_role

@@ -53,6 +53,7 @@ metadata:
 spec:
   provider: aws
   parameters:
+    usePodIdentity: "true"
     objects: |
         - objectName: ${data.aws_secretsmanager_secret.secrets.arn}
           objectType: "secretsmanager"
@@ -81,8 +82,8 @@ kind: ServiceAccount
 metadata:
   name: secret-sci
   namespace: ${var.namespace}
-  annotations:
-    eks.amazonaws.com/role-arn: ${module.aws_ebs_csi_pod_identity_secret.iam_role_arn}
+  # annotations:
+  #   eks.amazonaws.com/role-arn: ${module.aws_ebs_csi_pod_identity_secret.iam_role_arn}
 YAML
   depends_on = [kubectl_manifest.namespace]
 }
@@ -120,7 +121,7 @@ module "aws_ebs_csi_pod_identity_secret" {
   ]
 
   # External secrets configuration
-  attach_external_secrets_policy        = false
+  attach_external_secrets_policy        = true
   external_secrets_secrets_manager_arns = [data.aws_secretsmanager_secret.secrets.arn]
   external_secrets_create_permission    = true
 }
@@ -131,4 +132,6 @@ resource "aws_eks_pod_identity_association" "secrets_csi" {
   service_account = "secret-sci"
 
   role_arn = module.aws_ebs_csi_pod_identity_secret.iam_role_arn
+
+  depends_on = [module.eks]
 }

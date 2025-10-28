@@ -36,26 +36,17 @@ module "loki_s3_pod_identity" {
 
   name = "loki-s3"
 
-  attach_mountpoint_s3_csi_policy = false
+  attach_mountpoint_s3_csi_policy = true
 
-  policy_statements = [
-    {
-      sid    = "LokiS3Access"
-      effect = "Allow"
-      actions = [
-        "s3:PutObject",
-        "s3:GetObject",
-        "s3:ListBucket",
-        "s3:DeleteObject"
-      ]
-      resources = [
-        "arn:aws:s3:::${local.bucket_loki_chunk}",
-        "arn:aws:s3:::${local.bucket_loki_chunk}/*",
-        "arn:aws:s3:::${local.bucket_loki_ruler}",
-        "arn:aws:s3:::${local.bucket_loki_ruler}/*"
-      ]
-    }
+  mountpoint_s3_csi_bucket_arns      = [
+    "arn:aws:s3:::${local.bucket_loki_chunk}",
+    "arn:aws:s3:::${local.bucket_loki_ruler}",
   ]
+  mountpoint_s3_csi_bucket_path_arns = [
+    "arn:aws:s3:::${local.bucket_loki_chunk}/*",
+    "arn:aws:s3:::${local.bucket_loki_ruler}/*",
+  ]
+
   trust_policy_statements = [
     {
       effect = "Allow"

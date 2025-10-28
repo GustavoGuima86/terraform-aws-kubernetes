@@ -93,8 +93,11 @@ spec:
         - key: karpenter.sh/capacity-type
           operator: In
           values: [ "spot" ]
+        - key: karpenter.k8s.aws/instance-size
+          operator: In
+          values: ["xlarge", "2xlarge"]
   limits:
-    cpu: 100
+    cpu: 150
     weight: 10
   # disruption:
   #   consolidationPolicy: WhenEmptyOrUnderutilized

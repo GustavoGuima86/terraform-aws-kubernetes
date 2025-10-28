@@ -27,3 +27,5 @@ prometheus:
     - url:  http://${mimir}-nginx.${namespace}.svc:80/api/v1/push
     externalLabels:
        environment: mimir
+    nodeSelector: { }
+    affinity: { }

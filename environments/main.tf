@@ -28,30 +28,6 @@ module "rds" {
   vpc_id               = module.vpc.vpc_id
 }
 
-# resource "random_string" "secret_suffix" {
-#   length  = 8
-#   special = false
-#   upper   = false
-# }
-#
-# resource "aws_secretsmanager_secret" "example" {
-#   name        = "my-secret-${random_string.secret_suffix.result}"
-#   description = "Example secret managed by Terraform"
-#
-#   force_overwrite_replica_secret = true
-# }
-
-# ---------------------------------------------------------
-# Store a Secret Value
-# ---------------------------------------------------------
-# resource "aws_secretsmanager_secret_version" "example" {
-#   secret_id     = aws_secretsmanager_secret.example.id
-#   secret_string = jsonencode({
-#     username = "admin"
-#     password = "SuperSecurePassword123!"
-#   })
-# }
-
 module "eks" {
   source = "../modules/eks"
 
@@ -74,30 +50,23 @@ module "eks" {
   db_url  = module.rds.rds_database_url
 }
 
-# module "ebs-csi-driver" {
-#   source = "../modules/ebs-csi-driver"
-#   cluster_name                       = module.eks.cluster_name                       # Required by providers provider
-#   cluster_endpoint                   = module.eks.cluster_endpoint                   # Required by providers provider
-#   cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data # Required by providers
-# }
-#
 module "observability" {
   source                             = "../modules/observability"
   namespace                          = var.observability_namespace
   loki_bucket_name                   = var.loki_bucket_name
   mimir_bucket_name                  = var.mimir_bucket_name
-  oidc_id                            = module.eks.oidc_id                            # Required by Roles to access S3 from EKS using RBAC / Service account
-  cluster_name                       = module.eks.cluster_name                       # Required by providers provider
-  cluster_endpoint                   = module.eks.cluster_endpoint                   # Required by providers provider
-  eks_oidc_provider_arn              = module.eks.eks_oidc_provider_arn              # Required by Roles to access S3 from EKS using RBAC / Service account
-  cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data # Required by providers
+  oidc_id                            = module.eks.oidc_id
+  cluster_name                       = module.eks.cluster_name
+  cluster_endpoint                   = module.eks.cluster_endpoint
+  eks_oidc_provider_arn              = module.eks.eks_oidc_provider_arn
+  cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data
   eks_oidc_provider_url              = module.eks.eks_oidc_provider_url
 }
 
 module "argocd" {
   source                             = "../modules/argocd"
   namespace                          = var.namespaces
-  cluster_name                       = module.eks.cluster_name                       # Required by providers provider
-  cluster_endpoint                   = module.eks.cluster_endpoint                   # Required by providers provider
-  cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data # Required by providers
+  cluster_name                       = module.eks.cluster_name
+  cluster_endpoint                   = module.eks.cluster_endpoint
+  cluster_certificate_authority_data = module.eks.cluster_certificate_authority_data
 }

@@ -28,7 +28,7 @@ module "mimir_s3_pod_identity" {
 
   name = "mimir-s3"
 
-  attach_mountpoint_s3_csi_policy    = false
+  attach_mountpoint_s3_csi_policy    = true
 
   mountpoint_s3_csi_bucket_arns      = [
     "arn:aws:s3:::${local.bucket_mimir_chunk}",
