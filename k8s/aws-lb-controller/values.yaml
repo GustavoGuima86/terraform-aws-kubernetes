@@ -1,0 +1,20 @@
+# Default values for aws-lb-controller.
+# This is a wrapper chart. All values below will be passed to the upstream chart.
+
+aws-load-balancer-controller:
+  clusterName: "" # Will be set by ArgoCD
+  region: ""      # Will be set by ArgoCD
+  vpcId: ""       # Will be set by ArgoCD
+
+  # Service Account configuration for EKS Pod Identity
+  serviceAccount:
+    create: true # Let the Helm chart create the ServiceAccount
+    name: "aws-load-balancer-controller" # Name to match with Pod Identity association
+
+  podIdentityAssociation:
+    enabled: true # Enable Pod Identity
+  
+  # Other settings as per the original Terraform configuration
+  enableCertManager: false
+  createIngressClassResource: true
+  ingressClass: alb

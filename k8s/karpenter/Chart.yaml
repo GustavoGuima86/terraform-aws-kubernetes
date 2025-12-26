@@ -1,0 +1,12 @@
+apiVersion: v2
+name: karpenter
+description: Karpenter cluster autoscaler configuration
+type: application
+appVersion: "0.33.0"
+version: 1.0.0
+dependencies:
+  - name: karpenter
+    repository: "oci://public.ecr.aws/karpenter"
+    version: "1.7.1"
+
+

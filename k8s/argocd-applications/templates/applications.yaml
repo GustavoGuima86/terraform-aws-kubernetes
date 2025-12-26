@@ -1,0 +1,53 @@
+{{- $waves := .Values.deploymentWaves -}}
+{{- range $wave := $waves }}
+{{- range $app := $wave.applications }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ $app.name }}
+  namespace: {{ $.Values.argocdNamespace | default "argocd" }}
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  project: {{ $app.project | default "default" }}
+  {{- if eq $.Values.deploymentMethod "gitops" }}
+  source:
+    repoURL: {{ default $.Values.gitRepo.url $app.source.repoURL }}
+    targetRevision: {{ default ($.Values.gitRepo.branch | default "main") $app.source.targetRevision }}
+    path: {{ default $app.path $app.source.path }}
+    {{- if $app.helm }}
+    helm:
+      releaseName: {{ $app.name }}
+      {{- if $app.helm.values }}
+      parameters:
+      {{- range $key, $value := $app.helm.values }}
+      - name: {{ $key }}
+        value: {{ $value | quote }}
+      {{- end }}
+      {{- end }}
+      {{- if $app.helm.valueFiles }}
+      valueFiles:
+      {{- range $file := $app.helm.valueFiles }}
+      - {{ $file }}
+      {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: {{ $app.namespace }}
+  syncPolicy:
+    automated:
+      prune: {{ ($app.syncPolicy | default dict).prune | default true }}
+      selfHeal: {{ ($app.syncPolicy | default dict).selfHeal | default true }}
+    syncOptions:
+    - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+{{- end }}
+{{- end }}

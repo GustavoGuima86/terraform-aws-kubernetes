@@ -1,0 +1,19 @@
+{{- $waves := .Values.deploymentWaves -}}
+{{- range $wave := $waves }}
+{{- range $namespace := $wave.namespaces }}
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $namespace.name }}
+  labels:
+    wave: {{ $wave.name }}
+    wave-order: {{ $wave.order | quote }}
+    {{- toYaml $namespace.labels | nindent 4 }}
+  annotations:
+    description: "{{ $wave.description }}"
+spec:
+  finalizers:
+  - kubernetes
+{{- end }}
+{{- end }}

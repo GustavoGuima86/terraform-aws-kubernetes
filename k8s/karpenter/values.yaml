@@ -1,0 +1,56 @@
+# Karpenter Helm Values
+# Note: Cluster-specific values will be injected by Terraform
+
+karpenter:
+  nodeSelector:
+    karpenter.sh/controller: "true"
+  settings:
+    clusterEndpoint: ${cluster_endpoint}
+    clusterName: ${cluster_name}
+    interruptionQueue: ${interruption_queue}
+  webhook:
+    enabled: false
+
+nodepools:
+  - name: business-apps
+    role: ${cluster_name}
+    amiAlias: "BOTTLEROCKET_ARM_64"
+    instanceCategories: ["m"]
+    instanceFamilies: ["m3"]
+    capacityType: "spot"
+    instanceSizes: ["xlarge", "2xlarge"]
+    cpuLimits: 150
+    memoryLimits: "150Gi"
+    labels:
+      nodepool: business-apps
+  - name: tooling
+    role: ${cluster_name}
+    amiAlias: "BOTTLEROCKET_ARM_64"
+    instanceCategories: ["t"]
+    instanceFamilies: []
+    capacityType: "on-demand"
+    instanceSizes: ["large", "xlarge"]
+    cpuLimits: 50
+    memoryLimits: "50Gi"
+    labels:
+      nodepool: tooling
+  - name: ai-sre
+    role: ${cluster_name}
+    amiAlias: "BOTTLEROCKET_ARM_64"
+    instanceCategories: ["g"]
+    instanceFamilies: []
+    capacityType: "on-demand"
+    instanceSizes: ["xlarge", "2xlarge"]
+    cpuLimits: 100
+    memoryLimits: "100Gi"
+    labels:
+      nodepool: ai-sre
+    disruption:
+      consolidationPolicy: "WhenUnderutilized"
+      consolidateAfter: "30s"
+      expireAfter: "720h" # 30 days
+      budgets:
+      - nodes: "0"
+        schedule: "0 8 * * 1-5"
+      - nodes: "100%"
+        schedule: "0 18 * * 1-5"

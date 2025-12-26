@@ -1,0 +1,263 @@
+# ArgoCD Applications Configuration with Deployment Waves
+
+deploymentMethod: "gitops" # Can be 'gitops' or 'local'
+
+argocdNamespace: "argocd" # Can be overridden via --set flags
+
+gitRepo:
+  url: https://github.com/GustavoGuima86/terraform-aws-kubernetes
+  branch: main
+
+# Values from Terraform outputs (set via --set flags in helm upgrade)
+
+dbPort: ""
+
+eksClusterEndpoint: ""
+eksClusterCaCertificate: ""
+eksClusterName: ""
+
+lokiBucketName: ""
+mimirBucketName: ""
+awsRegion: ""
+vpcId: ""
+
+
+
+# ==============================================================================
+
+# ArgoCD Projects
+# ==============================================================================
+# Projects are used to segregate applications and restrict permissions.
+# The 'argocd-admin' project is created by Terraform for bootstrapping.
+# The projects defined here are created by the 'wave-0-system' ArgoCD app.
+# ==============================================================================
+argocdProjects:
+  - name: infrastructure
+    description: "Project for core infrastructure components like Karpenter"
+    sourceRepos:
+      - "https://github.com/GustavoGuima86/terraform-aws-kubernetes"
+    destinations:
+      - namespace: "karpenter"
+        server: "https://kubernetes.default.svc"
+    clusterResourceWhitelist:
+      - group: "*"
+        kind: "*"
+
+  - name: observability
+    description: "Project for the observability stack (Loki, Mimir, etc.)"
+    sourceRepos:
+      - "https://github.com/GustavoGuima86/terraform-aws-kubernetes"
+    destinations:
+      - namespace: "observability"
+        server: "https://kubernetes.default.svc"
+    clusterResourceWhitelist:
+      - group: "*"
+        kind: "*"
+
+  - name: ai-sre
+    description: "Project for AI/SRE tools"
+    sourceRepos:
+      - "https://github.com/GustavoGuima86/terraform-aws-kubernetes"
+    destinations:
+      - namespace: "ai-sre"
+        server: "https://kubernetes.default.svc"
+    clusterResourceWhitelist:
+      - group: "*"
+        kind: "*"
+
+  - name: business-applications
+    description: "Project for all business-related applications"
+    sourceRepos:
+      - "*" # Allow applications from any repository
+    destinations:
+      - namespace: "business-apps"
+        server: "https://kubernetes.default.svc"
+    clusterResourceWhitelist:
+      - group: "argoproj.io"
+        kind: "Application"
+      - group: ""
+        kind: "Service"
+      - group: "apps"
+        kind: "Deployment"
+      - group: "networking.k8s.io"
+        kind: "Ingress"
+
+# ==============================================================================
+# Deployment Waves Strategy
+# ==============================================================================
+# Applications are deployed in waves to manage dependencies.
+# Order: Namespaces -> Infrastructure -> Observability -> AI/SRE -> Applications
+# ==============================================================================
+deploymentWaves:
+  # Wave 0: Namespaces
+  # This wave creates the namespaces required by the applications in later waves.
+  - name: wave-0-namespaces
+    order: 0
+    description: "Create application and system namespaces"
+    namespaces:
+      - name: karpenter
+        labels:
+          nodepool: tooling
+      - name: observability
+        labels:
+          nodepool: tooling
+      - name: business-apps
+        labels:
+          nodepool: business-apps
+      - name: ai-sre
+        labels:
+          nodepool: ai-sre
+      - name: tooling
+        labels:
+          nodepool: tooling
+      - name: gatekeeper-system
+        labels:
+          nodepool: tooling
+      - name: istio-system
+        labels:
+          nodepool: tooling
+    applications: [] # No applications in this wave
+
+  # Wave 1: Infrastructure
+  - name: wave-1-infrastructure
+    order: 1
+    description: "Infrastructure components - Karpenter"
+    # This wave has no new namespaces, it uses the ones from the previous wave
+    namespaces: []
+    applications:
+      - name: gateway-api-crds
+        namespace: kube-system
+        source:
+          repoURL: https://github.com/kubernetes-sigs/gateway-api
+          path: releases/download/v1.1.0/standard-install.yaml
+          targetRevision: HEAD # Or a specific tag/commit if desired
+        project: infrastructure
+        syncPolicy:
+          prune: true
+          selfHeal: true
+      - name: istio-base
+        namespace: istio-system
+        path: k8s/istio/istio-base
+        project: infrastructure
+        syncPolicy:
+          prune: true
+          selfHeal: true
+      - name: istiod
+        namespace: istio-system
+        path: k8s/istio/istiod
+        project: infrastructure
+        syncPolicy:
+          prune: true
+          selfHeal: true
+      - name: karpenter
+        namespace: karpenter
+        path: k8s/karpenter
+        project: infrastructure
+        syncPolicy:
+          prune: true
+          selfHeal: true
+      - name: aws-lb-controller
+        namespace: kube-system # Often deployed in kube-system
+        path: k8s/aws-lb-controller
+        project: infrastructure
+        helm:
+          values:
+            aws-load-balancer-controller: # Name of the sub-chart
+              clusterName: ""
+              region: ""
+              vpcId: ""
+      - name: secrets-store-csi-driver-core
+        namespace: kube-system
+        path: k8s/secrets-store-csi-driver
+        project: infrastructure
+      - name: db-csi-sa
+        namespace: kube-system
+        path: k8s/secrets/db-sa.yaml
+        project: infrastructure
+      - name: db-secret-provider-class
+        namespace: kube-system
+        path: k8s/secrets/db-secret-provider-class.yaml
+        project: infrastructure
+      - name: gatekeeper
+        namespace: gatekeeper-system
+        path: k8s/gatekeeper
+        project: infrastructure
+        syncPolicy:
+          prune: true
+          selfHeal: true
+
+  # Wave 2: Observability
+  - name: wave-2-observability
+    order: 2
+    description: "Observability stack - Loki, Mimir, Grafana, Prometheus"
+    namespaces: []
+    applications:
+      - name: loki
+        namespace: observability
+        path: k8s/observability/loki
+        project: observability
+        helm:
+          valueFiles:
+            - values.yaml
+          values:
+            bucketName: ""
+            awsRegion: ""
+      - name: mimir
+        namespace: observability
+        path: k8s/observability/mimir
+        project: observability
+        helm:
+          valueFiles:
+            - values.yaml
+          values:
+            bucketName: ""
+            awsRegion: ""
+      - name: kube-prometheus-stack
+        namespace: observability
+        path: k8s/observability/prometheus
+        project: observability
+        helm:
+          valueFiles:
+            - values.yaml
+      - name: alloy
+        namespace: observability
+        path: k8s/observability/alloy
+        project: observability
+        helm:
+          valueFiles:
+            - values.yaml
+      - name: gatekeeper-policies
+        namespace: gatekeeper-system
+        path: k8s/gatekeeper-policies
+        project: infrastructure
+        syncPolicy:
+          prune: true
+          selfHeal: true
+      - name: tooling-gateway
+        namespace: istio-system
+        path: k8s/istio-routing
+        project: infrastructure
+        syncPolicy:
+          prune: true
+          selfHeal: true
+
+  # Wave 3: AI/SRE
+  - name: wave-3-ai-sre
+    order: 3
+    description: "AI/SRE tools - LocalAI and K8sGPT"
+    namespaces: []
+    applications:
+      - name: locaai
+        namespace: ai-sre
+        path: k8s/ai-sre/locaai
+        project: ai-sre
+        syncPolicy:
+          prune: true
+          selfHeal: true
+      - name: k8sgpt
+        namespace: ai-sre
+        path: k8s/ai-sre/k8sgpt
+        project: ai-sre
+        syncPolicy:
+          prune: true
+          selfHeal: true

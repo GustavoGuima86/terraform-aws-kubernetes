@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: application-config
+  namespace: business-apps
+data:
+  db-url: "jdbc:postgresql://{{ .Values.dbUrl }}:{{ .Values.dbPort }}/postgres"

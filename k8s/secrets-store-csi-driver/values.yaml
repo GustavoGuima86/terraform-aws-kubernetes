@@ -1,0 +1,7 @@
+# Default values for secrets-store-csi-driver.
+# This is a wrapper chart. All values below will be passed to the upstream chart.
+
+secrets-store-csi-driver:
+  syncSecret:
+    enabled: true
+  enableSecretRotation: true

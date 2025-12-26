@@ -1,0 +1,20 @@
+# --- The Routing Rules for Calculation ---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: calculation-route
+  namespace: business-apps
+spec:
+  parentRefs:
+  - name: tooling-gateway # Assuming the same gateway is used for business apps
+    namespace: istio-system
+  hostnames:
+  - "calculation.example.com" # Placeholder, user should replace this
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: calculation
+      port: 80

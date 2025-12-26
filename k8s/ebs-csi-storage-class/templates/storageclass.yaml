@@ -1,0 +1,12 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: {{ .Values.storageClass.name }}
+  annotations:
+    storageclass.kubernetes.io/is-default-class: {{ .Values.storageClass.isDefaultClass | quote }}
+provisioner: ebs.csi.aws.com
+volumeBindingMode: {{ .Values.storageClass.volumeBindingMode }}
+reclaimPolicy: {{ .Values.storageClass.reclaimPolicy }}
+parameters:
+  type: {{ .Values.storageClass.type }}
+  fsType: {{ .Values.storageClass.fsType }}

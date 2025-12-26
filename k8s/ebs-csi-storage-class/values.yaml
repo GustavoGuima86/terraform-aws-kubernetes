@@ -1,0 +1,9 @@
+# Default values for ebs-csi-storage-class.
+
+storageClass:
+  name: "gp3-secure"
+  isDefaultClass: "true"
+  type: "gp3"
+  fsType: "ext4"
+  reclaimPolicy: "Delete"
+  volumeBindingMode: "WaitForFirstConsumer"

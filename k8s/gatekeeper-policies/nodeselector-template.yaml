@@ -1,0 +1,27 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8srequirednamespacelabel
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sRequiredNamespaceLabel
+      validation:
+        openAPIV3Schema:
+          properties:
+            label:
+              type: string
+  targets:
+  - target: admission.k8s.gatekeeper.sh
+    rego: |
+      package k8srequirednamespaceplabel
+
+      violation[{"msg": msg}] {
+        ns := input.review.object.metadata.namespace
+        ns_obj := data.inventory.namespace[ns]
+        required_nodepool := ns_obj.metadata.labels.nodepool
+        pod_nodeselector := input.review.object.spec.nodeSelector.nodepool
+        not pod_nodeselector == required_nodepool
+        msg := sprintf("Pod nodeselector does not match the namespace's required nodepool. Expected %v, got %v", [required_nodepool, pod_nodeselector])
+      }

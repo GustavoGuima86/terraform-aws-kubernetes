@@ -1,0 +1,56 @@
+# Values that can be overridden by the parent chart (k8s/argocd)
+awsRegion: ""
+bucketName: ""
+serviceAccountName: "mimir-sa"
+
+# ==============================================================================
+# Configuration for the underlying Grafana Mimir chart
+# ==============================================================================
+mimir:
+  auth_enabled: false
+
+  ingester:
+    ring:
+      kvstore:
+        store: inmemory
+
+  limits:
+    enforce_metric_name: false
+    reject_old_samples: true
+    reject_old_samples_max_age: 168h
+    ingestion_rate: 50000
+    max_series_per_metric: 10000
+
+  schemaConfig:
+    configs:
+      - from: "2024-04-01"
+        store: tsdb
+        object_store: s3
+        schema: v12
+        index:
+          prefix: mimir_index_
+          period: 24h
+
+  storage:
+    bucketNames:
+      chunks: {{ .Values.bucketName }}
+      ruler: {{ .Values.bucketName }}
+      admin: {{ .Values.bucketName }}
+    type: s3
+    s3:
+      region: {{ .Values.awsRegion }}
+      signature_version: v4
+
+  blockStorage:
+    s3:
+      bucket: {{ .Values.bucketName }}
+
+# Use the service account created and associated by Terraform
+serviceAccount:
+  create: true
+  # The name is critical for EKS Pod Identity to work
+  name: {{ .Values.serviceAccountName }}
+  # The role-arn annotation is for the older IRSA system, which is not used here.
+  annotations: {}
+
+deploymentMode: simple

@@ -1,0 +1,10 @@
+apiVersion: v2
+name: argocd-core-wrapper
+description: A wrapper chart to deploy Argo CD Core on EKS
+type: application
+version: 0.1.0
+
+dependencies:
+  - name: argo-cd
+    version: "7.7.16"  # Corresponds roughly to Argo CD v2.13.x/v2.12.x
+    repository: "https://argoproj.github.io/argo-helm"

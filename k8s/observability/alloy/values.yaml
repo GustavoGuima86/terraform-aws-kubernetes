@@ -1,0 +1,30 @@
+# values.yaml for the alloy wrapper chart
+fullnameOverride: "alloy"
+
+alloy:
+  controller:
+    type: "daemonset" # Deploy as a DaemonSet to run on every node
+
+    # The Alloy configuration is defined as a 'river' config.
+    # This configuration scrapes logs from Kubernetes pods and sends them to Loki.
+    config: |
+      // Discover Loki service
+      discovery.kubernetes "loki" {
+        role = "service"
+        selectors {
+          label = "app.kubernetes.io/name=loki"
+        }
+      }
+
+      // Scrape logs from Kubernetes pods
+      loki.source.kubernetes "pods" {
+        forward_to = [loki.write.default.receiver]
+      }
+
+      // Define the Loki endpoint and send logs to it
+      loki.write "default" {
+        endpoint {
+          url = "http://loki-write.observability.svc:3100/loki/api/v1/push"
+        }
+        external_labels = {}
+      }

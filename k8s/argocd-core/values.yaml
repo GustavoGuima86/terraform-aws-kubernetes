@@ -1,0 +1,43 @@
+argo-cd:
+  global:
+    image:
+      # Updating this to a recent version fixes the original "cp --update" error
+      tag: "v2.12.3"
+
+  # Core installation mode often implies not installing the heavy UI components,
+  # but standard Argo CD charts usually install everything unless disabled.
+  # For "Core" specifically, people often just want the controller and repo server,
+  # but here we keep the standard components enabled based on your snippet.
+
+  installCRDs: true
+
+  server:
+    service:
+      # specific for AWS EKS to provision an ELB/NLB
+      type: LoadBalancer
+      # Annotations for AWS Load Balancer Controller (optional example)
+      # annotations:
+      #   service.beta.kubernetes.io/aws-load-balancer-type: nlb
+    ingress:
+      enabled: false
+
+  repoServer:
+    serviceAccount:
+      create: true
+    # We REMOVED the manual 'initContainers' block here.
+    # The chart automatically creates a 'copyutil' container.
+    # Because we updated global.image.tag to v2.12.3, the automatic one will work.
+
+  # Disable components not needed for this specific setup
+  applicationSet:
+    enabled: false
+
+  controller:
+    argocdProject:
+      create: false
+
+  # Prevent conflicts if you are managing resources via GitOps later
+  createClusterResources: false
+
+  notifications:
+    enabled: false

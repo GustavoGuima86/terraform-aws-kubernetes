@@ -1,0 +1,10 @@
+apiVersion: v2
+name: gatekeeper
+description: A Helm chart for deploying Gatekeeper
+type: application
+version: 0.1.0
+
+dependencies:
+- name: gatekeeper
+  version: "3.14.0" # Using a recent version
+  repository: "https://open-policy-agent.github.io/gatekeeper/charts"

@@ -1,0 +1,56 @@
+# values.yaml for gatekeeper
+replicas: 1
+
+pdb:
+  controllerManager:
+    minAvailable: 0
+
+# The user can override this with their ECR URI
+# image:
+#   repository: {{ requiredEnv "ECR_URI" }}/docker.io/openpolicyagent/gatekeeper
+#   crdRepository: {{ requiredEnv "ECR_URI" }}/docker.io/openpolicyagent/gatekeeper-crds
+
+controllerManager:
+  priorityClassName: system-cluster-critical
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: gatekeeper.sh/operation
+                operator: In
+                values:
+                  - webhook
+          topologyKey: kubernetes.io/hostname
+  tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+postUpgrade:
+  tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+postInstall:
+  tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+preUninstall:
+  tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+audit:
+  priorityClassName: system-cluster-critical
+  tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+upgradeCRDs:
+  enabled: false

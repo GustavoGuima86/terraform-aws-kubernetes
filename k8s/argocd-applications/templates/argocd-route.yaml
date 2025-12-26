@@ -1,0 +1,20 @@
+# --- The Routing Rules for ArgoCD ---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: argocd-route
+  namespace: argocd
+spec:
+  parentRefs:
+  - name: tooling-gateway
+    namespace: istio-system
+  hostnames:
+  - "argocd.example.com" # Placeholder, user should replace this
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: argocd-server
+      port: 80

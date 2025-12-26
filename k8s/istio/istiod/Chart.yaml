@@ -1,0 +1,10 @@
+apiVersion: v2
+name: istiod
+description: A Helm chart for deploying Istiod
+type: application
+version: 0.1.0
+
+dependencies:
+- name: istiod
+  version: "1.28.0"
+  repository: "https://istio-release.storage.googleapis.com/charts"
