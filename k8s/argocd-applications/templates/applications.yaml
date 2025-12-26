@@ -1,6 +1,21 @@
 {{- $waves := .Values.deploymentWaves -}}
 {{- range $wave := $waves }}
 {{- range $app := $wave.applications }}
+{{- $repoURL := $.Values.gitRepo.url -}}
+{{- $targetRevision := $.Values.gitRepo.branch | default "main" -}}
+{{- $appPath := $app.path -}}
+
+{{- with $app.source -}}
+  {{- if .repoURL -}}
+    {{- $repoURL = .repoURL -}}
+  {{- end -}}
+  {{- if .targetRevision -}}
+    {{- $targetRevision = .targetRevision -}}
+  {{- end -}}
+  {{- if .path -}}
+    {{- $appPath = .path -}}
+  {{- end -}}
+{{- end -}}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
@@ -11,11 +26,10 @@ metadata:
   - resources-finalizer.argocd.argoproj.io
 spec:
   project: {{ $app.project | default "default" }}
-  {{- if eq $.Values.deploymentMethod "gitops" }}
   source:
-    repoURL: {{ default $.Values.gitRepo.url $app.source.repoURL }}
-    targetRevision: {{ default ($.Values.gitRepo.branch | default "main") $app.source.targetRevision }}
-    path: {{ default $app.path $app.source.path }}
+    repoURL: {{ $repoURL }}
+    targetRevision: {{ $targetRevision }}
+    path: {{ $appPath }}
     {{- if $app.helm }}
     helm:
       releaseName: {{ $app.name }}
@@ -33,7 +47,6 @@ spec:
       {{- end }}
       {{- end }}
     {{- end }}
-  {{- end }}
   destination:
     server: https://kubernetes.default.svc
     namespace: {{ $app.namespace }}

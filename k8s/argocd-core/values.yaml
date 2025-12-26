@@ -9,7 +9,7 @@ argo-cd:
   # For "Core" specifically, people often just want the controller and repo server,
   # but here we keep the standard components enabled based on your snippet.
 
-  installCRDs: true
+  installCRDs: false
 
   server:
     service:

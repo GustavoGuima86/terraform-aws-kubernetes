@@ -1,0 +1,10 @@
+apiVersion: v2
+name: k8sgpt
+description: A Helm chart for deploying the k8sgpt-operator
+type: application
+version: 0.1.0
+
+dependencies:
+- name: k8sgpt-operator
+  version: "0.2.6" # specify a version to ensure consistent deployments
+  repository: "https://charts.k8sgpt.ai/"

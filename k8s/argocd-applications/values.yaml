@@ -6,7 +6,7 @@ argocdNamespace: "argocd" # Can be overridden via --set flags
 
 gitRepo:
   url: https://github.com/GustavoGuima86/terraform-aws-kubernetes
-  branch: main
+  branch: new-2026-features
 
 # Values from Terraform outputs (set via --set flags in helm upgrade)
 
@@ -222,6 +222,7 @@ deploymentWaves:
       - name: alloy
         namespace: observability
         path: k8s/observability/alloy
+        source: {}
         project: observability
         helm:
           valueFiles:

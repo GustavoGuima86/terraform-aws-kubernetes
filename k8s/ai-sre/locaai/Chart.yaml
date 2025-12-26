@@ -1,0 +1,10 @@
+apiVersion: v2
+name: locaai
+description: A Helm chart for deploying LocalAI
+type: application
+version: 0.1.0
+
+dependencies:
+- name: local-ai
+  version: "2.13.0" # Specify a version to ensure consistent deployments
+  repository: "https://go-skynet.github.io/helm-charts/"

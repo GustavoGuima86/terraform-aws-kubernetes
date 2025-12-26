@@ -2,7 +2,7 @@
 set -euo pipefail
 
 echo "Installing Argo CD CRDs..."
-kubectl apply -k "https://github.com/argoproj/argo-cd/manifests/crds?ref=v2.11.2"
+kubectl apply -k "https://github.com/argoproj/argo-cd/manifests/crds?ref=v2.12.3"
 
 echo "Installing Gateway API CRDs..."
 kubectl apply -f "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml"
