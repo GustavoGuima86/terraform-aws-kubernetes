@@ -14,7 +14,7 @@ karpenter:
 nodepools:
   - name: business-apps
     role: ${cluster_name}
-    amiAlias: "BOTTLEROCKET_ARM_64"
+    amiAlias: "bottlerocket@latest"
     instanceCategories: ["m"]
     instanceFamilies: ["m3"]
     capacityType: "spot"
@@ -25,7 +25,7 @@ nodepools:
       nodepool: business-apps
   - name: tooling
     role: ${cluster_name}
-    amiAlias: "BOTTLEROCKET_ARM_64"
+    amiAlias: "bottlerocket@latest"
     instanceCategories: ["t"]
     instanceFamilies: []
     capacityType: "on-demand"
@@ -36,7 +36,7 @@ nodepools:
       nodepool: tooling
   - name: ai-sre
     role: ${cluster_name}
-    amiAlias: "BOTTLEROCKET_ARM_64"
+    amiAlias: "bottlerocket@latest"
     instanceCategories: ["g"]
     instanceFamilies: []
     capacityType: "on-demand"
@@ -52,5 +52,7 @@ nodepools:
       budgets:
       - nodes: "0"
         schedule: "0 8 * * 1-5"
+        duration: "24h"
       - nodes: "100%"
         schedule: "0 18 * * 1-5"
+        duration: "24h"
