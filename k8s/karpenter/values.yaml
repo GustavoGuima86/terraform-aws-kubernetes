@@ -46,7 +46,7 @@ nodepools:
     labels:
       nodepool: ai-sre
     disruption:
-      consolidationPolicy: "WhenUnderutilized"
+      consolidationPolicy: "WhenEmptyOrUnderutilized"
       consolidateAfter: "30s"
       expireAfter: "720h" # 30 days
       budgets:
