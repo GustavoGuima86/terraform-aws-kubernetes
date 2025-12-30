@@ -1,6 +1,12 @@
 # Karpenter Helm Values
 # Note: Cluster-specific values will be injected by Terraform
 
+serviceAccount:
+  create: true
+  name: karpenter
+  annotations:
+    eks.amazonaws.com/role-arn: ""
+
 karpenter:
   nodeSelector:
     karpenter.sh/controller: "true"
