@@ -1,11 +1,15 @@
 # Karpenter Helm Values
-# Note: Cluster-specific values will be injected by Terraform
+# Note: Cluster-specific values will be injected by Terraform and ArgoCD
 
 serviceAccount:
   create: true
   name: karpenter
-  annotations:
-    eks.amazonaws.com/role-arn: ""
+  namespace: karpenter
+  annotations: {}
+    # No IRSA annotations needed when using Pod Identity
+
+podAnnotations:
+  eks.amazonaws.com/aws-sqs-queue-name: ${interruption_queue}
 
 karpenter:
   nodeSelector:
@@ -19,7 +23,7 @@ karpenter:
 
 nodepools:
   - name: business-apps
-    role: ${cluster_name}
+    role: ${node_iam_role_name}
     amiAlias: "bottlerocket@latest"
     instanceCategories: ["m"]
     instanceFamilies: ["m3"]
@@ -30,7 +34,7 @@ nodepools:
     labels:
       nodepool: business-apps
   - name: tooling
-    role: ${cluster_name}
+    role: ${node_iam_role_name}
     amiAlias: "bottlerocket@latest"
     instanceCategories: ["t"]
     instanceFamilies: []
@@ -41,7 +45,7 @@ nodepools:
     labels:
       nodepool: tooling
   - name: ai-sre
-    role: ${cluster_name}
+    role: ${node_iam_role_name}
     amiAlias: "bottlerocket@latest"
     instanceCategories: ["g"]
     instanceFamilies: []
