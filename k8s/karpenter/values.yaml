@@ -19,7 +19,7 @@ karpenter:
 
 nodepools:
   - name: business-apps
-    role: {{ .Values.karpenterNodeIamRoleArn }}
+    role: ${cluster_name}
     amiAlias: "bottlerocket@latest"
     instanceCategories: ["m"]
     instanceFamilies: ["m3"]
@@ -30,7 +30,7 @@ nodepools:
     labels:
       nodepool: business-apps
   - name: tooling
-    role: {{ .Values.karpenterNodeIamRoleArn }}
+    role: ${cluster_name}
     amiAlias: "bottlerocket@latest"
     instanceCategories: ["t"]
     instanceFamilies: []
@@ -41,7 +41,7 @@ nodepools:
     labels:
       nodepool: tooling
   - name: ai-sre
-    role: {{ .Values.karpenterNodeIamRoleArn }}
+    role: ${cluster_name}
     amiAlias: "bottlerocket@latest"
     instanceCategories: ["g"]
     instanceFamilies: []
