@@ -111,7 +111,18 @@ Before deploying any applications, you must configure `kubectl` to communicate w
     ```bash
     ./k8s/crds/install-crds.sh
     ```
+### Stage 2: Deploy Core Kubernetes Services (e.g., StorageClass) with Helm
 
+This stage deploys foundational Kubernetes services that might be required before ArgoCD itself, such as the StorageClass.
+
+1.  **Ensure `helm` is Installed**: Make sure you have the `helm` CLI installed.
+
+2.  **Deploy EBS CSI StorageClass**: This deploys the `gp3-secure` StorageClass.
+    ```bash
+    helm upgrade --install ebs-csi-storage-class k8s/ebs-csi-storage-class \
+      --namespace kube-system # StorageClasses are cluster-wide, but Helm needs a namespace for release tracking
+    ```
+    **Note**: You might need to configure `kubectl` before this step. You can use the command from Stage 1, step 3 to configure it.
 ### 3. Deploy ArgoCD Core and Applications with Helm
 
 This stage deploys ArgoCD Core and then all other Kubernetes-native applications via the "App of Apps" pattern.
@@ -123,7 +134,6 @@ This stage deploys ArgoCD Core and then all other Kubernetes-native applications
       --namespace argocd --create-namespace \
       --set installCRDs=false \
       --set argo-cd.crds.install=false \
-      --set argo-cd.server.service.type=LoadBalancer \
       --set argo-cd.applicationSet.enabled=false \
       --set argo-cd.notifications.enabled=false
     ```
