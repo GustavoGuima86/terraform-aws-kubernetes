@@ -15,4 +15,3 @@ dependencies:
 - name: gateway
   version: "1.28.0"
   repository: "https://istio-release.storage.googleapis.com/charts"
-  alias: istio-gateway
