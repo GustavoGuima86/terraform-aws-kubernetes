@@ -13,8 +13,8 @@ pdb:
 
 # The user must provide the ECR_URI environment variable
 image:
-  repository: {{ requiredEnv "ECR_URI" }}/docker.io/openpolicyagent/gatekeeper
-  crdRepository: {{ requiredEnv "ECR_URI" }}/docker.io/openpolicyagent/gatekeeper-crds
+  repository: '{{ requiredEnv "ECR_URI" }}/docker.io/openpolicyagent/gatekeeper'
+  crdRepository: '{{ requiredEnv "ECR_URI" }}/docker.io/openpolicyagent/gatekeeper-crds'
 
 controllerManager:
   priorityClassName: system-cluster-critical
