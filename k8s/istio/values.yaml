@@ -1,0 +1,2 @@
+# values.yaml for the consolidated istio chart
+# We will rely on the default values of the subcharts for now.
