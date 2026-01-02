@@ -1,6 +1,4 @@
 # Values that can be overridden by the parent chart (k8s/argocd)
-awsRegion: ""
-bucketName: ""
 serviceAccountName: "loki-sa"
 
 # ==============================================================================
