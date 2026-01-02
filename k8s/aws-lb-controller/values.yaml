@@ -5,6 +5,8 @@ aws-load-balancer-controller:
   clusterName: "" # Will be set by ArgoCD
   region: ""      # Will be set by ArgoCD
   vpcId: ""       # Will be set by ArgoCD
+  serviceTargetENISGTags: ""
+
 
   # Service Account configuration for EKS Pod Identity
   serviceAccount:
@@ -13,7 +15,7 @@ aws-load-balancer-controller:
 
   podIdentityAssociation:
     enabled: true # Enable Pod Identity
-  
+
   # Other settings as per the original Terraform configuration
   enableCertManager: false
   createIngressClassResource: true

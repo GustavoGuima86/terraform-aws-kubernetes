@@ -133,18 +133,18 @@ This stage deploys ArgoCD Core and then all other Kubernetes-native applications
     ```bash
     helm upgrade --install argocd-applications k8s/argocd-applications \
       --namespace argocd --create-namespace \
-      --set eksClusterEndpoint=$(jq -r .eks_cluster_endpoint.value tf_outputs.json) \
-      --set eksClusterCaCertificate=$(jq -r .eks_cluster_ca_certificate.value tf_outputs.json) \
-      --set eksClusterName=$(jq -r .eks_cluster_name.value tf_outputs.json) \
-      --set lokiBucketName=$(jq -r .loki_bucket_name.value tf_outputs.json) \
-      --set mimirBucketName=$(jq -r .mimir_bucket_name.value tf_outputs.json) \
-      --set awsRegion=$(jq -r .aws_region.value tf_outputs.json) \
-      --set vpcId=$(jq -r .vpc_id.value tf_outputs.json) \
-      --set dbSecretArn=$(jq -r .db_secret_arn.value tf_outputs.json) \
-      --set dbUrl=$(jq -r .db_url.value tf_outputs.json) \
-      --set dbPort=$(jq -r .db_port.value tf_outputs.json) \
-      --set karpenterNodeIamRoleName=$(jq -r .karpenter_node_iam_role_name.value tf_outputs.json) \
-      --set karpenterControllerIamRoleArn=$(jq -r .karpenter_controller_iam_role_arn.value tf_outputs.json) \
+      --set eksClusterEndpoint=$(jq -r .eks_cluster_endpoint.value infrastructure/environments/tf_outputs.json) \
+      --set eksClusterCaCertificate=$(jq -r .eks_cluster_ca_certificate.value infrastructure/environments/tf_outputs.json) \
+      --set eksClusterName=$(jq -r .eks_cluster_name.value infrastructure/environments/tf_outputs.json) \
+      --set lokiBucketName=$(jq -r .loki_bucket_name.value infrastructure/environments/tf_outputs.json) \
+      --set mimirBucketName=$(jq -r .mimir_bucket_name.value infrastructure/environments/tf_outputs.json) \
+      --set awsRegion=$(jq -r .aws_region.value infrastructure/environments/tf_outputs.json) \
+      --set vpcId=$(jq -r .vpc_id.value infrastructure/environments/tf_outputs.json) \
+      --set dbSecretArn=$(jq -r .db_secret_arn.value infrastructure/environments/tf_outputs.json) \
+      --set dbUrl=$(jq -r .db_url.value infrastructure/environments/tf_outputs.json) \
+      --set dbPort=$(jq -r .db_port.value infrastructure/environments/tf_outputs.json) \
+      --set karpenterNodeIamRoleName=$(jq -r .karpenter_node_iam_role_name.value infrastructure/environments/tf_outputs.json) \
+      --set karpenterControllerIamRoleArn=$(jq -r .karpenter_controller_iam_role_arn.value infrastructure/environments/tf_outputs.json) \
       --set gitRepo.url="https://github.com/GustavoGuima86/terraform-aws-kubernetes" \
       --set gitRepo.branch="new-2026-features"
     ```
