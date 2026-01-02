@@ -1,14 +1,20 @@
 # values.yaml for gatekeeper
+
+# The number of replicas for the controller manager.
+# This value is expected to be set by helmfile from a settings file.
+# Example: replicas: {{ $settings.controller.replicaCount }}
 replicas: 1
 
 pdb:
   controllerManager:
+    # This value is expected to be set by helmfile from a settings file.
+    # Example: minAvailable: {{ sub $settings.controller.replicaCount 1 }}
     minAvailable: 0
 
-# The user can override this with their ECR URI
-# image:
-#   repository: {{ requiredEnv "ECR_URI" }}/docker.io/openpolicyagent/gatekeeper
-#   crdRepository: {{ requiredEnv "ECR_URI" }}/docker.io/openpolicyagent/gatekeeper-crds
+# The user must provide the ECR_URI environment variable
+image:
+  repository: {{ requiredEnv "ECR_URI" }}/docker.io/openpolicyagent/gatekeeper
+  crdRepository: {{ requiredEnv "ECR_URI" }}/docker.io/openpolicyagent/gatekeeper-crds
 
 controllerManager:
   priorityClassName: system-cluster-critical
