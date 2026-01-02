@@ -18,3 +18,5 @@ aws-load-balancer-controller:
   enableCertManager: false
   createIngressClassResource: true
   ingressClass: alb
+  args:
+    - --enable-gateway-api
