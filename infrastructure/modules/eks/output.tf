@@ -27,3 +27,29 @@ output "cluster_endpoint" {
   value       = module.eks.cluster_endpoint
   description = "The API server endpoint for the EKS cluster."
 }
+
+output "karpenter_controller_iam_role_arn" {
+  value       = module.karpenter.iam_role_arn
+  description = "The ARN of the IAM role for the Karpenter controller."
+}
+
+output "karpenter_node_iam_role_arn" {
+  value       = module.karpenter.node_iam_role_arn
+  description = "The ARN of the IAM role for the nodes launched by Karpenter."
+}
+
+output "karpenter_node_iam_role_name" {
+  value       = module.karpenter.node_iam_role_name
+  description = "The name of the IAM role for the nodes launched by Karpenter."
+}
+
+output "karpenter_interruption_queue_name" {
+  value       = module.karpenter.queue_name
+  description = "The name of the SQS queue for Karpenter interruption events."
+}
+
+output "karpenter_interruption_queue_url" {
+  value       = module.karpenter.queue_arn
+  description = "The URL of the SQS queue for Karpenter interruption events."
+}
+

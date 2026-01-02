@@ -75,6 +75,12 @@ module "eks" {
 
         attach_cluster_primary_security_group = true
 
+        # Fixing issue with karpenter
+        metadata_options = {
+          http_endpoint               = "enabled"
+          http_put_response_hop_limit = 2
+        }
+
         iam_role_additional_policies = {
           AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
         }
@@ -91,45 +97,3 @@ module "eks" {
       "karpenter.sh/discovery" = var.cluster_name
     }
   }
-}
-
-################################################################################
-# Velero Backup S3 Bucket
-################################################################################
-
-resource "aws_s3_bucket" "velero_backups" {
-  bucket = "${var.cluster_name}-velero-backups"
-
-  tags = merge(
-    var.tags,
-    {
-      "Name" = "${var.cluster_name}-velero-backups"
-    }
-  )
-}
-
-resource "aws_s3_bucket_public_access_block" "velero_backups" {
-  bucket = aws_s3_bucket.velero_backups.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
-
-resource "aws_s3_bucket_versioning" "velero_backups" {
-  bucket = aws_s3_bucket.velero_backups.id
-  versioning_configuration {
-    status = "Enabled"
-  }
-}
-
-resource "aws_s3_bucket_server_side_encryption_configuration" "velero_backups" {
-  bucket = aws_s3_bucket.velero_backups.id
-
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
-    }
-  }
-}

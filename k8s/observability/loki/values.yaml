@@ -1,4 +1,5 @@
 # Values that can be overridden by the parent chart (k8s/argocd)
+# dummy comment to force re-evaluation
 serviceAccountName: "loki-sa"
 
 # ==============================================================================

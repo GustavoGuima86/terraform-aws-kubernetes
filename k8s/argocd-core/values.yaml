@@ -13,13 +13,11 @@ argo-cd:
 
   server:
     service:
-      # specific for AWS EKS to provision an ELB/NLB
-      type: LoadBalancer
-      # Annotations for AWS Load Balancer Controller (optional example)
-      # annotations:
-      #   service.beta.kubernetes.io/aws-load-balancer-type: nlb
+      type: ClusterIP
     ingress:
       enabled: false
+    extraArgs:
+      - --rootpath=/argocd
 
   repoServer:
     serviceAccount:

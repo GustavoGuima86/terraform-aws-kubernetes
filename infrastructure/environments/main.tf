@@ -42,3 +42,4 @@ module "observability" {
 
   depends_on = [module.eks]
 }
+

@@ -3,9 +3,9 @@ name: kube-prometheus-stack
 description: Kube Prometheus Stack with Grafana
 type: application
 version: 1.0.0
-appVersion: "56.21.1"
+appVersion: "80.9.2"
 dependencies:
   - name: kube-prometheus-stack
-    version: "56.21.1"
+    version: "80.9.2"
     repository: "https://prometheus-community.github.io/helm-charts"
 

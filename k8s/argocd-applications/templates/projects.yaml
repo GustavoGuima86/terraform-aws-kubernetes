@@ -1,20 +1,28 @@
-{{- $projects := .Values.argocdProjects -}}
-{{- range $project := $projects }}
+{{- $argocdNamespace := .Values.argocdNamespace | default "argocd" -}}
+
+{{- range $project := .Values.argocdProjects }}
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 metadata:
   name: {{ $project.name }}
-  namespace: {{ $.Values.argocdNamespace }}
+  namespace: {{ $argocdNamespace }}
   annotations:
-    "helm.sh/hook": pre-install,pre-upgrade
-    "helm.sh/hook-weight": "1"
+    argocd.argoproj.io/sync-wave: "-2"
 spec:
-  description: {{ $project.description }}
+  description: {{ $project.description | trimSuffix "\n" | quote }}
   sourceRepos:
-  {{- toYaml $project.sourceRepos | nindent 4 }}
+  {{- range $repo := $project.sourceRepos }}
+    - {{ $repo | quote }}
+  {{- end }}
   destinations:
-  {{- toYaml $project.destinations | nindent 4 }}
+  {{- range $dest := $project.destinations }}
+    - namespace: {{ $dest.namespace }}
+      server: {{ $dest.server }}
+  {{- end }}
   clusterResourceWhitelist:
-  {{- toYaml $project.clusterResourceWhitelist | nindent 4 }}
+  {{- range $resource := $project.clusterResourceWhitelist }}
+    - group: {{ $resource.group | quote }}
+      kind: {{ $resource.kind | quote }}
+  {{- end }}
 {{- end }}

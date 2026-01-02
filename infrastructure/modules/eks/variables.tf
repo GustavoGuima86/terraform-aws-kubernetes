@@ -34,13 +34,9 @@ variable "db_secret_arn" {
   description = "The ARN of the AWS Secrets Manager secret containing the database credentials for your application."
 }
 
-variable "aws_region" {
-  description = "The AWS region where resources are located."
+# Karpenter namespace
+variable "karpenter_namespace" {
   type        = string
-}
-
-variable "tags" {
-  description = "A map of tags to assign to the resources."
-  type        = map(string)
-  default     = {}
+  default     = "karpenter"
+  description = "The Kubernetes namespace where Karpenter will be installed."
 }

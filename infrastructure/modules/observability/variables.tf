@@ -17,14 +17,3 @@ variable "mimir_bucket_name" {
   type        = string
   description = "Base name for Mimir S3 buckets (account ID will be appended)"
 }
-
-variable "aws_region" {
-  type        = string
-  description = "The AWS region where resources are located."
-}
-
-variable "tags" {
-  type        = map(string)
-  default     = {}
-  description = "A map of tags to assign to the resources."
-}

@@ -31,7 +31,7 @@ output "aws_region" {
 output "db_secret_arn" {
   value       = module.rds.rds_database_secret_arn
   description = "The ARN of the database secret."
-  sensitive = true
+  sensitive   = true
 }
 
 output "db_url" {
@@ -47,4 +47,23 @@ output "db_port" {
 output "vpc_id" {
   value       = module.vpc.vpc_id
   description = "The ID of the VPC."
+}
+
+output "karpenter_controller_iam_role_arn" {
+  value       = module.eks.karpenter_controller_iam_role_arn
+  description = "The ARN of the IAM role for the Karpenter controller."
+}
+output "karpenter_node_iam_role_name" {
+  value       = module.eks.karpenter_node_iam_role_name
+  description = "The name of the IAM role for nodes launched by Karpenter."
+}
+
+output "karpenter_interruption_queue_name" {
+  value       = module.eks.karpenter_interruption_queue_name
+  description = "The name of the SQS queue for Karpenter interruption events."
+}
+
+output "karpenter_interruption_queue_url" {
+  value       = module.eks.karpenter_interruption_queue_url
+  description = "The URL of the SQS queue for Karpenter interruption events."
 }
