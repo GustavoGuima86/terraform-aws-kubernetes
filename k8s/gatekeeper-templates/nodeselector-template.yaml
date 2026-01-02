@@ -9,19 +9,20 @@ spec:
         kind: K8sRequiredNamespaceLabel
       validation:
         openAPIV3Schema:
+          type: object
           properties:
             label:
               type: string
   targets:
-  - target: admission.k8s.gatekeeper.sh
-    rego: |
-      package k8srequirednamespaceplabel
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8srequirednamespaceplabel
 
-      violation[{"msg": msg}] {
-        ns := input.review.object.metadata.namespace
-        ns_obj := data.inventory.namespace[ns]
-        required_nodepool := ns_obj.metadata.labels.nodepool
-        pod_nodeselector := input.review.object.spec.nodeSelector.nodepool
-        not pod_nodeselector == required_nodepool
-        msg := sprintf("Pod nodeselector does not match the namespace's required nodepool. Expected %v, got %v", [required_nodepool, pod_nodeselector])
-      }
+        violation[{"msg": msg}] {
+          ns := input.review.object.metadata.namespace
+          ns_obj := data.inventory.namespace[ns]
+          required_nodepool := ns_obj.metadata.labels[input.parameters.label]
+          pod_nodeselector := input.review.object.spec.nodeSelector[input.parameters.label]
+          not pod_nodeselector == required_nodepool
+          msg := sprintf("Pod nodeselector for label '%v' does not match the namespace's required nodepool. Expected %v, got %v", [input.parameters.label, required_nodepool, pod_nodeselector])
+        }
