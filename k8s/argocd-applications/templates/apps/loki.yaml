@@ -16,21 +16,22 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-      parameters:
-      - name: loki.storage_config.aws.region
-        value: "{{ .Values.awsRegion }}"
-      - name: loki.storage_config.aws.bucketnames
-        value: "{{ .Values.lokiBucketName }}"
-      - name: loki.storage.bucketNames.chunks
-        value: "{{ .Values.lokiBucketName }}"
-      - name: loki.storage.bucketNames.ruler
-        value: "{{ .Values.lokiBucketName }}"
-      - name: loki.storage.s3.region
-        value: "{{ .Values.awsRegion }}"
-      - name: serviceAccount.name
-        value: "{{ .Values.lokiServiceAccountName }}"
-      - name: serviceAccount.annotations.eks\.amazonaws\.com/role-arn
-        value: "{{ .Values.lokiServiceAccountRoleArn }}"
+      values: |
+        loki:
+          storage_config:
+            aws:
+              region: "{{ .Values.awsRegion }}"
+              bucketnames: "{{ .Values.lokiBucketName }}"
+          storage:
+            bucketNames:
+              chunks: "{{ .Values.lokiBucketName }}"
+              ruler: "{{ .Values.lokiBucketName }}"
+            s3:
+              region: "{{ .Values.awsRegion }}"
+        serviceAccount:
+          create: true
+          annotations:
+            eks.amazonaws.com/role-arn: "{{ .Values.lokiServiceAccountRoleArn }}"
   destination:
     server: https://kubernetes.default.svc
     namespace: observability

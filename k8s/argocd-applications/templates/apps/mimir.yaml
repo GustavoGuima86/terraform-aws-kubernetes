@@ -16,23 +16,29 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-      parameters:
-      - name: mimir-distributed.mimir.structuredConfig.alertmanager_storage.s3.bucket_name
-        value: "{{ .Values.mimirBucketName }}" # Assuming this is the bucket for all. User can specify more if needed.
-      - name: mimir-distributed.mimir.structuredConfig.blocks_storage.s3.bucket_name
-        value: "{{ .Values.mimirBucketName }}" # Assuming this is the bucket for all. User can specify more if needed.
-      - name: mimir-distributed.mimir.structuredConfig.ruler_storage.s3.bucket_name
-        value: "{{ .Values.mimirBucketName }}" # Assuming this is the bucket for all. User can specify more if needed.
-      - name: mimir-distributed.serviceAccount.name
-        value: "{{ .Values.mimirServiceAccountName }}"
-      - name: mimir-distributed.serviceAccount.annotations.eks\.amazonaws\.com/role-arn
-        value: "{{ .Values.mimirServiceAccountRoleArn }}"
-      - name: mimir-distributed.metaMonitoring.serviceMonitor.labels.release
-        value: "{{ .Values.kubePrometheusRelease }}"
-      - name: mimir-distributed.clusterName
-        value: "{{ .Values.eksClusterName }}"
-      - name: mimir-distributed.awsRegion
-        value: "{{ .Values.awsRegion }}"
+      values: |
+        mimir-distributed:
+          mimir:
+            structuredConfig:
+              alertmanager_storage:
+                s3:
+                  bucket_name: "{{ .Values.mimirBucketName }}"
+              blocks_storage:
+                s3:
+                  bucket_name: "{{ .Values.mimirBucketName }}"
+              ruler_storage:
+                s3:
+                  bucket_name: "{{ .Values.mimirBucketName }}"
+          serviceAccount:
+            create: true
+            annotations:
+              eks.amazonaws.com/role-arn: "{{ .Values.mimirServiceAccountRoleArn }}"
+          metaMonitoring:
+            serviceMonitor:
+              labels:
+                release: "{{ .Values.kubePrometheusRelease }}"
+          clusterName: "{{ .Values.eksClusterName }}"
+          awsRegion: "{{ .Values.awsRegion }}"
   destination:
     server: https://kubernetes.default.svc
     namespace: observability

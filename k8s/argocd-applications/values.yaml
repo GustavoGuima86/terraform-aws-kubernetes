@@ -30,6 +30,13 @@ karpenterNodeIamRoleName: ""
 karpenterInterruptionQueueName: ""
 karpenterInterruptionQueueUrl: ""
 
+# Observability values
+lokiServiceAccountRoleArn: ""
+lokiServiceAccountName: ""
+mimirServiceAccountRoleArn: ""
+mimirServiceAccountName: ""
+kubePrometheusRelease: "kube-prometheus-stack"
+
 
 
 # ==============================================================================
