@@ -9,21 +9,22 @@ serviceAccount:
     # No IRSA annotations needed when using Pod Identity
 
 podAnnotations:
-  eks.amazonaws.com/aws-sqs-queue-name: ${interruption_queue}
+  eks.amazonaws.com/aws-sqs-queue-name: "" # Set by ArgoCD
 
 karpenter:
   nodeSelector:
     karpenter.sh/controller: "true"
   settings:
-    clusterEndpoint: ${cluster_endpoint}
-    clusterName: ${cluster_name}
-    interruptionQueue: ${interruption_queue}
+    clusterEndpoint: "" # Set by ArgoCD
+    clusterName: "" # Set by ArgoCD
+    interruptionQueue: "" # Set by ArgoCD
+    awsRegion: "" # Set by ArgoCD
   webhook:
     enabled: false
 
 nodepools:
   - name: business-apps
-    role: ${node_iam_role_name}
+    role: "" # Set by ArgoCD
     amiAlias: "bottlerocket@latest"
     instanceCategories: ["m"]
     instanceFamilies: ["m3"]
@@ -34,7 +35,7 @@ nodepools:
     labels:
       nodepool: business-apps
   - name: tooling
-    role: ${node_iam_role_name}
+    role: "" # Set by ArgoCD
     amiAlias: "bottlerocket@latest"
     instanceCategories: ["t"]
     instanceFamilies: []
@@ -45,7 +46,7 @@ nodepools:
     labels:
       nodepool: tooling
   - name: ai-sre
-    role: ${node_iam_role_name}
+    role: "" # Set by ArgoCD
     amiAlias: "bottlerocket@latest"
     instanceCategories: ["g"]
     instanceFamilies: []

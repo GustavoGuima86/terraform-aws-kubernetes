@@ -30,7 +30,8 @@ spec:
       - name: kube-prometheus-stack.clusterName
         value: "{{ .Values.eksClusterName }}"
       - name: kube-prometheus-stack.awsRegion
-        value: "{{ .Values.awsRegion }}"  destination:
+        value: "{{ .Values.awsRegion }}"
+  destination:
     server: https://kubernetes.default.svc
     namespace: observability
   syncPolicy:

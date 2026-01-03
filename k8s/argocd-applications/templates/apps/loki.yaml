@@ -17,9 +17,11 @@ spec:
       valueFiles:
         - values.yaml
       parameters:
-      - name: loki.config.common.storage.s3.bucketnames
+      - name: loki.storage.bucketNames.chunks
         value: "{{ .Values.lokiBucketName }}"
-      - name: loki.config.common.storage.s3.region
+      - name: loki.storage.bucketNames.ruler
+        value: "{{ .Values.lokiBucketName }}"
+      - name: loki.storage.s3.region
         value: "{{ .Values.awsRegion }}"
       - name: loki.clusterName
         value: "{{ .Values.eksClusterName }}"

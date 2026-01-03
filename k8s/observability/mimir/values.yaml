@@ -14,12 +14,13 @@ mimir-distributed:
           s3:
             bucket_name: "" # Set by ArgoCD
             region: "" # Set by ArgoCD
-      limits:
+      validation:
         enforce_metric_name: false
         reject_old_samples: true
         reject_old_samples_max_age: 168h
-        ingestion_rate: 50000
         max_series_per_metric: 10000
+      limits:
+        ingestion_rate: 50000
 
   minio:
     enabled: false

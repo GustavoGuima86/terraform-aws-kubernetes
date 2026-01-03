@@ -29,6 +29,8 @@ spec:
           value: "{{ .Values.karpenterInterruptionQueueName }}"
         - name: podAnnotations.eks\.amazonaws\.com/aws-sqs-queue-name
           value: "{{ .Values.karpenterInterruptionQueueName }}"
+        - name: karpenter.settings.awsRegion
+          value: "{{ .Values.awsRegion }}"
   destination:
     server: https://kubernetes.default.svc
     namespace: karpenter

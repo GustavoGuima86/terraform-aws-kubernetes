@@ -10,12 +10,12 @@ spec:
     - alias: "{{ .amiAlias }}"
   subnetSelectorTerms:
     - tags:
-        karpenter.sh/discovery: ${cluster_name}
+        karpenter.sh/discovery: {{ .Values.karpenter.settings.clusterName }}
   securityGroupSelectorTerms:
     - tags:
-        karpenter.sh/discovery: ${cluster_name}
+        karpenter.sh/discovery: {{ .Values.karpenter.settings.clusterName }}
   tags:
-    karpenter.sh/discovery: ${cluster_name}
+    karpenter.sh/discovery: {{ .Values.karpenter.settings.clusterName }}
 ---
 apiVersion: karpenter.sh/v1
 kind: NodePool
