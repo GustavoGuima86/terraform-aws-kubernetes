@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: karpenter
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: infrastructure
+  source:
+    repoURL: https://github.com/GustavoGuima86/terraform-aws-kubernetes
+    targetRevision: new-2026-features
+    path: k8s/karpenter
+    helm:
+      parameters:
+        - name: karpenter.settings.clusterEndpoint
+          value: "{{ .Values.eksClusterEndpoint }}"
+        - name: karpenter.settings.clusterName
+          value: "{{ .Values.eksClusterName }}"
+        - name: nodepools[0].role
+          value: "{{ .Values.karpenterNodeIamRoleName }}"
+        - name: nodepools[1].role
+          value: "{{ .Values.karpenterNodeIamRoleName }}"
+        - name: nodepools[2].role
+          value: "{{ .Values.karpenterNodeIamRoleName }}"
+        - name: karpenter.settings.interruptionQueue
+          value: "{{ .Values.karpenterInterruptionQueueName }}"
+        - name: podAnnotations.eks\.amazonaws\.com/aws-sqs-queue-name
+          value: "{{ .Values.karpenterInterruptionQueueName }}"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: karpenter
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

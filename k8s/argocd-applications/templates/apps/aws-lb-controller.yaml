@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: aws-lb-controller
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: infrastructure
+  source:
+    repoURL: https://github.com/GustavoGuima86/terraform-aws-kubernetes
+    targetRevision: new-2026-features
+    path: k8s/aws-lb-controller
+    helm:
+      parameters:
+      - name: aws-load-balancer-controller.clusterName
+        value: "{{ .Values.eksClusterName }}"
+      - name: aws-load-balancer-controller.region
+        value: "{{ .Values.awsRegion }}"
+      - name: aws-load-balancer-controller.vpcId
+        value: "{{ .Values.vpcId }}"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

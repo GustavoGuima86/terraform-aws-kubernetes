@@ -18,13 +18,11 @@ argo-cd:
       enabled: false
     extraArgs:
       - --rootpath=/argocd
+      - --insecure # Allowing unsecure just for test, when domain is available remove it
 
   repoServer:
     serviceAccount:
       create: true
-    # We REMOVED the manual 'initContainers' block here.
-    # The chart automatically creates a 'copyutil' container.
-    # Because we updated global.image.tag to v2.12.3, the automatic one will work.
 
   # Disable components not needed for this specific setup
   applicationSet:

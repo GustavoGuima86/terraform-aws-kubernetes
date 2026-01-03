@@ -1,49 +1,45 @@
-crds:
-  enabled: false
+kube-prometheus-stack:
+  grafana:
+    adminPassword: "" # Set by ArgoCD
+    ingress:
+      enabled: false
+    grafana.ini:
+      server:
+        domain: localhost
+        root_url: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
+        serve_from_sub_path: true
+    additionalDataSources:
+      - name: Loki
+        type: loki
+        isDefault: false
+        editable: true
+        access: proxy
+        url: "" # Set by ArgoCD
+        jsonData:
+          timeout: 60
+          maxLines: 1000
+        version: 1
+      - name: Mimir
+        type: prometheus
+        isDefault: false
+        editable: true
+        access: proxy
+        url: "" # Set by ArgoCD
+        jsonData:
+          timeout: 60
+        version: 1
+  prometheus:
+    prometheusSpec:
+      remoteWrite:
+        - url: "" # Set by ArgoCD
+      externalLabels:
+        cluster: "" # Set by ArgoCD
+      nodeSelector: {}
+      affinity: {}
+  alertmanager:
+    enabled: true
 
-promgrafana:
-  adminPassword: ${adminPassword}
-
-  ingress:
-    enabled: false
-
-  grafana.ini:
-    server:
-      domain: localhost
-      root_url: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
-      serve_from_sub_path: true
-
-  additionalDataSources:
-    - name: Loki
-      type: loki
-      isDefault: false
-      editable: true
-      access: proxy
-      url: http://loki:3100
-      jsonData:
-        timeout: 60
-        maxLines: 1000
-      version: 1
-    - name: Prometheus
-      type: prometheus
-      isDefault: false
-      editable: true
-      access: proxy
-      url: http://${mimir}-nginx.${namespace}.svc:80/prometheus
-      jsonData:
-        timeout: 60
-        maxLines: 1000
-      version: 1
-
-prometheus:
-  prometheusSpec:
-    remoteWrite:
-      - url: http://${mimir}-nginx.${namespace}.svc:80/api/v1/push
-    externalLabels:
-      environment: mimir
-    nodeSelector: {}
-    affinity: {}
-
-alertmanager:
-  enabled: true
+  # Add placeholders for consistency
+  clusterName: "" # Set by ArgoCD
+  awsRegion: "" # Set by ArgoCD
 
