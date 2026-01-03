@@ -14,6 +14,7 @@ podAnnotations:
 karpenter:
   nodeSelector:
     karpenter.sh/controller: "true"
+  defaultNodeRole: "" # Set by ArgoCD
   settings:
     clusterEndpoint: "" # Set by ArgoCD
     clusterName: "" # Set by ArgoCD
@@ -24,7 +25,6 @@ karpenter:
 
 nodepools:
   - name: business-apps
-    role: "" # Set by ArgoCD
     amiAlias: "bottlerocket@latest"
     instanceCategories: ["m"]
     instanceFamilies: ["m3"]
@@ -35,7 +35,6 @@ nodepools:
     labels:
       nodepool: business-apps
   - name: tooling
-    role: "" # Set by ArgoCD
     amiAlias: "bottlerocket@latest"
     instanceCategories: ["t"]
     instanceFamilies: []
@@ -46,7 +45,6 @@ nodepools:
     labels:
       nodepool: tooling
   - name: ai-sre
-    role: "" # Set by ArgoCD
     amiAlias: "bottlerocket@latest"
     instanceCategories: ["g"]
     instanceFamilies: []

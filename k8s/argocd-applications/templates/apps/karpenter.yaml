@@ -19,11 +19,7 @@ spec:
           value: "{{ .Values.eksClusterEndpoint }}"
         - name: karpenter.settings.clusterName
           value: "{{ .Values.eksClusterName }}"
-        - name: nodepools[0].role
-          value: "{{ .Values.karpenterNodeIamRoleName }}"
-        - name: nodepools[1].role
-          value: "{{ .Values.karpenterNodeIamRoleName }}"
-        - name: nodepools[2].role
+        - name: karpenter.defaultNodeRole
           value: "{{ .Values.karpenterNodeIamRoleName }}"
         - name: karpenter.settings.interruptionQueue
           value: "{{ .Values.karpenterInterruptionQueueName }}"

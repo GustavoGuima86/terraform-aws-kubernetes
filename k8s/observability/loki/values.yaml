@@ -1,36 +1,44 @@
 loki:
   auth_enabled: false
   schemaConfig:
-    configs:
-      - from: "2024-04-01"
-        store: tsdb
-        object_store: s3
-        schema: v13
-        index:
-          prefix: loki_index_
-          period: 24h
+     configs:
+       - from: "2024-04-01"
+         store: tsdb
+         object_store: s3
+         schema: v13
+         index:
+           prefix: loki_index_
+           period: 24h
+
+  storage_config:
+     aws:
+       region: "" # Set by ArgoCD
+       bucketnames: "" # Set by ArgoCD
+       s3forcepathstyle: false
+  ingester:
+     chunk_encoding: snappy
+  pattern_ingester:
+     enabled: true
+
   storage:
-    type: s3
-    bucketNames:
-      chunks: "" # Set by ArgoCD
-      ruler: "" # Set by ArgoCD
-    s3:
-      region: "" # Set by ArgoCD
+      type: s3
+      bucketNames:
+        chunks: "" # Set by ArgoCD
+        ruler: "" # Set by ArgoCD
+      s3:
+        region: "" # Set by ArgoCD
 
-  # Use the service account created and associated by Terraform
-  serviceAccount:
-    create: true
-    name: "loki-sa"
-    annotations: {}
+serviceAccount:
+  create: true
+  name: "" # Set by ArgoCD
+  annotations:
+    eks.amazonaws.com/role-arn: "" # Set by ArgoCD
 
-  # Add placeholders for consistency
-  clusterName: "" # Set by ArgoCD
-  awsRegion: "" # Set by ArgoCD
-
-# Keep single binary mode
 deploymentMode: SingleBinary
+
 singleBinary:
   replicas: 2
+
 # Zero out replica counts of other deployment modes
 backend:
   replicas: 0
@@ -38,6 +46,7 @@ read:
   replicas: 0
 write:
   replicas: 0
+
 ingester:
   replicas: 0
 querier:
@@ -56,3 +65,4 @@ bloomCompactor:
   replicas: 0
 bloomGateway:
   replicas: 0
+
