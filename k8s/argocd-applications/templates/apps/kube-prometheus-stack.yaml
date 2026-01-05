@@ -40,7 +40,11 @@ spec:
                 cluster: "{{ .Values.eksClusterName }}"
           clusterName: "{{ .Values.eksClusterName }}"
           awsRegion: "{{ .Values.awsRegion }}"
-          grafanaAdminPasswordParameterName: "{{ .Values.grafanaAdminPasswordParameterName }}"
+
+        clusterName: "{{ .Values.eksClusterName }}"
+        awsRegion: "{{ .Values.awsRegion }}"
+        grafanaAdminPasswordParameterName: "{{ .Values.grafanaAdminPasswordParameterName }}"
+
 
   destination:
     server: https://kubernetes.default.svc

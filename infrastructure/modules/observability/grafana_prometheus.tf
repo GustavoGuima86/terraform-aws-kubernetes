@@ -7,7 +7,7 @@ resource "random_password" "password_grafana" {
 
 # Store password in AWS SSM Parameter Store for later retrieval
 resource "aws_ssm_parameter" "password_grafana" {
-  name  = "Password_Grafana"
+  name  = "password_prafana"
   type  = "String"
   value = random_password.password_grafana.result
 

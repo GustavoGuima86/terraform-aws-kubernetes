@@ -87,3 +87,8 @@ output "mimir_service_account_name" {
   value       = module.observability.mimir_service_account_name
   description = "The name of the Mimir service account."
 }
+
+output "grafana_admin_password_parameter" {
+  value = module.observability.grafana_admin_password_parameter
+  description = "The secret name for the grafana admin user"
+}
