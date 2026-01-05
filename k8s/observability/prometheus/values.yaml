@@ -60,4 +60,5 @@ kube-prometheus-stack:
   # Add placeholders for consistency
   clusterName: "" # Set by ArgoCD
   awsRegion: "" # Set by ArgoCD
+grafanaAdminPasswordParameterName: "" # Set by ArgoCD
 

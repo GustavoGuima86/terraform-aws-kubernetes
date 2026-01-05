@@ -52,4 +52,3 @@ output "karpenter_interruption_queue_url" {
   value       = module.karpenter.queue_arn
   description = "The URL of the SQS queue for Karpenter interruption events."
 }
-
