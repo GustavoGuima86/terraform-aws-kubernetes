@@ -5,7 +5,7 @@ secrets-store-csi-driver:
   install: false
 
 serviceAccount:
-  create: true
+  create: false
 
 podIdentity:
   enabled: true
