@@ -37,6 +37,9 @@ mimirServiceAccountRoleArn: ""
 mimirServiceAccountName: ""
 kubePrometheusRelease: "kube-prometheus-stack"
 
+# Grafana values
+grafanaAdminPasswordParameterName: ""
+
 
 
 # ==============================================================================

@@ -16,21 +16,32 @@ spec:
     helm:
       valueFiles:
         - values.yaml
-      parameters:
-      - name: kube-prometheus-stack.grafana.adminPassword
-        value: "{{ .Values.grafanaAdminPassword }}"
-      - name: kube-prometheus-stack.grafana.additionalDataSources[0].url
-        value: "http://loki-gateway.observability.svc:80"
-      - name: kube-prometheus-stack.grafana.additionalDataSources[1].url
-        value: "http://mimir-mimir-distributed-query-frontend.observability.svc:8080/prometheus"
-      - name: kube-prometheus-stack.prometheus.prometheusSpec.remoteWrite[0].url
-        value: "http://mimir-mimir-distributed-distributor.observability.svc:8080/api/v1/push"
-      - name: kube-prometheus-stack.prometheus.prometheusSpec.externalLabels.cluster
-        value: "{{ .Values.eksClusterName }}"
-      - name: kube-prometheus-stack.clusterName
-        value: "{{ .Values.eksClusterName }}"
-      - name: kube-prometheus-stack.awsRegion
-        value: "{{ .Values.awsRegion }}"
+      values: |
+        kube-prometheus-stack:
+          grafana:
+            additionalDataSources:
+              - name: Loki
+                type: loki
+                isDefault: false
+                editable: true
+                access: proxy
+                url: "http://loki-gateway.observability.svc:80"
+              - name: Mimir
+                type: prometheus
+                isDefault: false
+                editable: true
+                access: proxy
+                url: "http://mimir-mimir-distributed-query-frontend.observability.svc:8080/prometheus"
+          prometheus:
+            prometheusSpec:
+              remoteWrite:
+                - url: "http://mimir-mimir-distributed-distributor.observability.svc:8080/api/v1/push"
+              externalLabels:
+                cluster: "{{ .Values.eksClusterName }}"
+          clusterName: "{{ .Values.eksClusterName }}"
+          awsRegion: "{{ .Values.awsRegion }}"
+        grafanaAdminPasswordParameterName: "{{ .Values.grafanaAdminPasswordParameterName }}"
+
   destination:
     server: https://kubernetes.default.svc
     namespace: observability
