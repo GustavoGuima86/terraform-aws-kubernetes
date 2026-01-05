@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: https://github.com/GustavoGuima86/terraform-aws-kubernetes
     targetRevision: new-2026-features
-    path: k8s/secrets/db-sa.yaml
+    path: k8s/business-apps-config/secrets/templates/db-secret-provider-class.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system

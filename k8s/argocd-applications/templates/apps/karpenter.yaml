@@ -14,16 +14,19 @@ spec:
     targetRevision: new-2026-features
     path: k8s/karpenter
     helm:
-      values: |
-        karpenter:
-          settings:
-            awsRegion: "{{ .Values.awsRegion }}"
-            clusterName: "{{ .Values.eksClusterName }}"
-            clusterEndpoint: "{{ .Values.eksClusterEndpoint }}"
-            interruptionQueue: "{{ .Values.karpenterInterruptionQueueName }}"
-          defaultNodeRole: "{{ .Values.karpenterNodeIamRoleName }}"
-        podAnnotations:
-          eks.amazonaws.com/aws-sqs-queue-name: "{{ .Values.karpenterInterruptionQueueName }}"
+      parameters:
+        - name: karpenter.settings.clusterEndpoint
+          value: "{{ .Values.eksClusterEndpoint }}"
+        - name: karpenter.settings.clusterName
+          value: "{{ .Values.eksClusterName }}"
+        - name: karpenter.defaultNodeRole
+          value: "{{ .Values.karpenterNodeIamRoleName }}"
+        - name: karpenter.settings.interruptionQueue
+          value: "{{ .Values.karpenterInterruptionQueueName }}"
+        - name: podAnnotations.eks\.amazonaws\.com/aws-sqs-queue-name
+          value: "{{ .Values.karpenterInterruptionQueueName }}"
+        - name: karpenter.settings.awsRegion
+          value: "{{ .Values.awsRegion }}"
   destination:
     server: https://kubernetes.default.svc
     namespace: karpenter

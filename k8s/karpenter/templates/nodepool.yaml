@@ -5,7 +5,7 @@ kind: EC2NodeClass
 metadata:
   name: {{ .name }}
 spec:
-  role: {{ .role }}
+  role: {{ .Values.karpenter.defaultNodeRole }}
   amiSelectorTerms:
     - alias: "{{ .amiAlias }}"
   subnetSelectorTerms:
