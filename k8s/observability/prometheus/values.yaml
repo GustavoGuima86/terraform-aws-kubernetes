@@ -46,6 +46,9 @@ kube-prometheus-stack:
       - name: grafana-admin-secret-volume
         mountPath: "/mnt/secrets-store"
         readOnly: true
+    serviceAccount:
+      annotations:
+        eks.amazonaws.com/role-arn: YOUR_GRAFANA_IRSA_ROLE_ARN
   prometheus:
     prometheusSpec:
       remoteWrite:

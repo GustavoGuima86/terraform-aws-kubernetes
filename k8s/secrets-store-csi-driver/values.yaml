@@ -5,8 +5,3 @@ secrets-store-csi-driver:
   syncSecret:
     enabled: true
   enableSecretRotation: true
-  linux:
-    crds:
-      enabled: false
-  rbac:
-    install: false
