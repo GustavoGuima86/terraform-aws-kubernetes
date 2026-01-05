@@ -1,9 +1,5 @@
 kube-prometheus-stack:
   grafana:
-    admin:
-      existingSecret: grafana-admin-secret
-      # The key in the secret that contains the admin password
-      passwordKey: GF_SECURITY_ADMIN_PASSWORD
     sidecar:
       secrets:
         enabled: true
@@ -46,9 +42,6 @@ kube-prometheus-stack:
       - name: grafana-admin-secret-volume
         mountPath: "/mnt/secrets-store"
         readOnly: true
-    serviceAccount:
-      annotations:
-        eks.amazonaws.com/role-arn: YOUR_GRAFANA_IRSA_ROLE_ARN
   prometheus:
     prometheusSpec:
       remoteWrite:
@@ -63,5 +56,4 @@ kube-prometheus-stack:
   # Add placeholders for consistency
   clusterName: "" # Set by ArgoCD
   awsRegion: "" # Set by ArgoCD
-grafanaAdminPasswordParameterName: "" # Set by ArgoCD
 
