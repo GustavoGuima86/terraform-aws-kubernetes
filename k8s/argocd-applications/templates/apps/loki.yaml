@@ -32,7 +32,6 @@ spec:
           serviceAccount:
             create: true
             name: "{{ .Values.lokiServiceAccountName }}"
-            annotations:
   destination:
     server: https://kubernetes.default.svc
     namespace: observability
