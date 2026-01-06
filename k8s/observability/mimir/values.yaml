@@ -2,7 +2,8 @@
 awsRegion: "" # Set by ArgoCD
 
 mimir-distributed:
-  awsRegion: "{{ .Values.awsRegion }}"
+  mimirDistributed:
+    awsRegion: "{{ .Values.awsRegion }}"
   mimir:
     structuredConfig:
       alertmanager_storage:
