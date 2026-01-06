@@ -31,6 +31,7 @@ spec:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
         name: {{ .name }}
+        role: {{ $.Values.karpenter.defaultNodeRole }}
       requirements:
         - key: kubernetes.io/arch
           operator: In

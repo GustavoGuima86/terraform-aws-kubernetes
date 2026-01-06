@@ -9,3 +9,7 @@ serviceAccount:
 
 podIdentity:
   enabled: true
+
+spec:
+  syncPolicy:
+    ignoreDifference: false
