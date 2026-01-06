@@ -17,6 +17,8 @@ spec:
       valueFiles:
         - values.yaml
       values: |
+        awsRegion: "{{ .Values.awsRegion }}"
+        clusterName: "{{ .Values.eksClusterName }}"
         mimir-distributed:
           mimir:
             structuredConfig:
@@ -37,8 +39,6 @@ spec:
             serviceMonitor:
               labels:
                 release: "{{ .Values.kubePrometheusRelease }}"
-          clusterName: "{{ .Values.eksClusterName }}"
-          awsRegion: "{{ .Values.awsRegion }}"
   destination:
     server: https://kubernetes.default.svc
     namespace: observability
