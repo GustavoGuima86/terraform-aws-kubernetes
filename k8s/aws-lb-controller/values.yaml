@@ -19,3 +19,4 @@ aws-load-balancer-controller:
   enableCertManager: false
   createIngressClassResource: true
   ingressClass: alb
+  enableManageBackendSecurityGroupRules: true

@@ -73,10 +73,10 @@ data "aws_secretsmanager_secret" "secrets" {
 }
 
 resource "aws_eks_pod_identity_association" "secrets_csi" {
-  cluster_name = var.cluster_name
+  cluster_name    = var.cluster_name
   service_account = "secret-sci"
-  namespace = "kube-system"
+  namespace       = "kube-system"
 
-  role_arn = module.aws_ebs_csi_pod_identity_secret.iam_role_arn
+  role_arn   = module.aws_ebs_csi_pod_identity_secret.iam_role_arn
   depends_on = [module.eks]
 }

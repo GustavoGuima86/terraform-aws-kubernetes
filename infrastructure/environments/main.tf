@@ -10,20 +10,20 @@ module "rds" {
   source = "../modules/aws-rds"
 
   database_configuration = var.database_configurations
-  private_subnet_ids   = module.vpc.private_subnets
-  public_subnet_ids    = module.vpc.public_subnets
-  subnet_private_cidrs = module.vpc.private_subnets_cidr_blocks
-  vpc_id               = module.vpc.vpc_id
+  private_subnet_ids     = module.vpc.private_subnets
+  public_subnet_ids      = module.vpc.public_subnets
+  subnet_private_cidrs   = module.vpc.private_subnets_cidr_blocks
+  vpc_id                 = module.vpc.vpc_id
 }
 
 module "eks" {
   source = "../modules/eks"
 
-  eks_version                       = var.eks_version
-  private_subnets                   = module.vpc.private_subnets
-  intra_subnets                     = module.vpc.intra_subnets
-  vpc_id                            = module.vpc.vpc_id
-  cluster_name                      = var.cluster_name
+  eks_version     = var.eks_version
+  private_subnets = module.vpc.private_subnets
+  intra_subnets   = module.vpc.intra_subnets
+  vpc_id          = module.vpc.vpc_id
+  cluster_name    = var.cluster_name
 
   db_secret_arn = module.rds.rds_database_secret_arn
 }
