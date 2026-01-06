@@ -30,14 +30,6 @@ kube-prometheus-stack:
         jsonData:
           timeout: 60
         version: 1
-    # CSI Driver related configuration
-    extraVolumes:
-      - name: grafana-admin-secret-volume
-        csi:
-          driver: secrets-store.csi.k8s.io
-          readOnly: true
-          volumeAttributes:
-            secretProviderClass: grafana-admin-secret-provider
     extraVolumeMounts:
       - name: grafana-admin-secret-volume
         mountPath: "/mnt/secrets-store"
