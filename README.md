@@ -161,7 +161,6 @@ This stage deploys ArgoCD Core and then all other Kubernetes-native applications
       --set mimirServiceAccountRoleArn=$(jq -r .mimir_service_account_role_arn.value infrastructure/environments/tf_outputs.json) \
       --set mimirServiceAccountName=$(jq -r .mimir_service_account_name.value infrastructure/environments/tf_outputs.json) \
       --set kubePrometheusRelease="kube-prometheus-stack" \
-      --set grafanaAdminPasswordParameterName=$(jq -r .grafana_admin_password_parameter.value infrastructure/environments/tf_outputs.json) \
       --set gitRepo.url="https://github.com/GustavoGuima86/terraform-aws-kubernetes" \
       --set gitRepo.branch="new-2026-features"
     ```

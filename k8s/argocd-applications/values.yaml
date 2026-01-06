@@ -35,7 +35,6 @@ lokiServiceAccountRoleArn: ""
 lokiServiceAccountName: ""
 mimirServiceAccountRoleArn: ""
 mimirServiceAccountName: ""
-grafanaAdminPasswordParameterName: ""
 kubePrometheusRelease: "kube-prometheus-stack"
 
 # Grafana values

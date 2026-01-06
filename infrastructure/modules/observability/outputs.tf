@@ -27,8 +27,3 @@ output "mimir_service_account_name" {
   value       = local.sa_mimir_name
   description = "Service account name for Mimir"
 }
-
-output "grafana_admin_password_parameter" {
-  value       = aws_ssm_parameter.password_grafana.name
-  description = "AWS SSM Parameter name containing Grafana admin password"
-}

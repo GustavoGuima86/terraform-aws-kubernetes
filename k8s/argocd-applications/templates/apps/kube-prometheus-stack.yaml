@@ -43,7 +43,6 @@ spec:
 
         clusterName: "{{ .Values.eksClusterName }}"
         awsRegion: "{{ .Values.awsRegion }}"
-        grafanaAdminPasswordParameterName: "{{ .Values.grafanaAdminPasswordParameterName }}"
 
 
   destination:

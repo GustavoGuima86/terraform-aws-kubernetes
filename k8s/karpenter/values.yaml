@@ -54,14 +54,14 @@ nodepools:
     memoryLimits: "100Gi"
     labels:
       nodepool: ai-sre
-    disruption:
-      consolidationPolicy: "WhenEmptyOrUnderutilized"
-      consolidateAfter: "30s"
-      expireAfter: "720h" # 30 days
-      budgets:
-      - nodes: "0"
-        schedule: "0 8 * * 1-5"
-        duration: "24h"
-      - nodes: "100%"
-        schedule: "0 18 * * 1-5"
-        duration: "24h"
+#    disruption:
+#      consolidationPolicy: "WhenEmptyOrUnderutilized"
+#      consolidateAfter: "30s"
+#      expireAfter: "720h" # 30 days
+#      budgets:
+#      - nodes: "0"
+#        schedule: "0 8 * * 1-5"
+#        duration: "24h"
+#      - nodes: "100%"
+#        schedule: "0 18 * * 1-5"
+#        duration: "24h"
