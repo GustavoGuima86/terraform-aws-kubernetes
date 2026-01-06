@@ -19,5 +19,5 @@ aws-load-balancer-controller:
   enableCertManager: false
   createIngressClassResource: true
   ingressClass: alb
-  enableManageBackendSecurityGroupRules: true
+  enableManageBackendSecurityGroupRules: false
   serviceTargetENISGTags: "service.k8s.aws/resource=ManagedLBSecurityGroup,elbv2.k8s.aws/cluster=gustavo"
