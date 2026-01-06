@@ -20,4 +20,4 @@ aws-load-balancer-controller:
   createIngressClassResource: true
   ingressClass: alb
   enableManageBackendSecurityGroupRules: true
-  serviceTargetENISGTags: "service.k8s.aws/resource=ManagedLBSecurityGroup"
+  serviceTargetENISGTags: "elbv2.k8s.aws/resource=backend-sg"
