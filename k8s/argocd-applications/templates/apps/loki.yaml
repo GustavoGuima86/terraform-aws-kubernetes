@@ -31,6 +31,7 @@ spec:
                 region: "{{ .Values.awsRegion }}"
           serviceAccount:
             create: true
+            name: "{{ .Values.lokiServiceAccountName }}"
             annotations:
               eks.amazonaws.com/role-arn: "{{ .Values.lokiServiceAccountRoleArn }}"
   destination:

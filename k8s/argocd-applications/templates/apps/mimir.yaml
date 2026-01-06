@@ -36,6 +36,7 @@ spec:
                   endpoint: s3.{{ .Values.awsRegion }}.amazonaws.com
           serviceAccount:
             create: true
+            name: "{{ .Values.mimirServiceAccountName }}"
             annotations:
               eks.amazonaws.com/role-arn: "{{ .Values.mimirServiceAccountRoleArn }}"
           metaMonitoring:

@@ -3,17 +3,14 @@ fullnameOverride: "alloy"
 
 alloy:
   controller:
-    type: "daemonset" # Deploy as a DaemonSet to run on every node
+    type: "daemonset"
 
-  # IMPORTANT: We must pass the K8s Node Name as an environment variable
-  # so Alloy can filter for logs only on the node it is running on.
   extraEnv:
     - name: NODE_NAME
       valueFrom:
         fieldRef:
           fieldPath: spec.nodeName
 
-  # The Alloy configuration is defined as a 'river' config.
   config: |
     discovery.kubernetes "all_pods" {
       role = "pod"
@@ -22,27 +19,22 @@ alloy:
     discovery.relabel "local_pods" {
       targets = discovery.kubernetes.all_pods.targets
 
-      // Filter: Only keep targets where the Pod's Node Name matches this Alloy's Node Name
-      // We use the env var NODE_NAME defined in 'extraEnv' above.
       rule {
         source_labels = ["__meta_kubernetes_pod_node_name"]
         action        = "keep"
         regex         = sys.env("NODE_NAME")
       }
 
-      // Label: Namespace
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
         target_label  = "namespace"
       }
 
-      // Label: Pod Name
       rule {
         source_labels = ["__meta_kubernetes_pod_name"]
         target_label  = "pod"
       }
 
-      // Label: Container Name
       rule {
         source_labels = ["__meta_kubernetes_pod_container_name"]
         target_label  = "container"
@@ -58,6 +50,5 @@ alloy:
       endpoint {
         url = "http://loki-write.observability.svc:3100/loki/api/v1/push"
       }
-      // You can add external labels here if needed, e.g. cluster name
       external_labels = {}
     }
