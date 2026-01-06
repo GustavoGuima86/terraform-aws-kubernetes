@@ -1,8 +1,5 @@
 kube-prometheus-stack:
   grafana:
-    sidecar:
-      secrets:
-        enabled: true
     ingress:
       enabled: false
     grafana.ini:
