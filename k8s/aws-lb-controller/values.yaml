@@ -20,3 +20,6 @@ aws-load-balancer-controller:
   createIngressClassResource: true
   ingressClass: alb
   enableManageBackendSecurityGroupRules: true
+  serviceTargetENISGTags:
+    "service.k8s.aws/resource": "ManagedLBSecurityGroup"
+    "elbv2.k8s.aws/cluster": "gustavo"
