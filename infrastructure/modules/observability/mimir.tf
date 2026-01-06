@@ -32,6 +32,7 @@ resource "aws_s3_bucket" "mimir_bucket_alert" {
 # Mimir Pod Identity for S3 Access
 module "mimir_s3_pod_identity" {
   source = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "2.5.0"
 
   name = "${var.cluster_name}-mimir-s3"
 
@@ -57,7 +58,7 @@ module "mimir_s3_pod_identity" {
           identifiers = ["pods.eks.amazonaws.com"]
         }
       ]
-      actions = ["sts:AssumeRole"]
+      actions = ["sts:AssumeRoleWithWebIdentity", "sts:AssumeRole", "sts:TagSession"]
     }
   ]
 

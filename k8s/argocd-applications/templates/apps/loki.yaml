@@ -33,7 +33,6 @@ spec:
             create: true
             name: "{{ .Values.lokiServiceAccountName }}"
             annotations:
-              eks.amazonaws.com/role-arn: "{{ .Values.lokiServiceAccountRoleArn }}"
   destination:
     server: https://kubernetes.default.svc
     namespace: observability

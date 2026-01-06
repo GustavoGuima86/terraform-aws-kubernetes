@@ -20,6 +20,7 @@ resource "aws_s3_bucket" "loki_bucket_ruler" {
 
 module "loki_s3_pod_identity" {
   source = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "2.5.0"
 
   name = "${var.cluster_name}-loki-s3"
 
@@ -43,7 +44,7 @@ module "loki_s3_pod_identity" {
           identifiers = ["pods.eks.amazonaws.com"]
         }
       ]
-      actions = ["sts:AssumeRole"]
+      actions = ["sts:AssumeRoleWithWebIdentity", "sts:AssumeRole", "sts:TagSession"]
     }
   ]
 
