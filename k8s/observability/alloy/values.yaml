@@ -5,26 +5,59 @@ alloy:
   controller:
     type: "daemonset" # Deploy as a DaemonSet to run on every node
 
-    # The Alloy configuration is defined as a 'river' config.
-    # This configuration scrapes logs from Kubernetes pods and sends them to Loki.
-    config: |
-      // Discover Loki service
-      discovery.kubernetes "loki" {
-        role = "service"
-        selectors {
-          label = "app.kubernetes.io/name=loki"
-        }
+  # IMPORTANT: We must pass the K8s Node Name as an environment variable
+  # so Alloy can filter for logs only on the node it is running on.
+  extraEnv:
+    - name: NODE_NAME
+      valueFrom:
+        fieldRef:
+          fieldPath: spec.nodeName
+
+  # The Alloy configuration is defined as a 'river' config.
+  config: |
+    discovery.kubernetes "all_pods" {
+      role = "pod"
+    }
+
+    discovery.relabel "local_pods" {
+      targets = discovery.kubernetes.all_pods.targets
+
+      // Filter: Only keep targets where the Pod's Node Name matches this Alloy's Node Name
+      // We use the env var NODE_NAME defined in 'extraEnv' above.
+      rule {
+        source_labels = ["__meta_kubernetes_pod_node_name"]
+        action        = "keep"
+        regex         = sys.env("NODE_NAME")
       }
 
-      // Scrape logs from Kubernetes pods
-      loki.source.kubernetes "pods" {
-        forward_to = [loki.write.default.receiver]
+      // Label: Namespace
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
       }
 
-      // Define the Loki endpoint and send logs to it
-      loki.write "default" {
-        endpoint {
-          url = "http://loki-write.observability.svc:3100/loki/api/v1/push"
-        }
-        external_labels = {}
+      // Label: Pod Name
+      rule {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
       }
+
+      // Label: Container Name
+      rule {
+        source_labels = ["__meta_kubernetes_pod_container_name"]
+        target_label  = "container"
+      }
+    }
+
+    loki.source.kubernetes "pod_logs" {
+      targets    = discovery.relabel.local_pods.output
+      forward_to = [loki.write.default.receiver]
+    }
+
+    loki.write "default" {
+      endpoint {
+        url = "http://loki-write.observability.svc:3100/loki/api/v1/push"
+      }
+      // You can add external labels here if needed, e.g. cluster name
+      external_labels = {}
+    }

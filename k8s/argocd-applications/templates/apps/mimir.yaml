@@ -25,12 +25,15 @@ spec:
               alertmanager_storage:
                 s3:
                   bucket_name: "{{ .Values.mimirBucketName }}"
+                  endpoint: s3.{{ .Values.awsRegion }}.amazonaws.com
               blocks_storage:
                 s3:
                   bucket_name: "{{ .Values.mimirBucketName }}"
+                  endpoint: s3.{{ .Values.awsRegion }}.amazonaws.com
               ruler_storage:
                 s3:
                   bucket_name: "{{ .Values.mimirBucketName }}"
+                  endpoint: s3.{{ .Values.awsRegion }}.amazonaws.com
           serviceAccount:
             create: true
             annotations:

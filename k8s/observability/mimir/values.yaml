@@ -1,15 +1,10 @@
-# Values for the mimir wrapper chart
-awsRegion: "" # Set by ArgoCD
-
 mimir-distributed:
-  mimirDistributed:
-    awsRegion: {{ .Values.awsRegion }}
   mimir:
     structuredConfig:
       alertmanager_storage:
         s3:
           bucket_name: "" # Set by ArgoCD
-          endpoint: s3.{{ .Values.mimirDistributed.awsRegion }}.amazonaws.com
+          endpoint: "" # Set by ArgoCD
           insecure: true
       usage_stats:
         enabled: false
@@ -20,7 +15,7 @@ mimir-distributed:
           sync_dir: /data/tsdb-sync
         s3:
           bucket_name: "" # Set by ArgoCD
-          endpoint: s3.{{ .Values.mimirDistributed.awsRegion }}.amazonaws.com
+          endpoint: "" # Set by ArgoCD
           insecure: true
         tsdb:
           dir: /data/tsdb
@@ -59,7 +54,7 @@ mimir-distributed:
       ruler_storage:
         s3:
           bucket_name: "" # Set by ArgoCD
-          endpoint: s3.{{ .Values.mimirDistributed.awsRegion }}.amazonaws.com
+          endpoint: "" # Set by ArgoCD
           insecure: true
       runtime_config:
         file: /var/{{ include "mimir.name" . }}/runtime.yaml
