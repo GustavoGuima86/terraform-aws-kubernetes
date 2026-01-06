@@ -1,3 +1,8 @@
+output "awsRegion" {
+  value       = var.targetRegion
+  description = "main hosted aws region"
+}
+
 output "eks_cluster_endpoint" {
   value       = module.eks.cluster_endpoint
   description = "The EKS cluster endpoint."
