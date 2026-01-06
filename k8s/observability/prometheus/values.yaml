@@ -1,5 +1,6 @@
 kube-prometheus-stack:
   grafana:
+    replicas: 1
     ingress:
       enabled: false
     grafana.ini:
