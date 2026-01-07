@@ -1,10 +1,10 @@
 apiVersion: v2
 name: ollama
-description: A Helm chart for deploying LocalAI
+description: A Helm chart for deploying Ollama
 type: application
 version: 0.1.0
 
 dependencies:
-- name: ollama-helm
+- name: ollama
   version: "1.36.0"
   repository: "https://otwld.github.io/ollama-helm/"
