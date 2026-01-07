@@ -70,8 +70,6 @@ mimir-distributed:
   serviceAccount:
     create: true
     name: "" # Set by ArgoCD
-    annotations:
-      eks.amazonaws.com/role-arn: "" # Set by ArgoCD
   metaMonitoring:
     serviceMonitor:
       enabled: true

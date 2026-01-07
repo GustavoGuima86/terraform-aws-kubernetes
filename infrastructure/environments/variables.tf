@@ -31,7 +31,7 @@ variable "cluster_name" {
 
 variable "observability_namespace" {
   type        = string
-  default     = "monitoring"
+  default     = "observability"
   description = "The namespace to use for observability stack resources."
 }
 

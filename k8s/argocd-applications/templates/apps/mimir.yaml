@@ -37,7 +37,6 @@ spec:
           serviceAccount:
             create: true
             name: "{{ .Values.mimirServiceAccountName }}"
-            annotations:
           metaMonitoring:
             serviceMonitor:
               labels:
