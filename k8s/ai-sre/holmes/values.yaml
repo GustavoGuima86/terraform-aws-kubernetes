@@ -7,11 +7,11 @@ image:
 config:
   # We configure the LLM to point to your internal Ollama service
   llm:
-    provider: "openai"  # We use the 'openai' client because Ollama is compatible with it
-    base_url: "http://ollama.ollama.svc.cluster.local:11434/v1"
-    api_key: "ollama"   # Required by the client validation, but ignored by Ollama
-    model: "llama3"     # Must match the model you pulled in Ollama
-    temperature: 0.5    # Lower temperature = more precise technical answers
+    provider: "openai"
+    base_url: "http://ollama.ai-sre.svc.cluster.local:11434/v1"
+    api_key: "ollama"
+    model: "llama3"
+    temperature: 0.5
 
   # Instructions for the AI on how to behave
   instructions: |
