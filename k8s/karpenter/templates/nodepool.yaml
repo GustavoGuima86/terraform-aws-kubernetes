@@ -31,7 +31,6 @@ spec:
         group: karpenter.k8s.aws
         kind: EC2NodeClass
         name: {{ .name }}
-        role: {{ $.Values.karpenter.defaultNodeRole }}
       requirements:
         - key: kubernetes.io/arch
           operator: In
@@ -51,11 +50,16 @@ spec:
         - key: karpenter.k8s.aws/instance-size
           operator: In
           values: {{ .instanceSizes | toYaml | nindent 12 }}
+      expireAfter: 720h
   limits:
     cpu: {{ .cpuLimits }}
     memory: {{ .memoryLimits }}
   {{- if .disruption }}
   disruption:
     {{- toYaml .disruption | nindent 4 }}
+  {{- else }}
+  disruption:
+    consolidationPolicy: WhenEmptyOrUnderutilized
+    consolidateAfter: 0s
   {{- end }}
 {{- end }}

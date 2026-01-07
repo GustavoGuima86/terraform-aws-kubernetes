@@ -6,7 +6,12 @@ serviceAccount:
   name: karpenter
   namespace: karpenter
   annotations: {}
-    # No IRSA annotations needed when using Pod Identity
+
+serviceMonitor:
+  enabled: true
+  additionalLabels: {}
+  endpointConfig:
+    port: http-metrics
 
 podAnnotations:
   eks.amazonaws.com/aws-sqs-queue-name: "" # Set by ArgoCD

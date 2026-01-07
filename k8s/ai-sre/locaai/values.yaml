@@ -1,4 +1,6 @@
 # values.yaml for local-ai
+fullnameOverride: "locaai"
+
 persistence:
   pvc:
     enabled: true
