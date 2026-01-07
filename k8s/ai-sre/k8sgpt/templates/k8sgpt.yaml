@@ -6,8 +6,8 @@ metadata:
 spec:
   ai:
     enabled: true
-    model: ollama
-    backend: llama
+    backend: localai
+    model: llama3
     baseUrl: http://ollama.ollama.svc.cluster.local:11434
   noCache: false
   filters:
