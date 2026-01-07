@@ -15,6 +15,91 @@ alloy:
           fieldRef:
             fieldPath: spec.nodeName
 
+    # Alloy River configuration
+    configMap:
+      create: true
+      content: |
+        // Discover all pods in the cluster
+        discovery.kubernetes "pods" {
+          role = "pod"
+        }
+
+        // Add labels to discovered pods and filter to only this node
+        discovery.relabel "pod_logs" {
+          targets = discovery.kubernetes.pods.targets
+
+          // Only keep pods running on the same node as this Alloy instance
+          rule {
+            source_labels = ["__meta_kubernetes_pod_node_name"]
+            action        = "keep"
+            regex         = sys.env("HOSTNAME")
+          }
+
+          // Set the __path__ label which is REQUIRED for loki.source.kubernetes
+          // This tells Alloy where to find the log files
+          rule {
+            source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_name", "__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+            separator     = "/"
+            target_label  = "__path__"
+            replacement   = "/var/log/pods/$1_$2_$3/$4/*.log"
+          }
+
+          // Add namespace label
+          rule {
+            source_labels = ["__meta_kubernetes_namespace"]
+            target_label  = "namespace"
+          }
+
+          // Add pod label
+          rule {
+            source_labels = ["__meta_kubernetes_pod_name"]
+            target_label  = "pod"
+          }
+
+          // Add container label
+          rule {
+            source_labels = ["__meta_kubernetes_pod_container_name"]
+            target_label  = "container"
+          }
+
+          // Add node label
+          rule {
+            source_labels = ["__meta_kubernetes_pod_node_name"]
+            target_label  = "node"
+          }
+
+          // Add job label
+          rule {
+            replacement   = "integrations/kubernetes/pod-logs"
+            target_label  = "job"
+          }
+        }
+
+        // Collect logs from discovered pods
+        loki.source.kubernetes "pod_logs" {
+          targets    = discovery.relabel.pod_logs.output
+          forward_to = [loki.process.pod_logs.receiver]
+        }
+
+        // Process logs to add additional labels
+        loki.process "pod_logs" {
+          forward_to = [loki.write.default.receiver]
+
+          stage.static_labels {
+            values = {
+              cluster = "eks-cluster",
+            }
+          }
+        }
+
+        // Write logs to Loki
+        loki.write "default" {
+          endpoint {
+            url = "http://loki-gateway.observability.svc.cluster.local/loki/api/v1/push"
+          }
+          external_labels = {}
+        }
+
   controller:
     type: "daemonset"
 
@@ -23,87 +108,4 @@ alloy:
 
   rbac:
     create: true
-
-  configMap:
-    content: |
-      // Discover all pods in the cluster
-      discovery.kubernetes "pods" {
-        role = "pod"
-      }
-
-      // Add labels to discovered pods and filter to only this node
-      discovery.relabel "pod_logs" {
-        targets = discovery.kubernetes.pods.targets
-
-        // Only keep pods running on the same node as this Alloy instance
-        rule {
-          source_labels = ["__meta_kubernetes_pod_node_name"]
-          action        = "keep"
-          regex         = sys.env("HOSTNAME")
-        }
-
-        // Set the __path__ label which is REQUIRED for loki.source.kubernetes
-        // This tells Alloy where to find the log files
-        rule {
-          source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_name", "__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
-          separator     = "/"
-          target_label  = "__path__"
-          replacement   = "/var/log/pods/$1_$2_$3/$4/*.log"
-        }
-
-        // Add namespace label
-        rule {
-          source_labels = ["__meta_kubernetes_namespace"]
-          target_label  = "namespace"
-        }
-
-        // Add pod label
-        rule {
-          source_labels = ["__meta_kubernetes_pod_name"]
-          target_label  = "pod"
-        }
-
-        // Add container label
-        rule {
-          source_labels = ["__meta_kubernetes_pod_container_name"]
-          target_label  = "container"
-        }
-
-        // Add node label
-        rule {
-          source_labels = ["__meta_kubernetes_pod_node_name"]
-          target_label  = "node"
-        }
-
-        // Add job label
-        rule {
-          replacement   = "integrations/kubernetes/pod-logs"
-          target_label  = "job"
-        }
-      }
-
-      // Collect logs from discovered pods
-      loki.source.kubernetes "pod_logs" {
-        targets    = discovery.relabel.pod_logs.output
-        forward_to = [loki.process.pod_logs.receiver]
-      }
-
-      // Process logs to add additional labels
-      loki.process "pod_logs" {
-        forward_to = [loki.write.default.receiver]
-
-        stage.static_labels {
-          values = {
-            cluster = "eks-cluster",
-          }
-        }
-      }
-
-      // Write logs to Loki
-      loki.write "default" {
-        endpoint {
-          url = "http://loki-gateway.observability.svc.cluster.local/loki/api/v1/push"
-        }
-        external_labels = {}
-      }
 
