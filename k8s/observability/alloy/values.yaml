@@ -18,16 +18,10 @@ alloy:
         role = "pod"
       }
 
-      // Filter to only scrape logs from pods on the same node
+      // Add labels to discovered pods
       discovery.relabel "pod_logs" {
         targets = discovery.kubernetes.pods.targets
 
-        // Keep only pods on the same node as this alloy instance
-        rule {
-          source_labels = ["__meta_kubernetes_pod_node_name"]
-          action        = "keep"
-          regex         = env("HOSTNAME")
-        }
 
         // Add namespace label
         rule {
