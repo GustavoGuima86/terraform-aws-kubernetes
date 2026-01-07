@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: locaai
+  name: ollama
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: https://github.com/GustavoGuima86/terraform-aws-kubernetes
     targetRevision: new-2026-features
-    path: k8s/ai-sre/locaai
+    path: k8s/ai-sre/ollama
   destination:
     server: https://kubernetes.default.svc
     namespace: ai-sre

@@ -4,7 +4,11 @@ module "karpenter" {
 
   cluster_name                    = module.eks.cluster_name
   create_pod_identity_association = true
-  create_access_entry             = false
+  create_access_entry             = true
+
+  node_iam_role_additional_policies = {
+    AmazonSSMManagedInstanceCore = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+  }
 
   depends_on = [module.eks]
 }

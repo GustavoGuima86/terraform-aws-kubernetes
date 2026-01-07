@@ -94,7 +94,7 @@ This stage provisions all the necessary AWS cloud resources, including the EKS c
 5.  **Retrieve Terraform Outputs**:
     After successful application, retrieve the outputs in JSON format. These outputs contain the critical information needed for subsequent stages.
     ```bash
-    terraform output -json > infrastructure/environments/tf_outputs.json
+    terraform output -json > tf_outputs.json
     ```
 
 ### 2. Configure kubectl and Install CRDs

@@ -1,0 +1,14 @@
+# values-ollama.yaml
+ollama:
+  gpu:
+    enabled: false # Set to true if your nodes have Nvidia GPUs
+  models:
+    - name: llama3 # The model to pull automatically
+
+service:
+  type: ClusterIP
+  port: 11434
+
+persistentVolume:
+  enabled: true
+  size: 10Gi
