@@ -2,6 +2,19 @@
 fullnameOverride: "alloy"
 
 alloy:
+  alloy:
+    # Mount the host's log directories for log collection
+    mounts:
+      varlog: true  # Mounts /var/log from host
+      dockercontainers: true  # Mounts /var/lib/docker/containers (for Docker runtime)
+
+    # Set HOSTNAME environment variable from spec.nodeName for node filtering
+    extraEnv:
+      - name: HOSTNAME
+        valueFrom:
+          fieldRef:
+            fieldPath: spec.nodeName
+
   controller:
     type: "daemonset"
 
@@ -18,10 +31,25 @@ alloy:
         role = "pod"
       }
 
-      // Add labels to discovered pods
+      // Add labels to discovered pods and filter to only this node
       discovery.relabel "pod_logs" {
         targets = discovery.kubernetes.pods.targets
 
+        // Only keep pods running on the same node as this Alloy instance
+        rule {
+          source_labels = ["__meta_kubernetes_pod_node_name"]
+          action        = "keep"
+          regex         = sys.env("HOSTNAME")
+        }
+
+        // Set the __path__ label which is REQUIRED for loki.source.kubernetes
+        // This tells Alloy where to find the log files
+        rule {
+          source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_name", "__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+          separator     = "/"
+          target_label  = "__path__"
+          replacement   = "/var/log/pods/$1_$2_$3/$4/*.log"
+        }
 
         // Add namespace label
         rule {
