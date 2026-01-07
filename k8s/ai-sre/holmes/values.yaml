@@ -1,0 +1,45 @@
+# holmes-values.yaml
+image:
+  repository: robusta/holmes
+  tag: latest
+  pullPolicy: IfNotPresent
+
+config:
+  # We configure the LLM to point to your internal Ollama service
+  llm:
+    provider: "openai"  # We use the 'openai' client because Ollama is compatible with it
+    base_url: "http://ollama.ollama.svc.cluster.local:11434/v1"
+    api_key: "ollama"   # Required by the client validation, but ignored by Ollama
+    model: "llama3"     # Must match the model you pulled in Ollama
+    temperature: 0.5    # Lower temperature = more precise technical answers
+
+  # Instructions for the AI on how to behave
+  instructions: |
+    You are a Kubernetes SRE assistant running inside a cluster. 
+    Your goal is to troubleshoot issues by running kubectl commands.
+    Always investigate the root cause before suggesting a fix.
+
+# ServiceAccount needs permissions to read/list resources to debug them
+serviceAccount:
+  create: true
+  name: holmes
+
+# RBAC: Give Holmes read-only access to the cluster to investigate
+clusterRole:
+  create: true
+  rules:
+    - apiGroups: ["*"]
+      resources: ["*"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: [""]
+      resources: ["pods/log"]
+      verbs: ["get"]
+
+# Resources for the Holmes pod
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi

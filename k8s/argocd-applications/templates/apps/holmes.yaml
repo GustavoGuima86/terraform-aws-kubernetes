@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: k8sgpt
+  name: holmes
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
@@ -12,7 +12,7 @@ spec:
   source:
     repoURL: https://github.com/GustavoGuima86/terraform-aws-kubernetes
     targetRevision: new-2026-features
-    path: k8s/ai-sre/k8sgpt
+    path: k8s/ai-sre/holmes
   destination:
     server: https://kubernetes.default.svc
     namespace: ai-sre
