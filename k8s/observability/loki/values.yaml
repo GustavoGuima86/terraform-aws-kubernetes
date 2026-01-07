@@ -65,3 +65,7 @@ loki:
   bloomGateway:
     replicas: 0
 
+  # Enable gateway for log ingestion
+  gateway:
+    enabled: true
+    replicas: 1
