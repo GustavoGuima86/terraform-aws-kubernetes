@@ -1,9 +1,9 @@
 # values-ollama.yaml
 ollama:
   gpu:
-    enabled: false # Set to true if your nodes have Nvidia GPUs
+    enabled: false
   models:
-    - name: llama3 # The model to pull automatically
+    - name: llama3
 
 service:
   type: ClusterIP
