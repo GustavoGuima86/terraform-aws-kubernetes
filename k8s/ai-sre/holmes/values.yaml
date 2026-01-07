@@ -7,9 +7,8 @@ image:
 config:
   # We configure the LLM to point to your internal Ollama service
   llm:
-    provider: "openai"
-    base_url: "http://ollama.ai-sre.svc.cluster.local:11434/v1"
-    api_key: "ollama"
+    type: "ollama"
+    base_url: "http://ollama.ai-sre.svc.cluster.local:11434"
     model: "llama3"
     temperature: 0.5
 
