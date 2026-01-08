@@ -3,10 +3,10 @@ ollama:
   gpu:
     enabled: false
   models:
-    - name: qwen2.5:3b
+    - name: devstral-small-2:latest
 
   env:
-    OLLAMA_NUM_CTX: "32768"
+    OLLAMA_NUM_CTX: "384000"
     OLLAMA_KEEP_ALIVE: "24h"
 
   lifecycle:
@@ -18,7 +18,7 @@ ollama:
           - |
             nohup sh -c '
             LOG="/tmp/pull.log"
-            MODEL="qwen2.5:3b"
+            MODEL="devstral-small-2:latest"
             echo "$(date): Script started." > $LOG
             
             # 1. Wait for Ollama to accept connections
@@ -52,6 +52,14 @@ ollama:
                echo "$(date): FAILED after 5 attempts." >> $LOG
             fi
             ' > /dev/null 2>&1 &
+
+  resources:
+    requests:
+      cpu: "8"
+      memory: "16Gi"
+    limits:
+      cpu: "8"
+      memory: "32Gi"
 
 service:
   type: ClusterIP
