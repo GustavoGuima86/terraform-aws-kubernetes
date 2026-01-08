@@ -13,8 +13,8 @@ spec:
             type: PathPrefix
             value: /holmes
       filters:
-        - type: RequestRewrite
-          requestRewrite:
+        - type: URLRewrite
+          urlRewrite:
             path:
               type: ReplacePrefixMatch
               replacePrefixMatch: /
