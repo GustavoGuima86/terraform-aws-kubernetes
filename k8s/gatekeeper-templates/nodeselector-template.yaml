@@ -1,28 +1,11 @@
-apiVersion: templates.gatekeeper.sh/v1
-kind: ConstraintTemplate
-metadata:
-  name: k8srequirednamespacelabel
-spec:
-  crd:
-    spec:
-      names:
-        kind: K8sRequiredNamespaceLabel
-      validation:
-        openAPIV3Schema:
-          type: object
-          properties:
-            label:
-              type: string
-  targets:
-    - target: admission.k8s.gatekeeper.sh
-      rego: |
-        package k8srequirednamespaceplabel
+# This file is deprecated and replaced by Assign mutations in gatekeeper-policies/nodepool-mutations.yaml
+# The old ConstraintTemplate mutation approach with Rego is replaced by declarative Assign mutations
+#
+# Modern approach benefits:
+# - Simpler declarative YAML (no Rego needed)
+# - Better performance
+# - Easier to maintain
+#
+# Keeping this file as a placeholder for now.
+# You can delete this file once you confirm the new mutations are working.
 
-        violation[{"msg": msg}] {
-          ns := input.review.object.metadata.namespace
-          ns_obj := data.inventory.namespace[ns]
-          required_nodepool := ns_obj.metadata.labels[input.parameters.label]
-          pod_nodeselector := input.review.object.spec.nodeSelector[input.parameters.label]
-          not pod_nodeselector == required_nodepool
-          msg := sprintf("Pod nodeselector for label '%v' does not match the namespace's required nodepool. Expected %v, got %v", [input.parameters.label, required_nodepool, pod_nodeselector])
-        }

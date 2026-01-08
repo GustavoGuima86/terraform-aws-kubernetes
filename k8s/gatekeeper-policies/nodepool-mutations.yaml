@@ -1,0 +1,97 @@
+# This file contains Gatekeeper mutations to automatically schedule pods
+# to specific nodepools based on namespace labels.
+#
+# How it works:
+# 1. Each namespace has a label: nodepool: <nodepool-name>
+# 2. Gatekeeper reads this label and adds nodeSelector to all pods in that namespace
+# 3. Pods are scheduled to nodes with matching nodepool label
+#
+# Nodepools available:
+# - business-apps (spot instances, m-family)
+# - tooling (on-demand instances, t-family)
+# - ai-sre (spot instances, c/g/t-family)
+
+---
+# Mutation: Add nodeSelector for business-apps nodepool
+apiVersion: mutations.gatekeeper.sh/v1
+kind: Assign
+metadata:
+  name: nodepool-selector-business-apps
+  namespace: gatekeeper-system
+spec:
+  applyTo:
+    - groups: [""]
+      kinds: ["Pod"]
+      versions: ["v1"]
+  match:
+    scope: Namespaced
+    kinds:
+      - apiGroups: ["*"]
+        kinds: ["Pod"]
+    namespaceSelector:
+      matchLabels:
+        nodepool: business-apps
+    excludedNamespaces:
+      - kube-system
+      - gatekeeper-system
+  location: "spec.nodeSelector.nodepool"
+  parameters:
+    assign:
+      value: "business-apps"
+
+---
+# Mutation: Add nodeSelector for tooling nodepool
+apiVersion: mutations.gatekeeper.sh/v1
+kind: Assign
+metadata:
+  name: nodepool-selector-tooling
+  namespace: gatekeeper-system
+spec:
+  applyTo:
+    - groups: [""]
+      kinds: ["Pod"]
+      versions: ["v1"]
+  match:
+    scope: Namespaced
+    kinds:
+      - apiGroups: ["*"]
+        kinds: ["Pod"]
+    namespaceSelector:
+      matchLabels:
+        nodepool: tooling
+    excludedNamespaces:
+      - kube-system
+      - gatekeeper-system
+  location: "spec.nodeSelector.nodepool"
+  parameters:
+    assign:
+      value: "tooling"
+
+---
+# Mutation: Add nodeSelector for ai-sre nodepool
+apiVersion: mutations.gatekeeper.sh/v1
+kind: Assign
+metadata:
+  name: nodepool-selector-ai-sre
+  namespace: gatekeeper-system
+spec:
+  applyTo:
+    - groups: [""]
+      kinds: ["Pod"]
+      versions: ["v1"]
+  match:
+    scope: Namespaced
+    kinds:
+      - apiGroups: ["*"]
+        kinds: ["Pod"]
+    namespaceSelector:
+      matchLabels:
+        nodepool: ai-sre
+    excludedNamespaces:
+      - kube-system
+      - gatekeeper-system
+  location: "spec.nodeSelector.nodepool"
+  parameters:
+    assign:
+      value: "ai-sre"
+

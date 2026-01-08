@@ -1,22 +1,15 @@
 # values-ollama.yaml
-# All values must be nested under 'ollama' because that's the dependency chart name
 ollama:
-  ollama:
-    gpu:
-      enabled: false
-
-    models:
-      pull:
-        - llama3.1
-
-  # Environment variables for Ollama
+  gpu:
+    enabled: false
+  models:
+    pull:
+      - llama3.1
   extraEnv:
     - name: OLLAMA_NUM_CTX
       value: "32768"
     - name: OLLAMA_KEEP_ALIVE
       value: "24h"
-
-  # Pod resource requests and limits
   resources:
     requests:
       cpu: "8"
@@ -24,8 +17,6 @@ ollama:
     limits:
       cpu: "8"
       memory: "32Gi"
-
-  # Persistent volume configuration
   persistentVolume:
     enabled: true
     size: 50Gi
