@@ -5,6 +5,10 @@ ollama:
   models:
     - name: qwen2.5:3b
 
+  env:
+    OLLAMA_NUM_CTX: "32768"
+    OLLAMA_KEEP_ALIVE: "24h"
+
   lifecycle:
     postStart:
       exec:
