@@ -17,8 +17,8 @@ spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
       containers:
         - name: holmes
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.image.repository | default "quay.io/robusta/holmes" }}:{{ .Values.image.tag | default "0.18.1" }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
           volumeMounts:
             - name: model-list
               mountPath: /etc/holmes/config/model_list.yaml
@@ -32,4 +32,3 @@ spec:
         - name: model-list
           configMap:
             name: holmes-model-list
-
