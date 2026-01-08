@@ -1,21 +1,25 @@
 # values-ollama.yaml
+# All values must be nested under 'ollama' because that's the dependency chart name
 ollama:
-  gpu:
-    enabled: false
+  ollama:
+    gpu:
+      enabled: false
 
-  # Use the built-in model pulling feature from the chart
-  # Using llama3 as it is configured for holmes.
-  # You can change this to any other model from hub.ollama.com
-  models:
-    pull:
-      - llama3
+    # Use the built-in model pulling feature from the chart
+    # Using llama3 as it is configured for holmes.
+    # You can change this to any other model from hub.ollama.com
+    models:
+      pull:
+        - llama3
 
+  # Environment variables for Ollama
   extraEnv:
     - name: OLLAMA_NUM_CTX
       value: "8192"
     - name: OLLAMA_KEEP_ALIVE
       value: "24h"
 
+  # Pod resource requests and limits
   resources:
     requests:
       cpu: "4"
@@ -24,9 +28,10 @@ ollama:
       cpu: "4"
       memory: "32Gi"
 
-persistentVolume:
-  enabled: true
-  size: 50Gi
-  storageClass: "gp3-secure"
-  accessModes:
-    - ReadWriteOnce
+  # Persistent volume configuration
+  persistentVolume:
+    enabled: true
+    size: 50Gi
+    storageClass: "gp3-secure"
+    accessModes:
+      - ReadWriteOnce
