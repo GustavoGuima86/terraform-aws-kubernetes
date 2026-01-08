@@ -61,11 +61,6 @@ ollama:
       cpu: "4"
       memory: "32Gi"
 
-service:
-  type: ClusterIP
-  port: 11434
-
-persistence:
+persistentVolume:
   enabled: true
-  claimName: "manual-ollama-pvc"
-  mountPath: "/root/.ollama"
+  existingClaim: "manual-ollama-pvc"
