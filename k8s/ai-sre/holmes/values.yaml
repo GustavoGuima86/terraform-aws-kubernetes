@@ -1,29 +1,21 @@
 # holmes-values.yaml
 
 holmes:
-  config:
-    model_list:
-      - name: "llama3"
-        type: "ollama"
-        base_url: "http://ollama.ai-sre.svc.cluster.local:11434"
-        temperature: 0.5
-        is_default: true
-    instructions: |
-      You are a Kubernetes SRE assistant running inside a cluster.
-      Your goal is to troubleshoot issues by running kubectl commands.
-      Always investigate the root cause before suggesting a fix.
-  serviceAccount:
-    create: true
-    name: holmes
-  clusterRole:
-    create: true
-    rules:
-      - apiGroups: ["*"]
-        resources: ["*"]
-        verbs: ["get", "list", "watch"]
-      - apiGroups: [""]
-        resources: ["pods/log"]
-        verbs: ["get"]
+  modelList:
+    - name: "llama3"
+      type: "ollama"
+      base_url: "http://ollama.ai-sre.svc.cluster.local:11434"
+      temperature: 0.5
+      is_default: true
+  createServiceAccount: true
+  customServiceAccountName: holmes
+  customClusterRoleRules:
+    - apiGroups: ["*"]
+      resources: ["*"]
+      verbs: ["get", "list", "watch"]
+    - apiGroups: [""]
+      resources: ["pods/log"]
+      verbs: ["get"]
   resources:
     requests:
       cpu: 100m
