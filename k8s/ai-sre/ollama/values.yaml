@@ -11,7 +11,7 @@ ollama:
         command:
           - "/bin/sh"
           - "-c"
-          - "sleep 10; ollama pull llama3"
+          - "nohup sh -c 'sleep 10; ollama pull llama3' > /tmp/pull.log 2>&1 &"
 
 service:
   type: ClusterIP
