@@ -3,7 +3,7 @@ ollama:
   gpu:
     enabled: false
   models:
-    - name: llama3
+    - name: llama3.2
 
   lifecycle:
     postStart:
@@ -11,7 +11,7 @@ ollama:
         command:
           - "/bin/sh"
           - "-c"
-          - "nohup sh -c 'sleep 10; ollama pull llama3' > /tmp/pull.log 2>&1 &"
+          - "nohup sh -c 'sleep 10; ollama pull llama3.2' > /tmp/pull.log 2>&1 &"
 
 service:
   type: ClusterIP
