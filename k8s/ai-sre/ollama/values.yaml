@@ -67,8 +67,9 @@ service:
 
 persistence:
   enabled: true
-  existingClaim: "manual-ollama-pvc"
+  existingClaim: "manual-ollama-pvc"   # <--- This links the Pod to your PVC
+  mountPath: "/root/.ollama"
 
+# Disable the conflicting section if it still exists in your file:
 persistentVolume:
-  enabled: true
-  existingClaim: "manual-ollama-pvc"
+  enabled: false
