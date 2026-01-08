@@ -12,6 +12,12 @@ spec:
         - path:
             type: PathPrefix
             value: /holmes
+      filters:
+        - type: RequestRewrite
+          requestRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: holmes-holmes
           port: 80
