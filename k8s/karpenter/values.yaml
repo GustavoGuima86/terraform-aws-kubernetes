@@ -54,7 +54,7 @@ nodepools:
     instanceCategories: ["g"]
     instanceFamilies: []
     capacityType: "on-demand"
-    instanceSizes: ["xlarge", "2xlarge"]
+    instanceSizes: ["xlarge", "2xlarge", "4xlarge"]
     cpuLimits: 100
     memoryLimits: "100Gi"
     labels:

@@ -55,10 +55,10 @@ ollama:
 
   resources:
     requests:
-      cpu: "8"
+      cpu: "4"
       memory: "16Gi"
     limits:
-      cpu: "8"
+      cpu: "4"
       memory: "32Gi"
 
 service:
