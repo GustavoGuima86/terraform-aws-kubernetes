@@ -19,4 +19,5 @@ service:
 
 persistentVolume:
   enabled: true
-  size: 10Gi
+  size: 30Gi
+  storageClass: "gp3-secure"
