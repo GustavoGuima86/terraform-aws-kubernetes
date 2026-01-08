@@ -1,8 +1,4 @@
 # holmes-values.yaml
-image:
-  repository: robusta/holmes
-  tag: latest
-  pullPolicy: IfNotPresent
 
 config:
   # CHANGE HERE: The key must be "model_list" (not "llm")
