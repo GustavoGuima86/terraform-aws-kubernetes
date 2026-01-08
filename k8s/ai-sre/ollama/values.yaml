@@ -65,10 +65,7 @@ service:
   type: ClusterIP
   port: 11434
 
-persistentVolume:
-  enabled: true
-  existingClaim: "manual-ollama-pvc"
-
 persistence:
   enabled: true
   existingClaim: "manual-ollama-pvc"
+  mountPath: "/root/.ollama"
