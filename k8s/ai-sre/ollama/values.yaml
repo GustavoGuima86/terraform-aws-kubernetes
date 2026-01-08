@@ -57,8 +57,10 @@ service:
   type: ClusterIP
   port: 11434
 
-persistentVolume:
+persistence:
   enabled: true
   size: 30Gi
   storageClass: "gp3-secure"
+  accessModes:
+    - ReadWriteOnce
   mountPath: "/root/.ollama"
