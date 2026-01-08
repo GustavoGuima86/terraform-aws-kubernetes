@@ -6,7 +6,7 @@ ollama:
     - name: devstral-small-2:latest
 
   env:
-    OLLAMA_NUM_CTX: "384000"
+    OLLAMA_NUM_CTX: "8192"
     OLLAMA_KEEP_ALIVE: "24h"
 
   lifecycle:
@@ -65,11 +65,7 @@ service:
   type: ClusterIP
   port: 11434
 
-persistence:
-  enabled: true
-  existingClaim: "manual-ollama-pvc"   # <--- This links the Pod to your PVC
-  mountPath: "/root/.ollama"
-
-# Disable the conflicting section if it still exists in your file:
 persistentVolume:
-  enabled: false
+  enabled: true
+  existingClaim: "manual-ollama-pvc"
+  mountPath: "/root/.ollama"
