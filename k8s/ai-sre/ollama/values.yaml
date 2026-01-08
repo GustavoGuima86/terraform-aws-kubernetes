@@ -68,4 +68,7 @@ service:
 persistentVolume:
   enabled: true
   existingClaim: "manual-ollama-pvc"
-  mountPath: "/root/.ollama"
+
+persistence:
+  enabled: true
+  existingClaim: "manual-ollama-pvc"
