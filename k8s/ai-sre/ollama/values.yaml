@@ -15,7 +15,43 @@ ollama:
         command:
           - "/bin/sh"
           - "-c"
-          - "nohup sh -c 'sleep 50; ollama pull qwen2.5:3b' > /tmp/pull.log 2>&1 &"
+          - |
+            nohup sh -c '
+            LOG="/tmp/pull.log"
+            MODEL="qwen2.5:3b"
+            echo "$(date): Script started." > $LOG
+            
+            # 1. Wait for Ollama to accept connections
+            echo "$(date): Waiting for Ollama API..." >> $LOG
+            until ollama list > /dev/null 2>&1; do
+              sleep 5
+            done
+            
+            # 2. Check if model already exists (skip download if persistent volume worked)
+            if ollama list | grep -q "$MODEL"; then
+               echo "$(date): Model $MODEL already exists. Skipping." >> $LOG
+               exit 0
+            fi
+            
+            # 3. Pull with Retry Loop (5 attempts)
+            echo "$(date): Pulling $MODEL..." >> $LOG
+            n=0
+            until [ "$n" -ge 5 ]; do
+               if ollama pull "$MODEL"; then
+                  echo "$(date): SUCCESS! Download complete." >> $LOG
+                  ollama list >> $LOG
+                  break
+               else
+                  n=$((n+1))
+                  echo "$(date): Download failed. Retry $n/5 in 10s..." >> $LOG
+                  sleep 10
+               fi
+            done
+            
+            if [ "$n" -ge 5 ]; then
+               echo "$(date): FAILED after 5 attempts." >> $LOG
+            fi
+            ' > /dev/null 2>&1 &
 
 service:
   type: ClusterIP
@@ -25,3 +61,4 @@ persistentVolume:
   enabled: true
   size: 30Gi
   storageClass: "gp3-secure"
+  mountPath: "/root/.ollama"
