@@ -51,7 +51,7 @@ nodepools:
       nodepool: tooling
   - name: ai-sre
     amiAlias: "bottlerocket@latest"
-    instanceCategories: ["g"]
+    instanceCategories: ["g", "t"]
     instanceFamilies: []
     capacityType: "spot"
     instanceSizes: ["xlarge", "2xlarge", "4xlarge"]
