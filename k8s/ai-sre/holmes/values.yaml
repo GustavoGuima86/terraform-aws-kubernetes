@@ -5,25 +5,24 @@ image:
   pullPolicy: IfNotPresent
 
 config:
-  # We configure the LLM to point to your internal Ollama service
-  llm:
-    type: "ollama"
-    base_url: "http://ollama.ai-sre.svc.cluster.local:11434"
-    model: "llama3"
-    temperature: 0.5
+  # CHANGE HERE: The key must be "model_list" (not "llm")
+  # and it must be a list of models (note the dash "-")
+  model_list:
+    - name: "llama3"
+      type: "ollama"
+      base_url: "http://ollama.ai-sre.svc.cluster.local:11434"
+      temperature: 0.5
+      is_default: true
 
-  # Instructions for the AI on how to behave
   instructions: |
     You are a Kubernetes SRE assistant running inside a cluster. 
     Your goal is to troubleshoot issues by running kubectl commands.
     Always investigate the root cause before suggesting a fix.
 
-# ServiceAccount needs permissions to read/list resources to debug them
 serviceAccount:
   create: true
   name: holmes
 
-# RBAC: Give Holmes read-only access to the cluster to investigate
 clusterRole:
   create: true
   rules:
@@ -34,7 +33,6 @@ clusterRole:
       resources: ["pods/log"]
       verbs: ["get"]
 
-# Resources for the Holmes pod
 resources:
   requests:
     cpu: 100m
