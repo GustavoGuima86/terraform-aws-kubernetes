@@ -1,10 +1,6 @@
 # holmes-values.yaml
 
 holmes:
-  image:
-    repository: quay.io/robusta/holmes
-    tag: "0.18.1"
-    pullPolicy: IfNotPresent
   config:
     model_list:
       - name: "llama3"
