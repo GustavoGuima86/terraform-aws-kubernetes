@@ -67,8 +67,8 @@ service:
 
 persistence:
   enabled: true
-  size: 30Gi
-  storageClass: "gp3-secure"
-  accessModes:
-    - ReadWriteOnce
-  mountPath: "/root/.ollama"
+  existingClaim: "manual-ollama-pvc"
+
+persistentVolume:
+  enabled: true
+  existingClaim: "manual-ollama-pvc"

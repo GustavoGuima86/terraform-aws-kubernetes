@@ -53,7 +53,7 @@ nodepools:
     amiAlias: "bottlerocket@latest"
     instanceCategories: ["g"]
     instanceFamilies: []
-    capacityType: "on-demand"
+    capacityType: "spot"
     instanceSizes: ["xlarge", "2xlarge", "4xlarge"]
     cpuLimits: 100
     memoryLimits: "100Gi"
