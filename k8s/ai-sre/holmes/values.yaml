@@ -3,11 +3,12 @@
 holmes:
   modelList:
     llama3:
-      model: "ollama/llama3"
+      model: "ollama/llama3.1"
       type: "ollama"
       base_url: "http://ollama.ai-sre.svc.cluster.local:11434"
       temperature: 0.5
       is_default: true
+      max_tokens: 32768
   createServiceAccount: true
   customServiceAccountName: holmes
   customClusterRoleRules:

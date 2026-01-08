@@ -5,27 +5,24 @@ ollama:
     gpu:
       enabled: false
 
-    # Use the built-in model pulling feature from the chart
-    # Using llama3 as it is configured for holmes.
-    # You can change this to any other model from hub.ollama.com
     models:
       pull:
-        - llama3
+        - llama3.1
 
   # Environment variables for Ollama
   extraEnv:
     - name: OLLAMA_NUM_CTX
-      value: "8192"
+      value: "32768"
     - name: OLLAMA_KEEP_ALIVE
       value: "24h"
 
   # Pod resource requests and limits
   resources:
     requests:
-      cpu: "4"
-      memory: "16Gi"
+      cpu: "8"
+      memory: "32Gi"
     limits:
-      cpu: "4"
+      cpu: "8"
       memory: "32Gi"
 
   # Persistent volume configuration
