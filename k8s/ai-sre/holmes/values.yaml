@@ -3,10 +3,10 @@
 holmes:
   modelList:
     llama3:
-      model: "ollama/qwen2.5:32b"
+      model: "ollama/qwen2.5:14b"
       type: "ollama"
       base_url: "http://ollama.ai-sre.svc.cluster.local:11434"
-      temperature: 0.5
+      temperature: 0.1
       is_default: true
       max_tokens: 32768
   createServiceAccount: true
@@ -18,6 +18,11 @@ holmes:
     - apiGroups: [""]
       resources: ["pods/log"]
       verbs: ["get"]
+  env:
+    - name: HOLMES_MAX_LOG_LINES
+      value: "150"  # Default is often much higher. 150 is enough to see the error.
+    - name: HOLMES_MAX_EVENTS
+      value: "20"
   resources:
     requests:
       cpu: 100m

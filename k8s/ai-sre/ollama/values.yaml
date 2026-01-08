@@ -4,14 +4,23 @@ ollama:
     enabled: false
   models:
     pull:
-      - qwen2.5:32b
+      - qwen2.5:14b
   extraEnv:
-    - name: OLLAMA_NUM_CTX
-      value: "65536"
+    # 1. Force the model to stay in RAM forever
     - name: OLLAMA_KEEP_ALIVE
-      value: "24h"
-    - name: OLLAMA_NUM_PARALLEL
+      value: "-1"
+
+    # 2. Enable Flash Attention (Great for m6g instances)
+    - name: OLLAMA_FLASH_ATTENTION
       value: "1"
+
+    # 3. Increase CPU parallelism for prompt processing
+    - name: OLLAMA_NUM_PARALLEL
+      value: "4"
+
+    # 4. Context Window (Keep it large, but 14B processes it faster)
+    - name: OLLAMA_NUM_CTX
+      value: "32768"
   resources:
     requests:
       cpu: "12"
