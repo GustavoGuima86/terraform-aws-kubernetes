@@ -1,38 +1,37 @@
 # holmes-values.yaml
 
-config:
-  # CHANGE HERE: The key must be "model_list" (not "llm")
-  # and it must be a list of models (note the dash "-")
-  model_list:
-    - name: "llama3"
-      type: "ollama"
-      base_url: "http://ollama.ai-sre.svc.cluster.local:11434"
-      temperature: 0.5
-      is_default: true
-
-  instructions: |
-    You are a Kubernetes SRE assistant running inside a cluster. 
-    Your goal is to troubleshoot issues by running kubectl commands.
-    Always investigate the root cause before suggesting a fix.
-
-serviceAccount:
-  create: true
-  name: holmes
-
-clusterRole:
-  create: true
-  rules:
-    - apiGroups: ["*"]
-      resources: ["*"]
-      verbs: ["get", "list", "watch"]
-    - apiGroups: [""]
-      resources: ["pods/log"]
-      verbs: ["get"]
-
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
-    cpu: 500m
-    memory: 512Mi
+holmes:
+  image:
+    repository: quay.io/robusta/holmes
+    tag: "0.18.1"
+    pullPolicy: IfNotPresent
+  config:
+    model_list:
+      - name: "llama3"
+        type: "ollama"
+        base_url: "http://ollama.ai-sre.svc.cluster.local:11434"
+        temperature: 0.5
+        is_default: true
+    instructions: |
+      You are a Kubernetes SRE assistant running inside a cluster.
+      Your goal is to troubleshoot issues by running kubectl commands.
+      Always investigate the root cause before suggesting a fix.
+  serviceAccount:
+    create: true
+    name: holmes
+  clusterRole:
+    create: true
+    rules:
+      - apiGroups: ["*"]
+        resources: ["*"]
+        verbs: ["get", "list", "watch"]
+      - apiGroups: [""]
+        resources: ["pods/log"]
+        verbs: ["get"]
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi

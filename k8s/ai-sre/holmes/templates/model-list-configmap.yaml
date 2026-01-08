@@ -9,5 +9,4 @@ metadata:
   # namespace: {{ .Release.Namespace }}
 data:
   model_list.yaml: |
-    {{- toYaml .Values.config.model_list | nindent 4 }}
-
+    {{ toYaml .Values.config.model_list | nindent 4 }}
