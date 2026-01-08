@@ -3,7 +3,7 @@
 holmes:
   modelList:
     llama3:
-      model: "ollama/llama3.1"
+      model: "ollama/qwen2.5:32b"
       type: "ollama"
       base_url: "http://ollama.ai-sre.svc.cluster.local:11434"
       temperature: 0.5

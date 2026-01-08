@@ -4,19 +4,21 @@ ollama:
     enabled: false
   models:
     pull:
-      - llama3.1
+      - qwen2.5:32b
   extraEnv:
     - name: OLLAMA_NUM_CTX
-      value: "32768"
+      value: "65536"
     - name: OLLAMA_KEEP_ALIVE
       value: "24h"
+    - name: OLLAMA_NUM_PARALLEL
+      value: "1"
   resources:
     requests:
-      cpu: "8"
-      memory: "32Gi"
+      cpu: "12"
+      memory: "40Gi"
     limits:
-      cpu: "8"
-      memory: "32Gi"
+      cpu: "14"
+      memory: "58Gi"
   persistentVolume:
     enabled: true
     size: 50Gi
