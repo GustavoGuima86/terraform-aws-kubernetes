@@ -34,7 +34,7 @@ spec:
       requirements:
         - key: kubernetes.io/arch
           operator: In
-          values: ["arm64"]
+          values: {{ .arch | default (list "arm64") | toYaml | nindent 12 }}
         - key: kubernetes.io/os
           operator: In
           values: ["linux"]

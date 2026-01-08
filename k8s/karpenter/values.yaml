@@ -51,12 +51,13 @@ nodepools:
       nodepool: tooling
   - name: ai-sre
     amiAlias: "bottlerocket@latest"
-    instanceCategories: ["c", "g", "t"]
+    arch: ["amd64", "arm64"]  # Support both architectures for better instance availability
+    instanceCategories: ["c", "g", "t", "m", "r"]
     instanceFamilies: []
     capacityType: "spot"
-    instanceSizes: ["large", "xlarge", "2xlarge", "4xlarge"]
-    cpuLimits: 100
-    memoryLimits: "100Gi"
+    instanceSizes: ["large", "xlarge", "2xlarge", "4xlarge", "8xlarge", "12xlarge"]
+    cpuLimits: 200
+    memoryLimits: "200Gi"
     labels:
       nodepool: ai-sre
 #    disruption:
