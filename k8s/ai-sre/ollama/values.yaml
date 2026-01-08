@@ -4,21 +4,25 @@ ollama:
     enabled: false
 
   # Use the built-in model pulling feature from the chart
+  # Using llama3 as it is configured for holmes.
+  # You can change this to any other model from hub.ollama.com
   models:
     pull:
-      - devstral-small-2:latest
+      - llama3
 
-  env:
-    OLLAMA_NUM_CTX: "8192"
-    OLLAMA_KEEP_ALIVE: "24h"
+  extraEnv:
+    - name: OLLAMA_NUM_CTX
+      value: "8192"
+    - name: OLLAMA_KEEP_ALIVE
+      value: "24h"
 
-resources:
-  requests:
-    cpu: "4"
-    memory: "16Gi"
-  limits:
-    cpu: "4"
-    memory: "32Gi"
+  resources:
+    requests:
+      cpu: "4"
+      memory: "16Gi"
+    limits:
+      cpu: "4"
+      memory: "32Gi"
 
 persistentVolume:
   enabled: true
