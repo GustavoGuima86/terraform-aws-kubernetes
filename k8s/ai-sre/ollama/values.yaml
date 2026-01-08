@@ -5,6 +5,14 @@ ollama:
   models:
     - name: llama3
 
+  lifecycle:
+    postStart:
+      exec:
+        command:
+          - "/bin/sh"
+          - "-c"
+          - "sleep 10; ollama pull llama3"
+
 service:
   type: ClusterIP
   port: 11434
