@@ -63,4 +63,4 @@ ollama:
 
 persistentVolume:
   enabled: true
-  existingClaim: "manual-ollama-pvc"
+  size: 30Gi
