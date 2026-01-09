@@ -34,6 +34,21 @@ spec:
         - path:
             type: PathPrefix
             value: /assets  # Common asset folder
+        - path:
+            type: PathPrefix
+            value: /favicon.ico
+        - path:
+            type: PathPrefix
+            value: /models
+        - path:
+            type: PathPrefix
+            value: /tools
+        - path:
+            type: PathPrefix
+            value: /servers
+        - path:
+            type: PathPrefix
+            value: /agents/ai-sre/k8s-agent/chat
       backendRefs:
         - name: {{ .Release.Name }}-ui
           port: 8080
