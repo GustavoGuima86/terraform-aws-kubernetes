@@ -2,33 +2,33 @@
 ollama:
   gpu:
     enabled: false
-  models:
-    pull:
-      - qwen2.5:3b
-  extraEnv:
-    # 1. LIMIT CONTEXT (The #1 Speed Fix)
-    # Reducing this forces the CPU to process less data before answering.
-    - name: OLLAMA_NUM_CTX
-      value: "4096"
+models:
+  pull:
+    - qwen2.5:3b
+extraEnv:
+  # 1. LIMIT CONTEXT (The #1 Speed Fix)
+  # Reducing this forces the CPU to process less data before answering.
+  - name: OLLAMA_NUM_CTX
+    value: "4096"
 
-    # 2. OPTIMIZE THREADS
-    # On m6g (Graviton), setting this too high adds overhead.
-    # 8-10 threads is often the sweet spot for latency.
-    - name: OLLAMA_NUM_PARALLEL
-      value: "8"
+  # 2. OPTIMIZE THREADS
+  # On m6g (Graviton), setting this too high adds overhead.
+  # 8-10 threads is often the sweet spot for latency.
+  - name: OLLAMA_NUM_PARALLEL
+    value: "8"
 
-    - name: OLLAMA_KEEP_ALIVE
-      value: "-1"
-  resources:
-    requests:
-      cpu: "12"
-      memory: "40Gi"
-    limits:
-      cpu: "14"
-      memory: "58Gi"
-  persistentVolume:
-    enabled: true
-    size: 50Gi
-    storageClass: "gp3-secure"
-    accessModes:
-      - ReadWriteOnce
+  - name: OLLAMA_KEEP_ALIVE
+    value: "-1"
+resources:
+  requests:
+    cpu: "12"
+    memory: "40Gi"
+  limits:
+    cpu: "14"
+    memory: "58Gi"
+persistentVolume:
+  enabled: true
+  size: 50Gi
+  storageClass: "gp3-secure"
+  accessModes:
+    - ReadWriteOnce

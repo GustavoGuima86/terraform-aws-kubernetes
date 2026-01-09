@@ -7,10 +7,10 @@ spec:
   gateways:
   - istio-system/main-gateway
 {{/*  hosts:*/}}
-{{/*  - "kagent.{{ .Values.cluster.host }}"*/}}
+  - "kagent.{{ .Values.cluster.host }}"
   http:
   - route:
     - destination:
-        host: {{ .Release.Name }}-kagent
+        host: {{ .Release.Name }}-ui
         port:
-          number: 8000
+          number: 8080

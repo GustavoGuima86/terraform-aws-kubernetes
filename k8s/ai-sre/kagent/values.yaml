@@ -1,9 +1,47 @@
 kagent:
-  llm:
-    backend: ollama
-    url: http://ollama-ollama.ai-sre:11434
-    model: "ollama/qwen2.5:3b"
+  # Configure providers
+  providers:
+    default: ollama
+    ollama:
+      provider: Ollama
+      model: "codellama" # As I had before
+      config:
+        host: http://ollama-ollama.ai-sre:11434
+
+  # Disable most agents for a minimal setup
+  agents:
+    k8s-agent:
+      enabled: true
+    kgateway-agent:
+      enabled: false
+    istio-agent:
+      enabled: false
+    promql-agent:
+      enabled: false
+    observability-agent:
+      enabled: false
+    argo-rollouts-agent:
+      enabled: false
+    helm-agent:
+      enabled: false
+    cilium-policy-agent:
+      enabled: false
+    cilium-manager-agent:
+      enabled: false
+    cilium-debug-agent:
+      enabled: false
+
+  # Disable tools
+  tools:
+    grafana-mcp:
+      enabled: false
+    querydoc:
+      enabled: false
+  kagent-tools:
+    enabled: false
+  kmcp:
+    enabled: false
 
 # Values for the VirtualService
 cluster:
-  host: ""# This will be overridden by ArgoCD
+  host: my-cluster.example.com
