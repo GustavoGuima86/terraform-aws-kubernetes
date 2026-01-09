@@ -1,0 +1,24 @@
+replicaCount: 1
+
+configuration:
+  provider: aws
+  backupStorageLocation:
+    name: default
+    bucket: "REPLACE_ME_BUCKET"
+    config:
+      region: "REPLACE_ME_REGION"
+      s3ForcePathStyle: true
+      s3Url: "https://s3.REPLACE_ME_REGION.amazonaws.com"
+  volumeSnapshotLocation:
+    name: default
+    config:
+      region: "REPLACE_ME_REGION"
+
+serviceAccount:
+  create: true
+  name: velero-sa
+  annotations: {}
+
+initContainers: []
+resources: {}
+

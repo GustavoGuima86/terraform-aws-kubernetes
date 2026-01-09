@@ -11,7 +11,7 @@ kagent:
     k8s-agent:
       enabled: true
     kgateway-agent:
-      enabled: false
+      enabled: true
     istio-agent:
       enabled: false
     promql-agent:
@@ -31,7 +31,7 @@ kagent:
 
   tools:
     grafana-mcp:
-      enabled: false
+      enabled: true
     querydoc:
       enabled: false
   kagent-tools:
