@@ -38,7 +38,7 @@ kagent:
     querydoc:
       enabled: false
   kagent-tools:
-    enabled: false
+    enabled: true
   kmcp:
     enabled: false
 

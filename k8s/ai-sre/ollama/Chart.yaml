@@ -8,3 +8,4 @@ dependencies:
   - name: ollama
     version: "1.37.0"
     repository: "https://helm.otwld.com/"
+    alias: ollama-server
