@@ -42,6 +42,24 @@ kagent:
   kmcp:
     enabled: false
 
+  ui:
+    env:
+      - name: BASE_URL
+        value: "/kagent"
+      - name: PUBLIC_URL
+        value: "/kagent"
+      - name: ROOT_PATH
+        value: "/kagent"
+      - name: VITE_BASE_PATH
+        value: "/kagent"
+      # Sometimes "dashboard" is used instead of "ui"
+
+    # Keep this just in case the backend also needs to know its path
+  controller:
+    env:
+      - name: BASE_URL
+        value: "/kagent"
+
 # Values for the VirtualService
 cluster:
   host: my-cluster.example.com
