@@ -68,3 +68,7 @@ done
 
 echo "All Kube Prometheus Stack CRDs installed successfully."
 
+echo "Installing Kagent CRDs..."
+helm install kagent-crds oci://ghcr.io/kagent-dev/kagent/helm/kagent-crds --version 0.7.8
+
+

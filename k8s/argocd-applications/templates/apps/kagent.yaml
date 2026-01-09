@@ -1,0 +1,31 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kagent
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  project: default
+  source:
+    repoURL: {{ .Values.repoURL }}
+    targetRevision: HEAD
+    path: k8s/ai-sre/kagent
+    helm:
+      values: |
+        cluster:
+        {{- toYaml .Values.cluster | nindent 10 }}
+        kagent:
+          llm:
+            url: http://ollama-ollama.ai-sre:11434
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ai-sre
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

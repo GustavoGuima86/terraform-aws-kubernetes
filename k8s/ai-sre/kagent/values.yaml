@@ -1,0 +1,9 @@
+kagent:
+  llm:
+    backend: ollama
+    url: http://ollama-ollama.ai-sre:11434
+    model: "ollama/qwen2.5:3b"
+
+# Values for the VirtualService
+cluster:
+  host: ""# This will be overridden by ArgoCD

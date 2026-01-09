@@ -65,11 +65,11 @@ module "eks" {
   eks_managed_node_groups = {
     managed_node = {
       ami_type       = "BOTTLEROCKET_ARM_64"
-      instance_types = ["t4g.large"]
+      instance_types = ["t4g.large", "t4g.medium"]
 
-      min_size     = 3
-      max_size     = 5
-      desired_size = 3
+      min_size     = 2
+      max_size     = 3
+      desired_size = 2
 
       subnet_ids = var.private_subnets
 

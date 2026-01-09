@@ -1,0 +1,11 @@
+apiVersion: v2
+name: kagent-wrapper
+description: A wrapper chart to deploy kagent from OCI and add a VirtualService
+type: application
+version: 0.1.0
+appVersion: "0.7.8" # This is the app version of the kagent chart
+
+dependencies:
+- name: kagent
+  version: "0.7.8"
+  repository: "oci://ghcr.io/kagent-dev/kagent/helm"

@@ -3,7 +3,7 @@
 holmes:
   modelList:
     llama3:
-      model: "ollama/qwen2.5:14b"
+      model: "ollama/qwen2.5:3b"
       type: "ollama"
       base_url: "http://ollama.ai-sre.svc.cluster.local:11434"
       temperature: 0.1
@@ -20,9 +20,9 @@ holmes:
       verbs: ["get"]
   env:
     - name: HOLMES_MAX_LOG_LINES
-      value: "150"  # Default is often much higher. 150 is enough to see the error.
+      value: "50"  # Default is often much higher. 150 is enough to see the error.
     - name: HOLMES_MAX_EVENTS
-      value: "20"
+      value: "10"
   resources:
     requests:
       cpu: 100m

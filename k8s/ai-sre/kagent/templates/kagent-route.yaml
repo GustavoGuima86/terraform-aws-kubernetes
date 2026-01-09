@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  gateways:
+  - istio-system/main-gateway
+{{/*  hosts:*/}}
+{{/*  - "kagent.{{ .Values.cluster.host }}"*/}}
+  http:
+  - route:
+    - destination:
+        host: {{ .Release.Name }}-kagent
+        port:
+          number: 8000

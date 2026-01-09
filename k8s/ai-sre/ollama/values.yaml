@@ -4,23 +4,21 @@ ollama:
     enabled: false
   models:
     pull:
-      - qwen2.5:14b
+      - qwen2.5:3b
   extraEnv:
-    # 1. Force the model to stay in RAM forever
+    # 1. LIMIT CONTEXT (The #1 Speed Fix)
+    # Reducing this forces the CPU to process less data before answering.
+    - name: OLLAMA_NUM_CTX
+      value: "4096"
+
+    # 2. OPTIMIZE THREADS
+    # On m6g (Graviton), setting this too high adds overhead.
+    # 8-10 threads is often the sweet spot for latency.
+    - name: OLLAMA_NUM_PARALLEL
+      value: "8"
+
     - name: OLLAMA_KEEP_ALIVE
       value: "-1"
-
-    # 2. Enable Flash Attention (Great for m6g instances)
-    - name: OLLAMA_FLASH_ATTENTION
-      value: "1"
-
-    # 3. Increase CPU parallelism for prompt processing
-    - name: OLLAMA_NUM_PARALLEL
-      value: "4"
-
-    # 4. Context Window (Keep it large, but 14B processes it faster)
-    - name: OLLAMA_NUM_CTX
-      value: "32768"
   resources:
     requests:
       cpu: "12"
