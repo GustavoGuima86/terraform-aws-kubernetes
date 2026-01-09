@@ -36,3 +36,11 @@ spec:
       backendRefs:
         - name: {{ .Release.Name }}-ui
           port: 8080
+    # Route for kagent agents
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /agents/ai-sre/k8s-agent/chat
+      backendRefs:
+        - name: {{ .Release.Name }}-kagent
+          port: 8080
