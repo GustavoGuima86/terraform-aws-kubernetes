@@ -52,6 +52,10 @@ kagent:
         value: "/kagent"
       - name: VITE_BASE_PATH
         value: "/kagent"
+      - name: NEXT_PUBLIC_BASE_PATH
+        value: "/kagent"
+      - name: NEXT_PUBLIC_BASEPATH
+        value: "/kagent"
       # Sometimes "dashboard" is used instead of "ui"
 
     # Keep this just in case the backend also needs to know its path
