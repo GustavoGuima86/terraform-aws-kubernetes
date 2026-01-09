@@ -10,8 +10,8 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: {{ .Values.repoURL | default .argocd.app.source.repoURL }} # More robust repoURL
-    targetRevision: HEAD
+    repoURL: https://github.com/GustavoGuima86/terraform-aws-kubernetes
+    targetRevision: new-2026-features
     path: k8s/ai-sre/kagent
   destination:
     server: https://kubernetes.default.svc

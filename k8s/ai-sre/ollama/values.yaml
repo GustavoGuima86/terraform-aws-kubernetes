@@ -2,9 +2,9 @@
 ollama:
   gpu:
     enabled: false
-models:
-  pull:
-    - qwen2.5:3b
+  models:
+    pull:
+      - qwen2.5:3b
 extraEnv:
   # 1. LIMIT CONTEXT (The #1 Speed Fix)
   # Reducing this forces the CPU to process less data before answering.
