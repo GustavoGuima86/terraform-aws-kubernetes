@@ -1,5 +1,4 @@
 kagent:
-  # Configure providers
   providers:
     default: ollama
     ollama:
@@ -8,7 +7,6 @@ kagent:
       config:
         host: "http://ollama-ollama-server.ai-sre.svc.cluster.local:11434"
 
-  # Disable most agents for a minimal setup
   agents:
     k8s-agent:
       enabled: true
@@ -31,7 +29,6 @@ kagent:
     cilium-debug-agent:
       enabled: false
 
-  # Disable tools
   tools:
     grafana-mcp:
       enabled: false
@@ -42,18 +39,10 @@ kagent:
   kmcp:
     enabled: false
 
-  ui:
-    env: []
-      # Note: The Next.js app is not built with basePath support
-      # so we use URL rewriting in the HTTPRoute instead
-      # Sometimes "dashboard" is used instead of "ui"
-
-    # Keep this just in case the backend also needs to know its path
   controller:
     env:
       - name: BASE_URL
         value: "/kagent"
 
-# Values for the VirtualService
 cluster:
   host: my-cluster.example.com
