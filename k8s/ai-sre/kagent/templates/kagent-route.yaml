@@ -21,3 +21,19 @@ spec:
       backendRefs:
         - name: {{ .Release.Name }}-ui
           port: 8080
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /_next   # Next.js scripts
+        - path:
+            type: PathPrefix
+            value: /static  # Static images/css
+        - path:
+            type: PathPrefix
+            value: /api     # Backend API calls
+        - path:
+            type: PathPrefix
+            value: /assets  # Common asset folder
+      backendRefs:
+        - name: {{ .Release.Name }}-ui
+          port: 8080
