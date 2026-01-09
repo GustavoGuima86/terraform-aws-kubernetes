@@ -10,28 +10,27 @@ metadata:
 spec:
   project: observability
   source:
-    repoURL: https://github.com/GustavoGuima86/terraform-aws-kubernetes
-    targetRevision: new-2026-features
+    repoURL: {{ .Values.gitRepo.url }}
+    targetRevision: {{ .Values.gitRepo.branch }}
     path: k8s/observability/loki
     helm:
       valueFiles:
         - values.yaml
-      values: |
-        loki:
-          loki:
-            storage_config:
-              aws:
-                region: "{{ .Values.awsRegion }}"
-                bucketnames: "{{ .Values.lokiBucketName }}"
-            storage:
-              bucketNames:
-                chunks: "{{ .Values.lokiBucketName }}"
-                ruler: "{{ .Values.lokiBucketName }}"
-              s3:
-                region: "{{ .Values.awsRegion }}"
-          serviceAccount:
-            create: true
-            name: "{{ .Values.lokiServiceAccountName }}"
+      parameters:
+        - name: "loki.loki.storage_config.aws.region"
+          value: "{{ .Values.awsRegion }}"
+        - name: "loki.loki.storage_config.aws.bucketnames"
+          value: "{{ .Values.lokiBucketName }}"
+        - name: "loki.loki.storage.bucketNames.chunks"
+          value: "{{ .Values.lokiBucketName }}"
+        - name: "loki.loki.storage.bucketNames.ruler"
+          value: "{{ .Values.lokiBucketName }}"
+        - name: "loki.loki.storage.s3.region"
+          value: "{{ .Values.awsRegion }}"
+        - name: "loki.serviceAccount.create"
+          value: "true"
+        - name: "loki.serviceAccount.name"
+          value: "{{ .Values.lokiServiceAccountName }}"
   destination:
     server: https://kubernetes.default.svc
     namespace: observability

@@ -10,8 +10,8 @@ metadata:
 spec:
   project: infrastructure
   source:
-    repoURL: https://github.com/GustavoGuima86/terraform-aws-kubernetes
-    targetRevision: new-2026-features
+    repoURL: {{ .Values.gitRepo.url }}
+    targetRevision: {{ .Values.gitRepo.branch }}
     path: k8s/aws-lb-controller
     helm:
       parameters:

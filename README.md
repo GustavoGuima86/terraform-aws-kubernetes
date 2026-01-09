@@ -154,12 +154,11 @@ This stage deploys ArgoCD Core and then all other Kubernetes-native applications
       --set dbUrl=$(jq -r .db_url.value infrastructure/environments/tf_outputs.json) \
       --set dbPort=$(jq -r .db_port.value infrastructure/environments/tf_outputs.json) \
       --set karpenterNodeIamRoleName=$(jq -r .karpenter_node_iam_role_name.value infrastructure/environments/tf_outputs.json) \
-      --set karpenterControllerIamRoleArn=$(jq -r .karpenter_controller_iam_role_arn.value infrastructure/environments/tf_outputs.json) \
       --set karpenterInterruptionQueueName=$(jq -r .karpenter_interruption_queue_name.value infrastructure/environments/tf_outputs.json) \
-      --set lokiServiceAccountRoleArn=$(jq -r .loki_service_account_role_arn.value infrastructure/environments/tf_outputs.json) \
       --set lokiServiceAccountName=$(jq -r .loki_service_account_name.value infrastructure/environments/tf_outputs.json) \
-      --set mimirServiceAccountRoleArn=$(jq -r .mimir_service_account_role_arn.value infrastructure/environments/tf_outputs.json) \
       --set mimirServiceAccountName=$(jq -r .mimir_service_account_name.value infrastructure/environments/tf_outputs.json) \
+      --set veleroBucketName=$(jq -r .velero_bucket_name.value infrastructure/environments/tf_outputs.json) \
+      --set veleroBucketRegion=$(jq -r .velero_bucket_region.value infrastructure/environments/tf_outputs.json) \
       --set kubePrometheusRelease="kube-prometheus-stack" \
       --set gitRepo.url="https://github.com/GustavoGuima86/terraform-aws-kubernetes" \
       --set gitRepo.branch="new-2026-features"

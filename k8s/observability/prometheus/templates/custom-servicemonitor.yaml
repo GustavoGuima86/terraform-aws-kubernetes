@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: custom-app-metrics
+  labels:
+    release: kube-prometheus-stack
+spec:
+  selector:
+    matchExpressions:
+      - key: prometheus.io/scrape
+        operator: Exists
+  namespaceSelector:
+    any: true
+  endpoints:
+  - port: http
+    interval: 15s
+    path: /metrics

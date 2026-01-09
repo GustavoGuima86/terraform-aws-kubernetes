@@ -1,33 +1,29 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: alloy
+  name: velero
   namespace: argocd
-  finalizers:
-  - resources-finalizer.argocd.argoproj.io
-  annotations:
-    argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: observability
+  project: default
   source:
     repoURL: {{ .Values.gitRepo.url }}
     targetRevision: {{ .Values.gitRepo.branch }}
-    path: k8s/observability/alloy
+    path: k8s/velero
     helm:
       valueFiles:
         - values.yaml
+      parameters:
+        - name: configuration.backupStorageLocation.bucket
+          value: "{{ .Values.velero_bucket_name }}"
+        - name: configuration.backupStorageLocation.config.region
+          value: "{{ .Values.velero_bucket_region }}"
   destination:
     server: https://kubernetes.default.svc
-    namespace: observability
+    namespace: velero
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true
-    retry:
-      limit: 5
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m
+      - CreateNamespace=true
+

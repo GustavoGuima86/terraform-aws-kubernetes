@@ -1,0 +1,1082 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-dashboard
+  labels:
+    grafana_dashboard: "1"
+data:
+  argocd.json: |
+    {
+      "annotations": {
+        "list": [
+          {
+            "builtIn": 1,
+            "datasource": "-- Grafana --",
+            "enable": true,
+            "hide": true,
+            "iconColor": "rgba(0, 211, 255, 1)",
+            "name": "Annotations & Alerts",
+            "type": "dashboard"
+          }
+        ]
+      },
+      "editable": true,
+      "gnetId": null,
+      "graphTooltip": 0,
+      "id": 1,
+      "links": [],
+      "panels": [
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": false,
+          "colors": [
+            "#299c46",
+            "rgba(237, 129, 40, 0.89)",
+            "#d44a3a"
+          ],
+          "datasource": "Prometheus",
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 0,
+            "y": 0
+          },
+          "id": 4,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "sum(argocd_app_info{dest_server!=\""})",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "thresholds": "",
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "APPLICATIONS",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "#299c46",
+            "rgba(237, 129, 40, 0.89)",
+            "#d44a3a"
+          ],
+          "datasource": "Prometheus",
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 6,
+            "y": 0
+          },
+          "id": 6,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "sum(argocd_app_info{health_status=\"Healthy\"})",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "thresholds": "",
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "HEALTHY",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "#d44a3a",
+            "rgba(237, 129, 40, 0.89)",
+            "#299c46"
+          ],
+          "datasource": "Prometheus",
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 12,
+            "y": 0
+          },
+          "id": 8,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "sum(argocd_app_info) - sum(argocd_app_info{health_status=\"Healthy\"})",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "thresholds": "1,2",
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "DEGRADED/MISSING",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [],
+          "valueName": "current"
+        },
+        {
+          "cacheTimeout": null,
+          "colorBackground": false,
+          "colorValue": true,
+          "colors": [
+            "#299c46",
+            "rgba(237, 129, 40, 0.89)",
+            "#d44a3a"
+          ],
+          "datasource": "Prometheus",
+          "format": "none",
+          "gauge": {
+            "maxValue": 100,
+            "minValue": 0,
+            "show": false,
+            "thresholdLabels": false,
+            "thresholdMarkers": true
+          },
+          "gridPos": {
+            "h": 3,
+            "w": 6,
+            "x": 18,
+            "y": 0
+          },
+          "id": 10,
+          "interval": null,
+          "links": [],
+          "mappingType": 1,
+          "mappingTypes": [
+            {
+              "name": "value to text",
+              "value": 1
+            },
+            {
+              "name": "range to text",
+              "value": 2
+            }
+          ],
+          "maxDataPoints": 100,
+          "nullPointMode": "connected",
+          "nullText": null,
+          "options": {},
+          "postfix": "",
+          "postfixFontSize": "50%",
+          "prefix": "",
+          "prefixFontSize": "50%",
+          "rangeMaps": [
+            {
+              "from": "null",
+              "text": "N/A",
+              "to": "null"
+            }
+          ],
+          "sparkline": {
+            "fillColor": "rgba(31, 118, 189, 0.18)",
+            "full": false,
+            "lineColor": "rgb(31, 120, 193)",
+            "show": true
+          },
+          "tableColumn": "",
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "sum(argocd_cluster_info)",
+              "interval": "",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "thresholds": "",
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "CLUSTERS",
+          "type": "singlestat",
+          "valueFontSize": "80%",
+          "valueMaps": [
+            {
+              "op": "=",
+              "text": "N/A",
+              "value": "null"
+            }
+          ],
+          "valueName": "current"
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {
+            "defaults": {"custom": {}},
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 12,
+            "x": 0,
+            "y": 3
+          },
+          "id": 2,
+          "legend": {"show": false},
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "options": {"alertThreshold": true},
+          "percentage": false,
+          "pluginVersion": "7.2.0",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "sum(rate(argocd_app_reconcile_count{app=~\"$app\"}[5m])) by (app, dest_namespace, dest_server)",
+              "interval": "",
+              "legendFormat": "{{app}}",
+              "refId": "A"
+            },
+            {
+              "exemplar": true,
+              "expr": "sum(argocd_app_info{sync_status=\"Synced\"})",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "Synced",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Application Sync Status",
+          "tooltip": {"shared": true, "sort": 0, "value_type": "individual"},
+          "type": "graph",
+          "xaxis": {"buckets": null, "mode": "time", "name": null, "show": true, "values": []},
+          "yaxes": [
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": "0", "show": true},
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true}
+          ],
+          "yaxis": {"align": false, "alignLevel": null}
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"custom": {}}, "overrides": []},
+          "gridPos": {"h": 7, "w": 12, "x": 12, "y": 3},
+          "id": 12,
+          "legend": {"show": false},
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null as zero",
+          "options": {"alertThreshold": true},
+          "percentage": false,
+          "pluginVersion": "7.2.0",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "sum(argocd_app_info{health_status!=\"Healthy\"}) by (health_status)",
+              "interval": "",
+              "legendFormat": "{{health_status}}",
+              "refId": "A"
+            },
+            {
+              "exemplar": true,
+              "expr": "sum(argocd_app_info{health_status=\"Healthy\"})",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "Healthy",
+              "refId": "B"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Application Health Status",
+          "tooltip": {"shared": true, "sort": 0, "value_type": "individual"},
+          "type": "graph",
+          "xaxis": {"buckets": null, "mode": "time", "name": null, "show": true, "values": []},
+          "yaxes": [
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": "0", "show": true},
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true}
+          ],
+          "yaxis": {"align": false, "alignLevel": null}
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"custom": {}}, "overrides": []},
+          "gridPos": {"h": 9, "w": 24, "x": 0, "y": 10},
+          "id": 14,
+          "legend": {"alignAsTable": true, "avg": true, "current": true, "max": true, "min": true, "show": true, "sort": "current", "sortDesc": true, "total": false, "values": true},
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {"alertThreshold": true},
+          "percentage": false,
+          "pluginVersion": "7.2.0",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "sum(rate(argocd_app_reconcile_count{app=~\"$app\"}[5m])) by (app, dest_namespace, dest_server)",
+              "interval": "",
+              "legendFormat": "{{app}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Application Reconciliation",
+          "tooltip": {"shared": true, "sort": 0, "value_type": "individual"},
+          "type": "graph",
+          "xaxis": {"buckets": null, "mode": "time", "name": null, "show": true, "values": []},
+          "yaxes": [
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": "0", "show": true},
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true}
+          ],
+          "yaxis": {"align": false, "alignLevel": null}
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"custom": {}}, "overrides": []},
+          "gridPos": {"h": 9, "w": 12, "x": 12, "y": 19},
+          "id": 16,
+          "legend": {"alignAsTable": true, "avg": false, "current": true, "max": false, "min": false, "show": true, "sort": "current", "sortDesc": true, "total": false, "values": true},
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {"alertThreshold": true},
+          "percentage": false,
+          "pluginVersion": "7.2.0",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "sum(rate(grpc_server_handled_total{grpc_service=~\"$service\", grpc_code!=\"OK\"}[5m])) by (grpc_service, grpc_method, grpc_code)",
+              "interval": "",
+              "legendFormat": "{{grpc_method}} {{grpc_code}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "gRPC Errors",
+          "tooltip": {"shared": true, "sort": 0, "value_type": "individual"},
+          "type": "graph",
+          "xaxis": {"buckets": null, "mode": "time", "name": null, "show": true, "values": []},
+          "yaxes": [
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": "0", "show": true},
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true}
+          ],
+          "yaxis": {"align": false, "alignLevel": null}
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"custom": {}}, "overrides": []},
+          "gridPos": {"h": 9, "w": 12, "x": 12, "y": 19},
+          "id": 17,
+          "legend": {"alignAsTable": true, "avg": false, "current": true, "max": false, "min": false, "show": true, "sort": "current", "sortDesc": true, "total": false, "values": true},
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {"alertThreshold": true},
+          "percentage": false,
+          "pluginVersion": "7.2.0",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "histogram_quantile($quantile, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=~\"$service\"}[5m])) by (le, grpc_method))",
+              "interval": "",
+              "legendFormat": "{{grpc_method}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "gRPC Request Latency",
+          "tooltip": {"shared": true, "sort": 0, "value_type": "individual"},
+          "type": "graph",
+          "xaxis": {"buckets": null, "mode": "time", "name": null, "show": true, "values": []},
+          "yaxes": [
+            {"format": "s", "label": null, "logBase": 1, "max": null, "min": "0", "show": true},
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true}
+          ],
+          "yaxis": {"align": false, "alignLevel": null}
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"custom": {}}, "overrides": []},
+          "gridPos": {"h": 9, "w": 12, "x": 0, "y": 28},
+          "id": 18,
+          "legend": {"alignAsTable": true, "avg": false, "current": true, "max": false, "min": false, "show": true, "sort": "current", "sortDesc": true, "total": false, "values": true},
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {"alertThreshold": true},
+          "percentage": false,
+          "pluginVersion": "7.2.0",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "histogram_quantile($quantile, sum(rate(argocd_redis_request_duration_bucket[5m])) by (le, command))",
+              "interval": "",
+              "legendFormat": "{{command}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Redis Request Latency",
+          "tooltip": {"shared": true, "sort": 0, "value_type": "individual"},
+          "type": "graph",
+          "xaxis": {"buckets": null, "mode": "time", "name": null, "show": true, "values": []},
+          "yaxes": [
+            {"format": "s", "label": null, "logBase": 1, "max": null, "min": "0", "show": true},
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true}
+          ],
+          "yaxis": {"align": false, "alignLevel": null}
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"custom": {}}, "overrides": []},
+          "gridPos": {"h": 9, "w": 12, "x": 12, "y": 28},
+          "id": 19,
+          "legend": {"alignAsTable": true, "avg": false, "current": true, "max": false, "min": false, "show": true, "sort": "current", "sortDesc": true, "total": false, "values": true},
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {"alertThreshold": true},
+          "percentage": false,
+          "pluginVersion": "7.2.0",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "sum(rate(redis_commands_total[5m])) by (command)",
+              "interval": "",
+              "legendFormat": "{{command}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Redis Commands",
+          "tooltip": {"shared": true, "sort": 0, "value_type": "individual"},
+          "type": "graph",
+          "xaxis": {"buckets": null, "mode": "time", "name": null, "show": true, "values": []},
+          "yaxes": [
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": "0", "show": true},
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true}
+          ],
+          "yaxis": {"align": false, "alignLevel": null}
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"custom": {}}, "overrides": []},
+          "gridPos": {"h": 9, "w": 24, "x": 0, "y": 37},
+          "id": 20,
+          "legend": {"alignAsTable": true, "avg": false, "current": true, "max": false, "min": false, "show": true, "sort": "current", "sortDesc": true, "total": false, "values": true},
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {"alertThreshold": true},
+          "percentage": false,
+          "pluginVersion": "7.2.0",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "histogram_quantile($quantile, sum(rate(argocd_git_request_duration_bucket[5m])) by (le, repo))",
+              "interval": "",
+              "legendFormat": "{{repo}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Git Request Rate",
+          "tooltip": {"shared": true, "sort": 0, "value_type": "individual"},
+          "type": "graph",
+          "xaxis": {"buckets": null, "mode": "time", "name": null, "show": true, "values": []},
+          "yaxes": [
+            {"format": "s", "label": null, "logBase": 1, "max": null, "min": "0", "show": true},
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true}
+          ],
+          "yaxis": {"align": false, "alignLevel": null}
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"custom": {}}, "overrides": []},
+          "gridPos": {"h": 9, "w": 24, "x": 0, "y": 46},
+          "id": 21,
+          "legend": {"alignAsTable": true, "avg": false, "current": true, "max": false, "min": false, "show": true, "sort": "current", "sortDesc": true, "total": false, "values": true},
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {"alertThreshold": true},
+          "percentage": false,
+          "pluginVersion": "7.2.0",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "topk(10, sort_desc(argocd_redis_request_total))",
+              "interval": "",
+              "legendFormat": "{{command}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Redis Cache hits/misses",
+          "tooltip": {"shared": true, "sort": 0, "value_type": "individual"},
+          "type": "graph",
+          "xaxis": {"buckets": null, "mode": "time", "name": null, "show": true, "values": []},
+          "yaxes": [
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": "0", "show": true},
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true}
+          ],
+          "yaxis": {"align": false, "alignLevel": null}
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"custom": {}}, "overrides": []},
+          "gridPos": {"h": 9, "w": 12, "x": 0, "y": 55},
+          "id": 22,
+          "legend": {"alignAsTable": true, "avg": false, "current": true, "max": false, "min": false, "show": true, "sort": "current", "sortDesc": true, "total": false, "values": true},
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {"alertThreshold": true},
+          "percentage": false,
+          "pluginVersion": "7.2.0",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "argocd_cluster_api_resource_objects",
+              "interval": "",
+              "legendFormat": "{{group}}/{{version}}/{{kind}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Cluster API resource objects",
+          "tooltip": {"shared": true, "sort": 0, "value_type": "individual"},
+          "type": "graph",
+          "xaxis": {"buckets": null, "mode": "time", "name": null, "show": true, "values": []},
+          "yaxes": [
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": "0", "show": true},
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true}
+          ],
+          "yaxis": {"align": false, "alignLevel": null}
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"custom": {}}, "overrides": []},
+          "gridPos": {"h": 9, "w": 12, "x": 12, "y": 55},
+          "id": 23,
+          "legend": {"alignAsTable": true, "avg": false, "current": true, "max": false, "min": false, "show": true, "sort": "current", "sortDesc": true, "total": false, "values": true},
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {"alertThreshold": true},
+          "percentage": false,
+          "pluginVersion": "7.2.0",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "argocd_cluster_api_resources",
+              "interval": "",
+              "legendFormat": "{{group}}/{{version}}/{{kind}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Cluster API resources",
+          "tooltip": {"shared": true, "sort": 0, "value_type": "individual"},
+          "type": "graph",
+          "xaxis": {"buckets": null, "mode": "time", "name": null, "show": true, "values": []},
+          "yaxes": [
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": "0", "show": true},
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true}
+          ],
+          "yaxis": {"align": false, "alignLevel": null}
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"custom": {}}, "overrides": []},
+          "gridPos": {"h": 9, "w": 12, "x": 0, "y": 64},
+          "id": 24,
+          "legend": {"alignAsTable": true, "avg": false, "current": true, "max": false, "min": false, "show": true, "sort": "current", "sortDesc": true, "total": false, "values": true},
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {"alertThreshold": true},
+          "percentage": false,
+          "pluginVersion": "7.2.0",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "topk(10, sort_desc(argocd_redis_request_total))",
+              "interval": "",
+              "legendFormat": "{{pod}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Controller pod requests",
+          "tooltip": {"shared": true, "sort": 0, "value_type": "individual"},
+          "type": "graph",
+          "xaxis": {"buckets": null, "mode": "time", "name": null, "show": true, "values": []},
+          "yaxes": [
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": "0", "show": true},
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true}
+          ],
+          "yaxis": {"align": false, "alignLevel": null}
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "Prometheus",
+          "fieldConfig": {"defaults": {"custom": {}}, "overrides": []},
+          "gridPos": {"h": 9, "w": 12, "x": 12, "y": 64},
+          "id": 25,
+          "legend": {"alignAsTable": true, "avg": false, "current": true, "max": false, "min": false, "show": true, "sort": "current", "sortDesc": true, "total": false, "values": true},
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "options": {"alertThreshold": true},
+          "percentage": false,
+          "pluginVersion": "7.2.0",
+          "pointradius": 2,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "argocd_cluster_cache_age_seconds",
+              "interval": "",
+              "legendFormat": "{{server}}",
+              "refId": "A"
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeRegions": [],
+          "timeShift": null,
+          "title": "Cluster cache age",
+          "tooltip": {"shared": true, "sort": 0, "value_type": "individual"},
+          "type": "graph",
+          "xaxis": {"buckets": null, "mode": "time", "name": null, "show": true, "values": []},
+          "yaxes": [
+            {"format": "s", "label": null, "logBase": 1, "max": null, "min": "0", "show": true},
+            {"format": "short", "label": null, "logBase": 1, "max": null, "min": null, "show": true}
+          ],
+          "yaxis": {"align": false, "alignLevel": null}
+        }
+      ],
+      "refresh": false,
+      "schemaVersion": 27,
+      "style": "dark",
+      "tags": [],
+      "templating": {
+        "list": [
+          {
+            "current": {"selected": false, "text": "All", "value": "$__all"},
+            "hide": 0,
+            "includeAll": true,
+            "label": null,
+            "multi": true,
+            "name": "app",
+            "options": [],
+            "query": "label_values(argocd_app_reconcile_count, app)",
+            "refresh": 2,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "tagValuesQuery": "",
+            "tags": [],
+            "tagsQuery": "",
+            "type": "query",
+            "useTags": false
+          },
+          {
+            "current": {"selected": true, "text": "99", "value": "99"},
+            "hide": 0,
+            "name": "quantile",
+            "options": [
+              {"selected": false, "text": "50", "value": "50"},
+              {"selected": false, "text": "90", "value": "90"},
+              {"selected": true, "text": "99", "value": "99"}
+            ],
+            "query": "50,90,99",
+            "skipUrlSync": false,
+            "type": "custom"
+          },
+          {
+            "current": {"selected": true, "text": "All", "value": "$__all"},
+            "hide": 0,
+            "includeAll": true,
+            "label": null,
+            "multi": true,
+            "name": "service",
+            "options": [],
+            "query": "label_values(grpc_server_handled_total, grpc_service)",
+            "refresh": 2,
+            "regex": "",
+            "skipUrlSync": false,
+            "sort": 0,
+            "type": "query"
+          }
+        ]
+      },
+      "time": {"from": "now-5m", "to": "now"},
+      "timepicker": {
+        "refresh_intervals": [
+          "5s",
+          "10s",
+          "30s",
+          "1m",
+          "5m",
+          "15m",
+          "30m",
+          "1h",
+          "2h",
+          "1d"
+        ],
+        "time_options": [
+          "5m",
+          "15m",
+          "1h",
+          "6h",
+          "12h",
+          "24h",
+          "2d",
+          "7d",
+          "30d"
+        ]
+      },
+      "timezone": "",
+      "title": "Argo CD",
+      "uid": "l1h-M4xZz",
+      "version": 9
+    }
+```
+}```json
+{<0xC2><0xA0>"corrected_string_escaping": "apiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: argocd-dashboard\n  labels:\n    grafana_dashboard: \"1\"\ndata:\n  argocd.json: |\n    {\n      \"annotations\": {\n        \"list\": [\n          {\n            \"builtIn\": 1,\n            \"datasource\": \"-- Grafana --\",\n            \"enable\": true,\n            \"hide\": true,\n            \"iconColor\": \"rgba(0, 211, 255, 1)\",\n            \"name\": \"Annotations & Alerts\",\n            \"type\": \"dashboard\"\n          }\n        ]\n      },\n      \"editable\": true,\n      \"gnetId\": null,\n      \"graphTooltip\": 0,\n      \"id\": 1,\n      \"links\": [],\n      \"panels\": [\n        {\n          \"cacheTimeout\": null,\n          \"colorBackground\": false,\n          \"colorValue\": false,\n          \"colors\": [\n            \"#299c46\",\n            \"rgba(237, 129, 40, 0.89)\",\n            \"#d44a3a\"\n          ],\n          \"datasource\": \"Prometheus\",\n          \"format\": \"none\",\n          \"gauge\": {\n            \"maxValue\": 100,\n            \"minValue\": 0,\n            \"show\": false,\n            \"thresholdLabels\": false,\n            \"thresholdMarkers\": true\n          },\n          \"gridPos\": {\n            \"h\": 3,\n            \"w\": 6,\n            \"x\": 0,\n            \"y\": 0\n          },\n          \"id\": 4,\n          \"interval\": null,\n          \"links\": [],\n          \"mappingType\": 1,\n          \"mappingTypes\": [\n            {\n              \"name\": \"value to text\",\n              \"value\": 1\n            },\n            {\n              \"name\": \"range to text\",\n              \"value\": 2\n            }\n          ],\n          \"maxDataPoints\": 100,\n          \"nullPointMode\": \"connected\",\n          \"nullText\": null,\n          \"options\": {},\n          \"postfix\": \"\",\n          \"postfixFontSize\": \"50%\",\n          \"prefix\": \"\",\n          \"prefixFontSize\": \"50%\",\n          \"rangeMaps\": [\n            {\n              \"from\": \"null\",\n              \"text\": \"N/A\",\n              \"to\": \"null\"\n            }\n          ],\n          \"sparkline\": {\n            \"fillColor\": \"rgba(31, 118, 189, 0.18)\",\n            \"full\": false,\n            \"lineColor\": \"rgb(31, 120, 193)\",\n            \"show\": true\n          },\n          \"tableColumn\": \"\",\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"sum(argocd_app_info{dest_server!=\"\"})\",\n              \"interval\": \"\",\n              \"legendFormat\": \"\",\n              \"refId\": \"A\"\n            }\n          ],\n          \"thresholds\": \"\",\n          \"timeFrom\": null,\n          \"timeShift\": null,\n          \"title\": \"APPLICATIONS\",\n          \"type\": \"singlestat\",\n          \"valueFontSize\": \"80%\",\n          \"valueMaps\": [\n            {\n              \"op\": \"=\",\n              \"text\": \"N/A\",\n              \"value\": \"null\"\n            }\n          ],\n          \"valueName\": \"current\"\n        },\n        {\n          \"cacheTimeout\": null,\n          \"colorBackground\": false,\n          \"colorValue\": true,\n          \"colors\": [\n            \"#299c46\",\n            \"rgba(237, 129, 40, 0.89)\",\n            \"#d44a3a\"\n          ],\n          \"datasource\": \"Prometheus\",\n          \"format\": \"none\",\n          \"gauge\": {\n            \"maxValue\": 100,\n            \"minValue\": 0,\n            \"show\": false,\n            \"thresholdLabels\": false,\n            \"thresholdMarkers\": true\n          },\n          \"gridPos\": {\n            \"h\": 3,\n            \"w\": 6,\n            \"x\": 6,\n            \"y\": 0\n          },\n          \"id\": 6,\n          \"interval\": null,\n          \"links\": [],\n          \"mappingType\": 1,\n          \"mappingTypes\": [\n            {\n              \"name\": \"value to text\",\n              \"value\": 1\n            },\n            {\n              \"name\": \"range to text\",\n              \"value\": 2\n            }\n          ],\n          \"maxDataPoints\": 100,\n          \"nullPointMode\": \"connected\",\n          \"nullText\": null,\n          \"options\": {},\n          \"postfix\": \"\",\n          \"postfixFontSize\": \"50%\",\n          \"prefix\": \"\",\n          \"prefixFontSize\": \"50%\",\n          \"rangeMaps\": [\n            {\n              \"from\": \"null\",\n              \"text\": \"N/A\",\n              \"to\": \"null\"\n            }\n          ],\n          \"sparkline\": {\n            \"fillColor\": \"rgba(31, 118, 189, 0.18)\",\n            \"full\": false,\n            \"lineColor\": \"rgb(31, 120, 193)\",\n            \"show\": true\n          },\n          \"tableColumn\": \"\",\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"sum(argocd_app_info{health_status=\"Healthy\"})\",\n              \"interval\": \"\",\n              \"legendFormat\": \"\",\n              \"refId\": \"A\"\n            }\n          ],\n          \"thresholds\": \"\",\n          \"timeFrom\": null,\n          \"timeShift\": null,\n          \"title\": \"HEALTHY\",\n          \"type\": \"singlestat\",\n          \"valueFontSize\": \"80%\",\n          \"valueMaps\": [\n            {\n              \"op\": \"=\",\n              \"text\": \"N/A\",\n              \"value\": \"null\"\n            }\n          ],\n          \"valueName\": \"current\"\n        },\n        {\n          \"cacheTimeout\": null,\n          \"colorBackground\": false,\n          \"colorValue\": true,\n          \"colors\": [\n            \"#d44a3a\",\n            \"rgba(237, 129, 40, 0.89)\",\n            \"#299c46\"\n          ],\n          \"datasource\": \"Prometheus\",\n          \"format\": \"none\",\n          \"gauge\": {\n            \"maxValue\": 100,\n            \"minValue\": 0,\n            \"show\": false,\n            \"thresholdLabels\": false,\n            \"thresholdMarkers\": true\n          },\n          \"gridPos\": {\n            \"h\": 3,\n            \"w\": 6,\n            \"x\": 12,\n            \"y\": 0\n          },\n          \"id\": 8,\n          \"interval\": null,\n          \"links\": [],\n          \"mappingType\": 1,\n          \"mappingTypes\": [\n            {\n              \"name\": \"value to text\",\n              \"value\": 1\n            },\n            {\n              \"name\": \"range to text\",\n              \"value\": 2\n            }\n          ],\n          \"maxDataPoints\": 100,\n          \"nullPointMode\": \"connected\",\n          \"nullText\": null,\n          \"options\": {},\n          \"postfix\": \"\",\n          \"postfixFontSize\": \"50%\",\n          \"prefix\": \"\",\n          \"prefixFontSize\": \"50%\",\n          \"rangeMaps\": [\n            {\n              \"from\": \"null\",\n              \"text\": \"N/A\",\n              \"to\": \"null\"\n            }\n          ],\n          \"sparkline\": {\n            \"fillColor\": \"rgba(31, 118, 189, 0.18)\",\n            \"full\": false,\n            \"lineColor\": \"rgb(31, 120, 193)\",\n            \"show\": true\n          },\n          \"tableColumn\": \"\",\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"sum(argocd_app_info) - sum(argocd_app_info{health_status=\"Healthy\"})\",\n              \"interval\": \"\",\n              \"legendFormat\": \"\",\n              \"refId\": \"A\"\n            }\n          ],\n          \"thresholds\": \"1,2\",\n          \"timeFrom\": null,\n          \"timeShift\": null,\n          \"title\": \"DEGRADED/MISSING\",\n          \"type\": \"singlestat\",\n          \"valueFontSize\": \"80%\",\n          \"valueMaps\": [],\n          \"valueName\": \"current\"\n        },\n        {\n          \"cacheTimeout\": null,\n          \"colorBackground\": false,\n          \"colorValue\": true,\n          \"colors\": [\n            \"#299c46\",\n            \"rgba(237, 129, 40, 0.89)\",\n            \"#d44a3a\"\n          ],\n          \"datasource\": \"Prometheus\",\n          \"format\": \"none\",\n          \"gauge\": {\n            \"maxValue\": 100,\n            \"minValue\": 0,\n            \"show\": false,\n            \"thresholdLabels\": false,\n            \"thresholdMarkers\": true\n          },\n          \"gridPos\": {\n            \"h\": 3,\n            \"w\": 6,\n            \"x\": 18,\n            \"y\": 0\n          },\n          \"id\": 10,\n          \"interval\": null,\n          \"links\": [],\n          \"mappingType\": 1,\n          \"mappingTypes\": [\n            {\n              \"name\": \"value to text\",\n              \"value\": 1\n            },\n            {\n              \"name\": \"range to text\",\n              \"value\": 2\n            }\n          ],\n          \"maxDataPoints\": 100,\n          \"nullPointMode\": \"connected\",\n          \"nullText\": null,\n          \"options\": {},\n          \"postfix\": \"\",\n          \"postfixFontSize\": \"50%\",\n          \"prefix\": \"\",\n          \"prefixFontSize\": \"50%\",\n          \"rangeMaps\": [\n            {\n              \"from\": \"null\",\n              \"text\": \"N/A\",\n              \"to\": \"null\"\n            }\n          ],\n          \"sparkline\": {\n            \"fillColor\": \"rgba(31, 118, 189, 0.18)\",\n            \"full\": false,\n            \"lineColor\": \"rgb(31, 120, 193)\",\n            \"show\": true\n          },\n          \"tableColumn\": \"\",\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"sum(argocd_cluster_info)\",\n              \"interval\": \"\",\n              \"legendFormat\": \"\",\n              \"refId\": \"A\"\n            }\n          ],\n          \"thresholds\": \"\",\n          \"timeFrom\": null,\n          \"timeShift\": null,\n          \"title\": \"CLUSTERS\",\n          \"type\": \"singlestat\",\n          \"valueFontSize\": \"80%\",\n          \"valueMaps\": [\n            {\n              \"op\": \"=\",\n              \"text\": \"N/A\",\n              \"value\": \"null\"\n            }\n          ],\n          \"valueName\": \"current\"\n        },\n        {\n          \"aliasColors\": {},\n          \"bars\": false,\n          \"dashLength\": 10,\n          \"dashes\": false,\n          \"datasource\": \"Prometheus\",\n          \"fieldConfig\": {\n            \"defaults\": {\"custom\": {}},\n            \"overrides\": []\n          },\n          \"gridPos\": {\n            \"h\": 7,\n            \"w\": 12,\n            \"x\": 0,\n            \"y\": 3\n          },\n          \"id\": 2,\n          \"legend\": {\"show\": false},\n          \"lines\": true,\n          \"linewidth\": 1,\n          \"links\": [],\n          \"nullPointMode\": \"null as zero\",\n          \"options\": {\"alertThreshold\": true},\n          \"percentage\": false,\n          \"pluginVersion\": \"7.2.0\",\n          \"pointradius\": 2,\n          \"points\": false,\n          \"renderer\": \"flot\",\n          \"seriesOverrides\": [],\n          \"spaceLength\": 10,\n          \"stack\": false,\n          \"steppedLine\": false,\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"sum(rate(argocd_app_reconcile_count{app=~\"$app\"}[5m])) by (app, dest_namespace, dest_server)\",\n              \"interval\": \"\",\n              \"legendFormat\": \"{{app}}\",\n              \"refId\": \"A\"\n            },\n            {\n              \"exemplar\": true,\n              \"expr\": \"sum(argocd_app_info{sync_status=\"Synced\"})\",\n              \"hide\": false,\n              \"interval\": \"\",\n              \"legendFormat\": \"Synced\",\n              \"refId\": \"B\"\n            }\n          ],\n          \"thresholds\": [],\n          \"timeFrom\": null,\n          \"timeShift\": null,\n          \"title\": \"Application Sync Status\",\n          \"tooltip\": {\"shared\": true, \"sort\": 0, \"value_type\": \"individual\"},\n          \"type\": \"graph\",\n          \"xaxis\": {\"buckets\": null, \"mode\": \"time\", \"name\": null, \"show\": true, \"values\": []},\n          \"yaxes\": [\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": \"0\", \"show\": true},\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": null, \"show\": true}\n          ],\n          \"yaxis\": {\"align\": false, \"alignLevel\": null}\n        },\n        {\n          \"aliasColors\": {},\n          \"bars\": false,\n          \"dashLength\": 10,\n          \"dashes\": false,\n          \"datasource\": \"Prometheus\",\n          \"fieldConfig\": {\"defaults\": {\"custom\": {}}, \"overrides\": []},\n          \"gridPos\": {\"h\": 7, \"w\": 12, \"x\": 12, \"y\": 3},\n          \"id\": 12,\n          \"legend\": {\"show\": false},\n          \"lines\": true,\n          \"linewidth\": 1,\n          \"links\": [],\n          \"nullPointMode\": \"null as zero\",\n          \"options\": {\"alertThreshold\": true},\n          \"percentage\": false,\n          \"pluginVersion\": \"7.2.0\",\n          \"pointradius\": 2,\n          \"points\": false,\n          \"renderer\": \"flot\",\n          \"seriesOverrides\": [],\n          \"spaceLength\": 10,\n          \"stack\": false,\n          \"steppedLine\": false,\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"sum(argocd_app_info{health_status!=\"Healthy\"}) by (health_status)\",\n              \"interval\": \"\",\n              \"legendFormat\": \"{{health_status}}\",\n              \"refId\": \"A\"\n            },\n            {\n              \"exemplar\": true,\n              \"expr\": \"sum(argocd_app_info{health_status=\"Healthy\"})\",\n              \"hide\": false,\n              \"interval\": \"\",\n              \"legendFormat\": \"Healthy\",\n              \"refId\": \"B\"\n            }\n          ],\n          \"thresholds\": [],\n          \"timeFrom\": null,\n          \"timeShift\": null,\n          \"title\": \"Application Health Status\",\n          \"tooltip\": {\"shared\": true, \"sort\": 0, \"value_type\": \"individual\"},\n          \"type\": \"graph\",\n          \"xaxis\": {\"buckets\": null, \"mode\": \"time\", \"name\": null, \"show\": true, \"values\": []},\n          \"yaxes\": [\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": \"0\", \"show\": true},\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": null, \"show\": true}\n          ],\n          \"yaxis\": {\"align\": false, \"alignLevel\": null}\n        },\n        {\n          \"aliasColors\": {},\n          \"bars\": false,\n          \"dashLength\": 10,\n          \"dashes\": false,\n          \"datasource\": \"Prometheus\",\n          \"fieldConfig\": {\"defaults\": {\"custom\": {}}, \"overrides\": []},\n          \"gridPos\": {\"h\": 9, \"w\": 24, \"x\": 0, \"y\": 10},\n          \"id\": 14,\n          \"legend\": {\"alignAsTable\": true, \"avg\": true, \"current\": true, \"max\": true, \"min\": true, \"show\": true, \"sort\": \"current\", \"sortDesc\": true, \"total\": false, \"values\": true},\n          \"lines\": true,\n          \"linewidth\": 1,\n          \"links\": [],\n          \"nullPointMode\": \"null\",\n          \"options\": {\"alertThreshold\": true},\n          \"percentage\": false,\n          \"pluginVersion\": \"7.2.0\",\n          \"pointradius\": 2,\n          \"points\": false,\n          \"renderer\": \"flot\",\n          \"seriesOverrides\": [],\n          \"spaceLength\": 10,\n          \"stack\": false,\n          \"steppedLine\": false,\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"sum(rate(argocd_app_reconcile_count{app=~\"$app\"}[5m])) by (app, dest_namespace, dest_server)\",\n              \"interval\": \"\",\n              \"legendFormat\": \"{{app}}\",\n              \"refId\": \"A\"\n            }\n          ],\n          \"thresholds\": [],\n          \"timeFrom\": null,\n          \"timeRegions\": [],\n          \"timeShift\": null,\n          \"title\": \"Application Reconciliation\",\n          \"tooltip\": {\"shared\": true, \"sort\": 0, \"value_type\": \"individual\"},\n          \"type\": \"graph\",\n          \"xaxis\": {\"buckets\": null, \"mode\": \"time\", \"name\": null, \"show\": true, \"values\": []},\n          \"yaxes\": [\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": \"0\", \"show\": true},\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": null, \"show\": true}\n          ],\n          \"yaxis\": {\"align\": false, \"alignLevel\": null}\n        },\n        {\n          \"aliasColors\": {},\n          \"bars\": false,\n          \"dashLength\": 10,\n          \"dashes\": false,\n          \"datasource\": \"Prometheus\",\n          \"fieldConfig\": {\"defaults\": {\"custom\": {}}, \"overrides\": []},\n          \"gridPos\": {\"h\": 9, \"w\": 12, \"x\": 12, \"y\": 19},\n          \"id\": 16,\n          \"legend\": {\"alignAsTable\": true, \"avg\": false, \"current\": true, \"max\": false, \"min\": false, \"show\": true, \"sort\": \"current\", \"sortDesc\": true, \"total\": false, \"values\": true},\n          \"lines\": true,\n          \"linewidth\": 1,\n          \"links\": [],\n          \"nullPointMode\": \"null\",\n          \"options\": {\"alertThreshold\": true},\n          \"percentage\": false,\n          \"pluginVersion\": \"7.2.0\",\n          \"pointradius\": 2,\n          \"points\": false,\n          \"renderer\": \"flot\",\n          \"seriesOverrides\": [],\n          \"spaceLength\": 10,\n          \"stack\": false,\n          \"steppedLine\": false,\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"sum(rate(grpc_server_handled_total{grpc_service=~\"$service\", grpc_code!=\"OK\"}[5m])) by (grpc_service, grpc_method, grpc_code)\",\n              \"interval\": \"\",\n              \"legendFormat\": \"{{grpc_method}} {{grpc_code}}\",\n              \"refId\": \"A\"\n            }\n          ],\n          \"thresholds\": [],\n          \"timeFrom\": null,\n          \"timeRegions\": [],\n          \"timeShift\": null,\n          \"title\": \"gRPC Errors\",\n          \"tooltip\": {\"shared\": true, \"sort\": 0, \"value_type\": \"individual\"},\n          \"type\": \"graph\",\n          \"xaxis\": {\"buckets\": null, \"mode\": \"time\", \"name\": null, \"show\": true, \"values\": []},\n          \"yaxes\": [\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": \"0\", \"show\": true},\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": null, \"show\": true}\n          ],\n          \"yaxis\": {\"align\": false, \"alignLevel\": null}\n        },\n        {\n          \"aliasColors\": {},\n          \"bars\": false,\n          \"dashLength\": 10,\n          \"dashes\": false,\n          \"datasource\": \"Prometheus\",\n          \"fieldConfig\": {\"defaults\": {\"custom\": {}}, \"overrides\": []},\n          \"gridPos\": {\"h\": 9, \"w\": 12, \"x\": 12, \"y\": 19},\n          \"id\": 17,\n          \"legend\": {\"alignAsTable\": true, \"avg\": false, \"current\": true, \"max\": false, \"min\": false, \"show\": true, \"sort\": \"current\", \"sortDesc\": true, \"total\": false, \"values\": true},\n          \"lines\": true,\n          \"linewidth\": 1,\n          \"links\": [],\n          \"nullPointMode\": \"null\",\n          \"options\": {\"alertThreshold\": true},\n          \"percentage\": false,\n          \"pluginVersion\": \"7.2.0\",\n          \"pointradius\": 2,\n          \"points\": false,\n          \"renderer\": \"flot\",\n          \"seriesOverrides\": [],\n          \"spaceLength\": 10,\n          \"stack\": false,\n          \"steppedLine\": false,\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"histogram_quantile($quantile, sum(rate(grpc_server_handling_seconds_bucket{grpc_service=~\"$service\"}[5m])) by (le, grpc_method))\",\n              \"interval\": \"\",\n              \"legendFormat\": \"{{grpc_method}}\",\n              \"refId\": \"A\"\n            }\n          ],\n          \"thresholds\": [],\n          \"timeFrom\": null,\n          \"timeRegions\": [],\n          \"timeShift\": null,\n          \"title\": \"gRPC Request Latency\",\n          \"tooltip\": {\"shared\": true, \"sort\": 0, \"value_type\": \"individual\"},\n          \"type\": \"graph\",\n          \"xaxis\": {\"buckets\": null, \"mode\": \"time\", \"name\": null, \"show\": true, \"values\": []},\n          \"yaxes\": [\n            {\"format\": \"s\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": \"0\", \"show\": true},\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": null, \"show\": true}\n          ],\n          \"yaxis\": {\"align\": false, \"alignLevel\": null}\n        },\n        {\n          \"aliasColors\": {},\n          \"bars\": false,\n          \"dashLength\": 10,\n          \"dashes\": false,\n          \"datasource\": \"Prometheus\",\n          \"fieldConfig\": {\"defaults\": {\"custom\": {}}, \"overrides\": []},\n          \"gridPos\": {\"h\": 9, \"w\": 12, \"x\": 0, \"y\": 28},\n          \"id\": 18,\n          \"legend\": {\"alignAsTable\": true, \"avg\": false, \"current\": true, \"max\": false, \"min\": false, \"show\": true, \"sort\": \"current\", \"sortDesc\": true, \"total\": false, \"values\": true},\n          \"lines\": true,\n          \"linewidth\": 1,\n          \"links\": [],\n          \"nullPointMode\": \"null\",\n          \"options\": {\"alertThreshold\": true},\n          \"percentage\": false,\n          \"pluginVersion\": \"7.2.0\",\n          \"pointradius\": 2,\n          \"points\": false,\n          \"renderer\": \"flot\",\n          \"seriesOverrides\": [],\n          \"spaceLength\": 10,\n          \"stack\": false,\n          \"steppedLine\": false,\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"histogram_quantile($quantile, sum(rate(argocd_redis_request_duration_bucket[5m])) by (le, command))\",\n              \"interval\": \"\",\n              \"legendFormat\": \"{{command}}\",\n              \"refId\": \"A\"\n            }\n          ],\n          \"thresholds\": [],\n          \"timeFrom\": null,\n          \"timeRegions\": [],\n          \"timeShift\": null,\n          \"title\": \"Redis Request Latency\",\n          \"tooltip\": {\"shared\": true, \"sort\": 0, \"value_type\": \"individual\"},\n          \"type\": \"graph\",\n          \"xaxis\": {\"buckets\": null, \"mode\": \"time\", \"name\": null, \"show\": true, \"values\": []},\n          \"yaxes\": [\n            {\"format\": \"s\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": \"0\", \"show\": true},\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": null, \"show\": true}\n          ],\n          \"yaxis\": {\"align\": false, \"alignLevel\": null}\n        },\n        {\n          \"aliasColors\": {},\n          \"bars\": false,\n          \"dashLength\": 10,\n          \"dashes\": false,\n          \"datasource\": \"Prometheus\",\n          \"fieldConfig\": {\"defaults\": {\"custom\": {}}, \"overrides\": []},\n          \"gridPos\": {\"h\": 9, \"w\": 12, \"x\": 12, \"y\": 28},\n          \"id\": 19,\n          \"legend\": {\"alignAsTable\": true, \"avg\": false, \"current\": true, \"max\": false, \"min\": false, \"show\": true, \"sort\": \"current\", \"sortDesc\": true, \"total\": false, \"values\": true},\n          \"lines\": true,\n          \"linewidth\": 1,\n          \"links\": [],\n          \"nullPointMode\": \"null\",\n          \"options\": {\"alertThreshold\": true},\n          \"percentage\": false,\n          \"pluginVersion\": \"7.2.0\",\n          \"pointradius\": 2,\n          \"points\": false,\n          \"renderer\": \"flot\",\n          \"seriesOverrides\": [],\n          \"spaceLength\": 10,\n          \"stack\": false,\n          \"steppedLine\": false,\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"sum(rate(redis_commands_total[5m])) by (command)\",\n              \"interval\": \"\",\n              \"legendFormat\": \"{{command}}\",\n              \"refId\": \"A\"\n            }\n          ],\n          \"thresholds\": [],\n          \"timeFrom\": null,\n          \"timeRegions\": [],\n          \"timeShift\": null,\n          \"title\": \"Redis Commands\",\n          \"tooltip\": {\"shared\": true, \"sort\": 0, \"value_type\": \"individual\"},\n          \"type\": \"graph\",\n          \"xaxis\": {\"buckets\": null, \"mode\": \"time\", \"name\": null, \"show\": true, \"values\": []},\n          \"yaxes\": [\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": \"0\", \"show\": true},\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": null, \"show\": true}\n          ],\n          \"yaxis\": {\"align\": false, \"alignLevel\": null}\n        },\n        {\n          \"aliasColors\": {},\n          \"bars\": false,\n          \"dashLength\": 10,\n          \"dashes\": false,\n          \"datasource\": \"Prometheus\",\n          \"fieldConfig\": {\"defaults\": {\"custom\": {}}, \"overrides\": []},\n          \"gridPos\": {\"h\": 9, \"w\": 24, \"x\": 0, \"y\": 37},\n          \"id\": 20,\n          \"legend\": {\"alignAsTable\": true, \"avg\": false, \"current\": true, \"max\": false, \"min\": false, \"show\": true, \"sort\": \"current\", \"sortDesc\": true, \"total\": false, \"values\": true},\n          \"lines\": true,\n          \"linewidth\": 1,\n          \"links\": [],\n          \"nullPointMode\": \"null\",\n          \"options\": {\"alertThreshold\": true},\n          \"percentage\": false,\n          \"pluginVersion\": \"7.2.0\",\n          \"pointradius\": 2,\n          \"points\": false,\n          \"renderer\": \"flot\",\n          \"seriesOverrides\": [],\n          \"spaceLength\": 10,\n          \"stack\": false,\n          \"steppedLine\": false,\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"histogram_quantile($quantile, sum(rate(argocd_git_request_duration_bucket[5m])) by (le, repo))\",\n              \"interval\": \"\",\n              \"legendFormat\": \"{{repo}}\",\n              \"refId\": \"A\"\n            }\n          ],\n          \"thresholds\": [],\n          \"timeFrom\": null,\n          \"timeRegions\": [],\n          \"timeShift\": null,\n          \"title\": \"Git Request Rate\",\n          \"tooltip\": {\"shared\": true, \"sort\": 0, \"value_type\": \"individual\"},\n          \"type\": \"graph\",\n          \"xaxis\": {\"buckets\": null, \"mode\": \"time\", \"name\": null, \"show\": true, \"values\": []},\n          \"yaxes\": [\n            {\"format\": \"s\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": \"0\", \"show\": true},\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": null, \"show\": true}\n          ],\n          \"yaxis\": {\"align\": false, \"alignLevel\": null}\n        },\n        {\n          \"aliasColors\": {},\n          \"bars\": false,\n          \"dashLength\": 10,\n          \"dashes\": false,\n          \"datasource\": \"Prometheus\",\n          \"fieldConfig\": {\"defaults\": {\"custom\": {}}, \"overrides\": []},\n          \"gridPos\": {\"h\": 9, \"w\": 24, \"x\": 0, \"y\": 46},\n          \"id\": 21,\n          \"legend\": {\"alignAsTable\": true, \"avg\": false, \"current\": true, \"max\": false, \"min\": false, \"show\": true, \"sort\": \"current\", \"sortDesc\": true, \"total\": false, \"values\": true},\n          \"lines\": true,\n          \"linewidth\": 1,\n          \"links\": [],\n          \"nullPointMode\": \"null\",\n          \"options\": {\"alertThreshold\": true},\n          \"percentage\": false,\n          \"pluginVersion\": \"7.2.0\",\n          \"pointradius\": 2,\n          \"points\": false,\n          \"renderer\": \"flot\",\n          \"seriesOverrides\": [],\n          \"spaceLength\": 10,\n          \"stack\": false,\n          \"steppedLine\": false,\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"topk(10, sort_desc(argocd_redis_request_total))\",\n              \"interval\": \"\",\n              \"legendFormat\": \"{{command}}\",\n              \"refId\": \"A\"\n            }\n          ],\n          \"thresholds\": [],\n          \"timeFrom\": null,\n          \"timeRegions\": [],\n          \"timeShift\": null,\n          \"title\": \"Redis Cache hits/misses\",\n          \"tooltip\": {\"shared\": true, \"sort\": 0, \"value_type\": \"individual\"},\n          \"type\": \"graph\",\n          \"xaxis\": {\"buckets\": null, \"mode\": \"time\", \"name\": null, \"show\": true, \"values\": []},\n          \"yaxes\": [\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": \"0\", \"show\": true},\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": null, \"show\": true}\n          ],\n          \"yaxis\": {\"align\": false, \"alignLevel\": null}\n        },\n        {\n          \"aliasColors\": {},\n          \"bars\": false,\n          \"dashLength\": 10,\n          \"dashes\": false,\n          \"datasource\": \"Prometheus\",\n          \"fieldConfig\": {\"defaults\": {\"custom\": {}}, \"overrides\": []},\n          \"gridPos\": {\"h\": 9, \"w\": 12, \"x\": 0, \"y\": 55},\n          \"id\": 22,\n          \"legend\": {\"alignAsTable\": true, \"avg\": false, \"current\": true, \"max\": false, \"min\": false, \"show\": true, \"sort\": \"current\", \"sortDesc\": true, \"total\": false, \"values\": true},\n          \"lines\": true,\n          \"linewidth\": 1,\n          \"links\": [],\n          \"nullPointMode\": \"null\",\n          \"options\": {\"alertThreshold\": true},\n          \"percentage\": false,\n          \"pluginVersion\": \"7.2.0\",\n          \"pointradius\": 2,\n          \"points\": false,\n          \"renderer\": \"flot\",\n          \"seriesOverrides\": [],\n          \"spaceLength\": 10,\n          \"stack\": false,\n          \"steppedLine\": false,\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"argocd_cluster_api_resource_objects\",\n              \"interval\": \"\",\n              \"legendFormat\": \"{{group}}/{{version}}/{{kind}}\",\n              \"refId\": \"A\"\n            }\n          ],\n          \"thresholds\": [],\n          \"timeFrom\": null,\n          \"timeRegions\": [],\n          \"timeShift\": null,\n          \"title\": \"Cluster API resource objects\",\n          \"tooltip\": {\"shared\": true, \"sort\": 0, \"value_type\": \"individual\"},\n          \"type\": \"graph\",\n          \"xaxis\": {\"buckets\": null, \"mode\": \"time\", \"name\": null, \"show\": true, \"values\": []},\n          \"yaxes\": [\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": \"0\", \"show\": true},\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": null, \"show\": true}\n          ],\n          \"yaxis\": {\"align\": false, \"alignLevel\": null}\n        },\n        {\n          \"aliasColors\": {},\n          \"bars\": false,\n          \"dashLength\": 10,\n          \"dashes\": false,\n          \"datasource\": \"Prometheus\",\n          \"fieldConfig\": {\"defaults\": {\"custom\": {}}, \"overrides\": []},\n          \"gridPos\": {\"h\": 9, \"w\": 12, \"x\": 12, \"y\": 55},\n          \"id\": 23,\n          \"legend\": {\"alignAsTable\": true, \"avg\": false, \"current\": true, \"max\": false, \"min\": false, \"show\": true, \"sort\": \"current\", \"sortDesc\": true, \"total\": false, \"values\": true},\n          \"lines\": true,\n          \"linewidth\": 1,\n          \"links\": [],\n          \"nullPointMode\": \"null\",\n          \"options\": {\"alertThreshold\": true},\n          \"percentage\": false,\n          \"pluginVersion\": \"7.2.0\",\n          \"pointradius\": 2,\n          \"points\": false,\n          \"renderer\": \"flot\",\n          \"seriesOverrides\": [],\n          \"spaceLength\": 10,\n          \"stack\": false,\n          \"steppedLine\": false,\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"argocd_cluster_api_resources\",\n              \"interval\": \"\",\n              \"legendFormat\": \"{{group}}/{{version}}/{{kind}}\",\n              \"refId\": \"A\"\n            }\n          ],\n          \"thresholds\": [],\n          \"timeFrom\": null,\n          \"timeRegions\": [],\n          \"timeShift\": null,\n          \"title\": \"Cluster API resources\",\n          \"tooltip\": {\"shared\": true, \"sort\": 0, \"value_type\": \"individual\"},\n          \"type\": \"graph\",\n          \"xaxis\": {\"buckets\": null, \"mode\": \"time\", \"name\": null, \"show\": true, \"values\": []},\n          \"yaxes\": [\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": \"0\", \"show\": true},\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": null, \"show\": true}\n          ],\n          \"yaxis\": {\"align\": false, \"alignLevel\": null}\n        },\n        {\n          \"aliasColors\": {},\n          \"bars\": false,\n          \"dashLength\": 10,\n          \"dashes\": false,\n          \"datasource\": \"Prometheus\",\n          \"fieldConfig\": {\"defaults\": {\"custom\": {}}, \"overrides\": []},\n          \"gridPos\": {\"h\": 9, \"w\": 12, \"x\": 0, \"y\": 64},\n          \"id\": 24,\n          \"legend\": {\"alignAsTable\": true, \"avg\": false, \"current\": true, \"max\": false, \"min\": false, \"show\": true, \"sort\": \"current\", \"sortDesc\": true, \"total\": false, \"values\": true},\n          \"lines\": true,\n          \"linewidth\": 1,\n          \"links\": [],\n          \"nullPointMode\": \"null\",\n          \"options\": {\"alertThreshold\": true},\n          \"percentage\": false,\n          \"pluginVersion\": \"7.2.0\",\n          \"pointradius\": 2,\n          \"points\": false,\n          \"renderer\": \"flot\",\n          \"seriesOverrides\": [],\n          \"spaceLength\": 10,\n          \"stack\": false,\n          \"steppedLine\": false,\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"topk(10, sort_desc(argocd_redis_request_total))\",\n              \"interval\": \"\",\n              \"legendFormat\": \"{{pod}}\",\n              \"refId\": \"A\"\n            }\n          ],\n          \"thresholds\": [],\n          \"timeFrom\": null,\n          \"timeRegions\": [],\n          \"timeShift\": null,\n          \"title\": \"Controller pod requests\",\n          \"tooltip\": {\"shared\": true, \"sort\": 0, \"value_type\": \"individual\"},\n          \"type\": \"graph\",\n          \"xaxis\": {\"buckets\": null, \"mode\": \"time\", \"name\": null, \"show\": true, \"values\": []},\n          \"yaxes\": [\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": \"0\", \"show\": true},\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": null, \"show\": true}\n          ],\n          \"yaxis\": {\"align\": false, \"alignLevel\": null}\n        },\n        {\n          \"aliasColors\": {},\n          \"bars\": false,\n          \"dashLength\": 10,\n          \"dashes\": false,\n          \"datasource\": \"Prometheus\",\n          \"fieldConfig\": {\"defaults\": {\"custom\": {}}, \"overrides\": []},\n          \"gridPos\": {\"h\": 9, \"w\": 12, \"x\": 12, \"y\": 64},\n          \"id\": 25,\n          \"legend\": {\"alignAsTable\": true, \"avg\": false, \"current\": true, \"max\": false, \"min\": false, \"show\": true, \"sort\": \"current\", \"sortDesc\": true, \"total\": false, \"values\": true},\n          \"lines\": true,\n          \"linewidth\": 1,\n          \"links\": [],\n          \"nullPointMode\": \"null\",\n          \"options\": {\"alertThreshold\": true},\n          \"percentage\": false,\n          \"pluginVersion\": \"7.2.0\",\n          \"pointradius\": 2,\n          \"points\": false,\n          \"renderer\": \"flot\",\n          \"seriesOverrides\": [],\n          \"spaceLength\": 10,\n          \"stack\": false,\n          \"steppedLine\": false,\n          \"targets\": [\n            {\n              \"exemplar\": true,\n              \"expr\": \"argocd_cluster_cache_age_seconds\",\n              \"interval\": \"\",\n              \"legendFormat\": \"{{server}}\",\n              \"refId\": \"A\"\n            }\n          ],\n          \"thresholds\": [],\n          \"timeFrom\": null,\n          \"timeRegions\": [],\n          \"timeShift\": null,\n          \"title\": \"Cluster cache age\",\n          \"tooltip\": {\"shared\": true, \"sort\": 0, \"value_type\": \"individual\"},\n          \"type\": \"graph\",\n          \"xaxis\": {\"buckets\": null, \"mode\": \"time\", \"name\": null, \"show\": true, \"values\": []},\n          \"yaxes\": [\n            {\"format\": \"s\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": \"0\", \"show\": true},\n            {\"format\": \"short\", \"label\": null, \"logBase\": 1, \"max\": null, \"min\": null, \"show\": true}\n          ],\n          \"yaxis\": {\"align\": false, \"alignLevel\": null}\n        }\n      ],\n      \"refresh\": false,\n      \"schemaVersion\": 27,\n      \"style\": \"dark\",\n      \"tags\": [],\n      \"templating\": {\n        \"list\": [\n          {\n            \"current\": {\"selected\": false, \"text\": \"All\", \"value\": \"$__all\"},\n            \"hide\": 0,\n            \"includeAll\": true,\n            \"label\": null,\n            \"multi\": true,\n            \"name\": \"app\",\n            \"options\": [],\n            \"query\": \"label_values(argocd_app_reconcile_count, app)\",\n            \"refresh\": 2,\n            \"regex\": \"\",\n            \"skipUrlSync\": false,\n            \"sort\": 0,\n            \"tagValuesQuery\": \"\",\n            \"tags\": [],\n            \"tagsQuery\": \"\",\n            \"type\": \"query\",\n            \"useTags\": false\n          },\n          {\n            \"current\": {\"selected\": true, \"text\": \"99\", \"value\": \"99\"},\n            \"hide\": 0,\n            \"name\": \"quantile\",\n            \"options\": [\n              {\"selected\": false, \"text\": \"50\", \"value\": \"50\"},\n              {\"selected\": false, \"text\": \"90\", \"value\": \"90\"},\n              {\"selected\": true, \"text\": \"99\", \"value\": \"99\"}\n            ],\n            \"query\": \"50,90,99\",\n            \"skipUrlSync\": false,\n            \"type\": \"custom\"\n          },\n          {\n            \"current\": {\"selected\": true, \"text\": \"All\", \"value\": \"$__all\"},\n            \"hide\": 0,\n            \"includeAll\": true,\n            \"label\": null,\n            \"multi\": true,\n            \"name\": \"service\",\n            \"options\": [],\n            \"query\": \"label_values(grpc_server_handled_total, grpc_service)\",\n            \"refresh\": 2,\n            \"regex\": \"\",\n            \"skipUrlSync\": false,\n            \"sort\": 0,\n            \"type\": \"query\"\n          }\n        ]\n      },\n      \"time\": {\"from\": \"now-5m\", \"to\": \"now\"},\n      \"timepicker\": {\n        \"refresh_intervals\": [\n          \"5s\",\n          \"10s\",\n          \"30s\",\n          \"1m\",\n          \"5m\",\n          \"15m\",\n          \"30m\",\n          \"1h\",\n          \"2h\",\n          \"1d\"\n        ],\n        \"time_options\": [\n          \"5m\",\n          \"15m\",\n          \"1h\",\n          \"6h\",\n          \"12h\",\n          \"24h\",\n          \"2d\",\n          \"7d\",\n          \"30d\"\n        ]\n      },\n      \"timezone\": \"\",\n      \"title\": \"Argo CD\",\n      \"uid\": \"l1h-M4xZz\",\n      \"version\": 9\n    }\n"
+}

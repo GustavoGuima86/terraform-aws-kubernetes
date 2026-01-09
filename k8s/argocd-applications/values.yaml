@@ -5,8 +5,8 @@ deploymentMethod: "gitops" # Can be 'gitops' or 'local'
 argocdNamespace: "argocd" # Can be overridden via --set flags
 
 gitRepo:
-  url: https://github.com/GustavoGuima86/terraform-aws-kubernetes
-  branch: new-2026-features
+  url: "https://github.com/GustavoGuima86/terraform-aws-kubernetes"
+  branch: "new-2026-features"
 
 # Values from Terraform outputs (set via --set flags in helm upgrade)
 
@@ -22,18 +22,15 @@ lokiBucketName: ""
 mimirBucketName: ""
 awsRegion: ""
 vpcId: ""
+veleroBucketName: ""
+veleroBucketRegion: ""
 
 # Karpenter values
-karpenterControllerIamRoleArn: ""
-karpenterNodeIamRoleArn: ""
 karpenterNodeIamRoleName: ""
 karpenterInterruptionQueueName: ""
-karpenterInterruptionQueueUrl: ""
 
 # Observability values
-lokiServiceAccountRoleArn: ""
 lokiServiceAccountName: ""
-mimirServiceAccountRoleArn: ""
 mimirServiceAccountName: ""
 kubePrometheusRelease: "kube-prometheus-stack"
 

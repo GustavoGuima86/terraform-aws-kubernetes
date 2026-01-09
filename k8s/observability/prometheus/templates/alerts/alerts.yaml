@@ -1,0 +1,111 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: argocd-alerts
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: argocd.rules
+    rules:
+    - alert: ArgoCDAppNotHealthy
+      expr: argocd_app_info{health_status!~"Healthy|Progressing"} == 1
+      for: 5m
+      labels:
+        severity: warning
+      annotations:
+        summary: "ArgoCD application {{ $labels.name }} is not healthy"
+        description: "ArgoCD application {{ $labels.name }} in namespace {{ $labels.namespace }} has a health status of {{ $labels.health_status }} for more than 5 minutes."
+    - alert: ArgoCDAppOutOfSync
+      expr: argocd_app_info{sync_status!="Synced"} == 1
+      for: 15m
+      labels:
+        severity: critical
+      annotations:
+        summary: "ArgoCD application {{ $labels.name }} is out of sync"
+        description: "ArgoCD application {{ $labels.name }} in namespace {{ $labels.namespace }} has been out of sync for more than 15 minutes."
+    - alert: ArgoCDControllerDown
+      expr: absent(up{job="argocd-application-controller"})
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "ArgoCD controller is down"
+        description: "The ArgoCD application controller has been down for more than 5 minutes."
+    - alert: ArgoCDServerDown
+      expr: absent(up{job="argocd-server"})
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "ArgoCD server is down"
+        description: "The ArgoCD server has been down for more than 5 minutes."
+  - name: karpenter.rules
+    rules:
+    - alert: KarpenterControllerDown
+      expr: absent(up{job="karpenter"})
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Karpenter controller is down"
+        description: "The Karpenter controller has been down for more than 5 minutes."
+    - alert: KarpenterNodeCreationFailure
+      expr: rate(karpenter_nodeclaims_created_total{status="failed"}[5m]) > 0
+      for: 15m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Karpenter is failing to create nodes"
+        description: "Karpenter has been failing to create nodes for more than 15 minutes."
+    - alert: KarpenterNodeTerminationFailure
+      expr: rate(karpenter_nodeclaims_terminated_total{status="failed"}[5m]) > 0
+      for: 15m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Karpenter is failing to terminate nodes"
+        description: "Karpenter has been failing to terminate nodes for more than 15 minutes."
+  - name: vpc-cni.rules
+    rules:
+    - alert: VpcCniLowAvailableIps
+      expr: awscni_ip_free < 10
+      for: 15m
+      labels:
+        severity: warning
+      annotations:
+        summary: "VPC CNI is running low on available IPs"
+        description: "The VPC CNI has less than 10 free IPs for more than 15 minutes."
+    - alert: VpcCniIpAllocationErrors
+      expr: rate(awscni_add_ip_req_count{status="fail"}[5m]) > 0
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "VPC CNI is having IP allocation errors"
+        description: "The VPC CNI is having IP allocation errors for more than 5 minutes."
+  - name: gatekeeper.rules
+    rules:
+    - alert: GatekeeperAuditDown
+      expr: absent(up{job="gatekeeper-audit"})
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Gatekeeper audit is down"
+        description: "The Gatekeeper audit service has been down for more than 5 minutes."
+    - alert: GatekeeperControllerDown
+      expr: absent(up{job="gatekeeper-controller-manager"})
+      for: 5m
+      labels:
+        severity: critical
+      annotations:
+        summary: "Gatekeeper controller is down"
+        description: "The Gatekeeper controller manager has been down for more than 5 minutes."
+    - alert: GatekeeperAdmissionViolations
+      expr: sum(rate(gatekeeper_admission_requests_total{status="violations"}[5m])) > 0
+      labels:
+        severity: warning
+      annotations:
+        summary: "Gatekeeper has admission violations"
+        description: "Gatekeeper is blocking admission requests due to policy violations."
