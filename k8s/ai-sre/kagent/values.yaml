@@ -4,9 +4,9 @@ kagent:
     default: ollama
     ollama:
       provider: Ollama
-      model: "codellama" # As I had before
+      model: "ollama/qwen2.5:3b"
       config:
-        host: http://ollama-ollama.ai-sre:11434
+        host: "http://ollama-ollama-server.ai-sre.svc.cluster.local:11434"
 
   # Disable most agents for a minimal setup
   agents:
