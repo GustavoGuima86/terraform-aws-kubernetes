@@ -16,20 +16,20 @@ ollama-server:
     # On m6g (Graviton), setting this too high adds overhead.
     # 8-10 threads is often the sweet spot for latency.
     - name: OLLAMA_NUM_PARALLEL
-      value: "8"
+      value: "2"
 
     - name: OLLAMA_KEEP_ALIVE
       value: "-1"
   resources:
     requests:
-      cpu: "12"
-      memory: "40Gi"
+      cpu: "4"
+      memory: "8Gi"
     limits:
-      cpu: "14"
-      memory: "58Gi"
+      cpu: "8"
+      memory: "12Gi"
   persistentVolume:
     enabled: true
-    size: 50Gi
+    size: 2Gi
     storageClass: "gp3-secure"
     accessModes:
       - ReadWriteOnce

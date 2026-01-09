@@ -2,13 +2,13 @@
 
 holmes:
   modelList:
-    llama3:
+    qwen2.5:
       model: "ollama/qwen2.5:3b"
       type: "ollama"
       base_url: "http://ollama-ollama-server.ai-sre.svc.cluster.local:11434"
       temperature: 0.1
       is_default: true
-      max_tokens: 32768
+      max_tokens: 4096
   createServiceAccount: true
   customServiceAccountName: holmes
   customClusterRoleRules:
@@ -20,13 +20,13 @@ holmes:
       verbs: ["get"]
   env:
     - name: HOLMES_MAX_LOG_LINES
-      value: "50"  # Default is often much higher. 150 is enough to see the error.
+      value: "100"  # Default is often much higher. 150 is enough to see the error.
     - name: HOLMES_MAX_EVENTS
-      value: "10"
+      value: "20"
   resources:
     requests:
-      cpu: 100m
-      memory: 128Mi
-    limits:
       cpu: 500m
-      memory: 512Mi
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
