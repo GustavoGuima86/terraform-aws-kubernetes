@@ -43,19 +43,9 @@ kagent:
     enabled: false
 
   ui:
-    env:
-      - name: BASE_URL
-        value: "/kagent"
-      - name: PUBLIC_URL
-        value: "/kagent"
-      - name: ROOT_PATH
-        value: "/kagent"
-      - name: VITE_BASE_PATH
-        value: "/kagent"
-      - name: NEXT_PUBLIC_BASE_PATH
-        value: "/kagent"
-      - name: NEXT_PUBLIC_BASEPATH
-        value: "/kagent"
+    env: []
+      # Note: The Next.js app is not built with basePath support
+      # so we use URL rewriting in the HTTPRoute instead
       # Sometimes "dashboard" is used instead of "ui"
 
     # Keep this just in case the backend also needs to know its path

@@ -8,10 +8,31 @@ spec:
     - name: tooling-gateway
       namespace: istio-system
   rules:
+    # Main application route - rewrite /kagent to /
+    - matches:
+        - path:
+            type: Exact
+            value: /kagent
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplaceFullPath
+              replaceFullPath: /
+      backendRefs:
+        - name: {{ .Release.Name }}-ui
+          port: 8080
+    # Handle /kagent/ (with trailing slash)
     - matches:
         - path:
             type: PathPrefix
-            value: /kagent
+            value: /kagent/
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: {{ .Release.Name }}-ui
           port: 8080
