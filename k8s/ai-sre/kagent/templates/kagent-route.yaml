@@ -7,40 +7,13 @@ spec:
   parentRefs:
     - name: tooling-gateway
       namespace: istio-system
+  hostnames:
+    - "kagent.local"
   rules:
-    # Main application route - rewrite /kagent to /
-    - matches:
-        - path:
-            type: Exact
-            value: /kagent
-      filters:
-        - type: URLRewrite
-          urlRewrite:
-            path:
-              type: ReplaceFullPath
-              replaceFullPath: /
-      backendRefs:
-        - name: {{ .Release.Name }}-ui
-          port: 8080
-    # Handle /kagent/ (with trailing slash)
     - matches:
         - path:
             type: PathPrefix
-            value: /kagent/
-      filters:
-        - type: URLRewrite
-          urlRewrite:
-            path:
-              type: ReplacePrefixMatch
-              replacePrefixMatch: /
+            value: /
       backendRefs:
         - name: {{ .Release.Name }}-ui
-          port: 8080
-    # Route for kagent agents
-    - matches:
-        - path:
-            type: PathPrefix
-            value: /agents/ai-sre/k8s-agent/chat
-      backendRefs:
-        - name: {{ .Release.Name }}-kagent
           port: 8080
