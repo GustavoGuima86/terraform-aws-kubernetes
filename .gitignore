@@ -1,2 +1,12 @@
 /k8s/argocd-core/charts/
 /infrastructure/environments/.terraform/
+
+# Terraform
+.terraform/
+**/.terraform/
+*.tfstate
+*.tfstate.*
+
+# IDEs
+.idea/
+**/.idea/
