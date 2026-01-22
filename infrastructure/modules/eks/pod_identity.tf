@@ -80,3 +80,60 @@ resource "aws_eks_pod_identity_association" "secrets_csi" {
   role_arn   = module.aws_ebs_csi_pod_identity_secret.iam_role_arn
   depends_on = [module.eks]
 }
+
+# Data source to get the Route53 hosted zone
+data "aws_route53_zone" "main" {
+  name         = var.domain_name
+  private_zone = false
+}
+
+# IAM policy for external-dns
+data "aws_iam_policy_document" "external_dns" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "route53:ChangeResourceRecordSets"
+    ]
+    resources = [
+      "arn:aws:route53:::hostedzone/${data.aws_route53_zone.main.zone_id}"
+    ]
+  }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "route53:ListHostedZones",
+      "route53:ListResourceRecordSets",
+      "route53:ListTagsForResource"
+    ]
+    resources = ["*"]
+  }
+}
+
+# IAM policy
+resource "aws_iam_policy" "external_dns" {
+  name        = "${var.cluster_name}-external-dns-policy"
+  description = "Policy for external-dns to manage Route53 records"
+  policy      = data.aws_iam_policy_document.external_dns.json
+}
+
+# EKS Pod Identity for external-dns
+module "external_dns_pod_identity" {
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "~> 2.5"
+
+  name = "${var.cluster_name}-external-dns"
+
+  additional_policy_arns = {
+    external_dns = aws_iam_policy.external_dns.arn
+  }
+
+  associations = {
+    external_dns = {
+      cluster_name    = var.cluster_name
+      namespace       = "external-dns"
+      service_account = "external-dns"
+    }
+  }
+
+}

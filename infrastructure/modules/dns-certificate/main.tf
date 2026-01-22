@@ -14,13 +14,6 @@ resource "aws_acm_certificate" "certificate" {
   lifecycle {
     create_before_destroy = true
   }
-
-  tags = merge(
-    var.tags,
-    {
-      Name = var.domain_name
-    }
-  )
 }
 
 # Create Route53 records for ACM certificate validation

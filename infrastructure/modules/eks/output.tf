@@ -52,3 +52,23 @@ output "karpenter_interruption_queue_url" {
   value       = module.karpenter.queue_arn
   description = "The URL of the SQS queue for Karpenter interruption events."
 }
+
+output "velero_bucket_name" {
+  description = "The name of the Velero S3 bucket."
+  value       = aws_s3_bucket.velero_bucket.bucket
+}
+
+output "velero_bucket_region" {
+  description = "The region of the Velero S3 bucket."
+  value       = aws_s3_bucket.velero_bucket.region
+}
+
+output "external_dns_role_arn" {
+  description = "The ARN of the IAM role for external-dns"
+  value       = module.external_dns_pod_identity.iam_role_arn
+}
+
+output "iam_role_name" {
+  description = "The name of the IAM role for external-dns"
+  value       = module.external_dns_pod_identity.iam_role_name
+}

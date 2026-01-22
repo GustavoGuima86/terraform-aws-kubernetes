@@ -29,6 +29,8 @@ module "eks" {
   cluster_name    = var.cluster_name
 
   db_secret_arn = module.rds.rds_database_secret_arn
+
+  domain_name = var.domain_name
 }
 
 
@@ -45,15 +47,8 @@ module "observability" {
   depends_on = [module.eks]
 }
 
-# External DNS - IAM role via Pod Identity and ACM certificate management
-module "external_dns" {
-  source = "../modules/external-dns"
+module "dns" {
+  source = "../modules/dns-certificate"
 
-  cluster_name         = module.eks.cluster_name
-  namespace            = "external-dns"
-  service_account_name = "external-dns"
-  domain_name          = var.domain_name
-
-  depends_on = [module.eks]
+  domain_name = var.domain_name
 }
-

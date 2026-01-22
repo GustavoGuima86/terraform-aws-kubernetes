@@ -8,7 +8,7 @@ output "hosted_zone_name" {
   value       = data.aws_route53_zone.main.name
 }
 
-output "argocd_certificate_arn" {
-  description = "The ARN of the ACM certificate for ArgoCD"
+output "certificate_arn" {
+  description = "The ARN of the ACM certificate"
   value       = aws_acm_certificate.certificate.arn
 }

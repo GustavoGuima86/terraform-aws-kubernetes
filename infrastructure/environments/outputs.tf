@@ -105,19 +105,17 @@ output "mimir_service_account_name" {
 
 # External DNS and Certificate outputs
 output "external_dns_role_arn" {
-  value       = module.external_dns.iam_role_arn
+  value       = module.eks.external_dns_role_arn
   description = "The ARN of the IAM role for external-dns"
 }
 
 output "certificate_arn" {
-  value       = module.external_dns.certificate_arn
+  value       = module.dns.certificate_arn
   description = "The ARN of the ACM certificate for ArgoCD"
 }
 
 output "hosted_zone_id" {
-  value       = module.external_dns.hosted_zone_id
+  value       = module.dns.hosted_zone_id
   description = "The Route53 hosted zone ID"
 }
-
-
 

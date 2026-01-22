@@ -40,3 +40,8 @@ variable "karpenter_namespace" {
   default     = "karpenter"
   description = "The Kubernetes namespace where Karpenter will be installed."
 }
+
+variable "domain_name" {
+  description = "The Route53 domain name to manage"
+  type        = string
+}
