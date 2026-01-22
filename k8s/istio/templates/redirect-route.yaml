@@ -1,0 +1,15 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: http-to-https-redirect
+  namespace: istio-system
+spec:
+  parentRefs:
+    - name: tooling-gateway  # Matches your Gateway's name
+      sectionName: http      # CRITICAL: This binds ONLY to the port 80 listener
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            statusCode: 301

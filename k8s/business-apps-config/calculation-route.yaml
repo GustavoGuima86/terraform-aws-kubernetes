@@ -8,6 +8,7 @@ spec:
   parentRefs:
   - name: tooling-gateway # Assuming the same gateway is used for business apps
     namespace: istio-system
+    sectionName: https
   hostnames:
   - "calculation.gustavo.inno-on.cloud" # Placeholder, user should replace this
   rules:

@@ -7,6 +7,7 @@ spec:
   parentRefs:
     - name: tooling-gateway
       namespace: istio-system
+      sectionName: https
   hostnames:
     - "kagent.gustavo.inno-on.cloud"
   rules:
