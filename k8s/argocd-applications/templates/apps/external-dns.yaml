@@ -1,38 +1,40 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: istio
+  name: external-dns
   namespace: argocd
   finalizers:
-  - resources-finalizer.argocd.argoproj.io
+    - resources-finalizer.argocd.argoproj.io
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: infrastructure
   source:
     repoURL: {{ .Values.gitRepo.url }}
     targetRevision: {{ .Values.gitRepo.branch }}
-    path: k8s/istio
+    path: k8s/external-dns
     helm:
       valueFiles:
         - values.yaml
       parameters:
-        - name: acmCertificateArn
-          value: "{{ .Values.acmCertificateArn }}"
-        - name: rootDomain
+        - name: external-dns.aws.region
+          value: "{{ .Values.awsRegion }}"
+        - name: external-dns.domainFilters[0]
           value: "{{ .Values.domainName }}"
   destination:
     server: https://kubernetes.default.svc
-    namespace: istio-system
+    namespace: external-dns
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true
+      - ServerSideApply=true
     retry:
       limit: 5
       backoff:
         duration: 5s
         factor: 2
         maxDuration: 3m
+

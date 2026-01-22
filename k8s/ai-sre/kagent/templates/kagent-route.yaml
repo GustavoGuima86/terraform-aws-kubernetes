@@ -8,7 +8,7 @@ spec:
     - name: tooling-gateway
       namespace: istio-system
   hostnames:
-    - "kagent.local"
+    - "kagent.gustavo.inno-on.cloud"
   rules:
     - matches:
         - path:

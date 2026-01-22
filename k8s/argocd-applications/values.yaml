@@ -5,8 +5,8 @@ deploymentMethod: "gitops" # Can be 'gitops' or 'local'
 argocdNamespace: "argocd" # Can be overridden via --set flags
 
 gitRepo:
-  url: "https://github.com/GustavoGuima86/terraform-aws-kubernetes"
-  branch: "new-2026-features"
+  url: ""
+  branch: ""
 
 # Values from Terraform outputs (set via --set flags in helm upgrade)
 
@@ -29,6 +29,16 @@ veleroBucketRegion: ""
 karpenterNodeIamRoleName: ""
 karpenterInterruptionQueueName: ""
 
+# External DNS values
+externalDnsRoleArn: ""
+
+# DNS and Certificate values
+acmCertificateArn: ""
+argocdDomainName: ""
+domainName: ""
+hostedZoneId: ""
+awsAccountId: ""
+
 # Observability values
 lokiServiceAccountName: ""
 mimirServiceAccountName: ""
@@ -36,7 +46,8 @@ kubePrometheusRelease: "kube-prometheus-stack"
 
 # Grafana values
 
-
+# CloudNativePG values
+cloudnativePgEnabled: true
 
 # ==============================================================================
 
@@ -60,6 +71,10 @@ argocdProjects:
       - namespace: "gatekeeper-system"
         server: "https://kubernetes.default.svc"
       - namespace: "istio-system"
+        server: "https://kubernetes.default.svc"
+      - namespace: "cnpg-system"
+        server: "https://kubernetes.default.svc"
+      - namespace: "external-dns"
         server: "https://kubernetes.default.svc"
     clusterResourceWhitelist:
       - group: "*"
@@ -95,6 +110,8 @@ argocdProjects:
       - "*" # Allow applications from any repository
     destinations:
       - namespace: "business-apps"
+        server: "https://kubernetes.default.svc"
+      - namespace: "backstage"
         server: "https://kubernetes.default.svc"
     clusterResourceWhitelist:
       - group: "argoproj.io"

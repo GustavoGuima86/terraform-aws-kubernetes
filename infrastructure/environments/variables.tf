@@ -47,6 +47,14 @@ variable "mimir_bucket_name" {
   description = "Base name for Mimir S3 buckets"
 }
 
+# Domain Configuration
+variable "domain_name" {
+  type        = string
+  description = "The base domain name hosted in Route53 (e.g., gustavo.inno-on.cloud)"
+  default     = "gustavo.inno-on.cloud"
+}
+
+
 variable "database_configurations" {
   type = object({
     db_name        = string # the Db name

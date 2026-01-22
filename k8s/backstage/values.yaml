@@ -1,0 +1,110 @@
+# Backstage Helm Chart Values
+
+# AWS Account ID
+awsAccountId: ""
+
+# Backstage IAM Role ARN (Pod Identity)
+backstageRoleArn: ""
+
+# Backstage image configuration
+image:
+  repository: 156041418374.dkr.ecr.eu-central-1.amazonaws.com/backstage
+  tag: latest
+  pullPolicy: Always
+
+# Replicas
+replicaCount: 2
+
+# Service configuration
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 7007
+
+# Resources
+resources:
+  requests:
+    memory: "512Mi"
+    cpu: "250m"
+  limits:
+    memory: "1Gi"
+    cpu: "500m"
+
+# Probes
+livenessProbe:
+  enabled: true
+  path: /healthcheck
+  port: 7007
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  enabled: true
+  path: /healthcheck
+  port: 7007
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+# PostgreSQL configuration (from CloudNativePG)
+postgres:
+  secretName: backstage-postgres-app-user
+  host: backstage-postgres-rw.backstage.svc.cluster.local
+  port: 5432
+  database: backstage
+
+# Backstage secrets (from secrets.yaml)
+secrets:
+  backendSecret: "CHANGE_ME_GENERATE_RANDOM_SECRET"
+  githubToken: "ghp_XXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  awsRegion: "eu-central-1"
+  catalogRepoUrl: "https://github.com/YOUR_ORG/backstage-catalog"
+  templatesRepoUrl: "https://github.com/YOUR_ORG/backstage-templates"
+  catalogS3Bucket: "backstage-catalog-bucket"
+  organizationName: "My Organization"
+  scaffolderDefaultAuthorName: "Backstage"
+  scaffolderDefaultAuthorEmail: "backstage@example.com"
+  appBaseUrl: "https://backstage.example.com"
+  backendBaseUrl: "https://backstage.example.com/api"
+
+# HTTPRoute configuration
+route:
+  enabled: true
+  hostname: "backstage.gustavo.inno-on.cloud"
+  gateway:
+    name: tooling-gateway
+    namespace: istio-system
+    sectionName: https
+
+# RBAC configuration
+rbac:
+  create: true
+  clusterRole:
+    rules:
+      - apiGroups: ["*"]
+        resources:
+          - pods
+          - configmaps
+          - services
+          - deployments
+          - replicasets
+          - horizontalpodautoscalers
+          - ingresses
+          - statefulsets
+          - limitranges
+          - resourcequotas
+          - daemonsets
+          - cronjobs
+          - jobs
+          - namespaces
+        verbs: ["get", "list", "watch"]
+      - apiGroups: ["batch"]
+        resources: ["jobs", "cronjobs"]
+        verbs: ["get", "list", "watch"]
+      - apiGroups: ["metrics.k8s.io"]
+        resources: ["pods", "nodes"]
+        verbs: ["get", "list"]
+

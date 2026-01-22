@@ -143,6 +143,16 @@ This stage deploys ArgoCD Core and then all other Kubernetes-native applications
     ```bash
     helm upgrade --install argocd-applications k8s/argocd-applications \
       --namespace argocd --create-namespace \
+      --set awsAccountId=$(jq -r .aws_account_id.value infrastructure/environments/tf_outputs.json) \
+      --set domainName=$(jq -r .domain_name.value infrastructure/environments/tf_outputs.json) \
+      --set acmCertificateArn=$(jq -r .acmCertificateArn.value infrastructure/environments/tf_outputs.json) \
+      --set argocdDomainName=$(jq -r .argocdDomainName.value infrastructure/environments/tf_outputs.json) \
+      --set hostedZoneId=$(jq -r .hosted_zone_id.value infrastructure/environments/tf_outputs.json) \
+      --set externalDnsRoleArn=$(jq -r .external_dns_role_arn.value infrastructure/environments/tf_outputs.json) \
+      --set awsAccountId=$(jq -r .aws_account_id.value infrastructure/environments/tf_outputs.json) \
+      --set dbSecretArn=$(jq -r .db_secret_arn.value infrastructure/environments/tf_outputs.json) \
+      --set dbUrl=$(jq -r .db_url.value infrastructure/environments/tf_outputs.json) \
+      --set dbPort=$(jq -r .db_port.value infrastructure/environments/tf_outputs.json) \
       --set eksClusterEndpoint=$(jq -r .eks_cluster_endpoint.value infrastructure/environments/tf_outputs.json) \
       --set eksClusterCaCertificate=$(jq -r .eks_cluster_ca_certificate.value infrastructure/environments/tf_outputs.json) \
       --set eksClusterName=$(jq -r .eks_cluster_name.value infrastructure/environments/tf_outputs.json) \
@@ -150,19 +160,45 @@ This stage deploys ArgoCD Core and then all other Kubernetes-native applications
       --set mimirBucketName=$(jq -r .mimir_bucket_name.value infrastructure/environments/tf_outputs.json) \
       --set awsRegion=$(jq -r .aws_region.value infrastructure/environments/tf_outputs.json) \
       --set vpcId=$(jq -r .vpc_id.value infrastructure/environments/tf_outputs.json) \
-      --set dbSecretArn=$(jq -r .db_secret_arn.value infrastructure/environments/tf_outputs.json) \
-      --set dbUrl=$(jq -r .db_url.value infrastructure/environments/tf_outputs.json) \
-      --set dbPort=$(jq -r .db_port.value infrastructure/environments/tf_outputs.json) \
+      --set veleroBucketName=$(jq -r .velero_bucket_name.value infrastructure/environments/tf_outputs.json) \
+      --set veleroBucketRegion=$(jq -r .velero_bucket_region.value infrastructure/environments/tf_outputs.json) \
       --set karpenterNodeIamRoleName=$(jq -r .karpenter_node_iam_role_name.value infrastructure/environments/tf_outputs.json) \
       --set karpenterInterruptionQueueName=$(jq -r .karpenter_interruption_queue_name.value infrastructure/environments/tf_outputs.json) \
       --set lokiServiceAccountName=$(jq -r .loki_service_account_name.value infrastructure/environments/tf_outputs.json) \
       --set mimirServiceAccountName=$(jq -r .mimir_service_account_name.value infrastructure/environments/tf_outputs.json) \
-      --set veleroBucketName=$(jq -r .velero_bucket_name.value infrastructure/environments/tf_outputs.json) \
-      --set veleroBucketRegion=$(jq -r .velero_bucket_region.value infrastructure/environments/tf_outputs.json) \
       --set kubePrometheusRelease="kube-prometheus-stack" \
       --set gitRepo.url="https://github.com/GustavoGuima86/terraform-aws-kubernetes" \
       --set gitRepo.branch="new-2026-features"
     ```
+
+### Parameter Mapping Table
+
+| ArgoCD Value (values.yaml)      | Terraform Output Name                |
+|----------------------------------|--------------------------------------|
+| awsAccountId                     | aws_account_id                       |
+| awsRegion                        | aws_region                           |
+| domainName                       | domain_name                          |
+| veleroBucketName                 | velero_bucket_name                   |
+| veleroBucketRegion               | velero_bucket_region                 |
+| lokiBucketName                   | loki_bucket_name                     |
+| mimirBucketName                  | mimir_bucket_name                    |
+| acmCertificateArn                | acmCertificateArn                    |
+| argocdDomainName                 | argocdDomainName                     |
+| hostedZoneId                     | hosted_zone_id                       |
+| dbSecretArn                      | db_secret_arn                        |
+| dbUrl                            | db_url                               |
+| dbPort                           | db_port                              |
+| eksClusterEndpoint               | eks_cluster_endpoint                 |
+| eksClusterCaCertificate          | eks_cluster_ca_certificate           |
+| eksClusterName                   | eks_cluster_name                     |
+| karpenterNodeIamRoleName         | karpenter_node_iam_role_name         |
+| karpenterInterruptionQueueName   | karpenter_interruption_queue_name    |
+| externalDnsRoleArn               | external_dns_role_arn                |
+| vpcId                            | vpc_id                               |
+| lokiServiceAccountName           | loki_service_account_name            |
+| mimirServiceAccountName          | mimir_service_account_name           |
+
+All values are required for a full, automated deployment. Ensure your `tf_outputs.json` is up to date after each Terraform apply.
 
 ## Adding a New Application
 

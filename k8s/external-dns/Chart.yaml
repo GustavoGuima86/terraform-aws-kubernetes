@@ -1,0 +1,11 @@
+apiVersion: v2
+name: external-dns
+description: External DNS for automatic DNS management with Route53
+version: 0.1.0
+appVersion: 0.14.0
+
+dependencies:
+  - name: external-dns
+    version: 1.14.3
+    repository: https://kubernetes-sigs.github.io/external-dns/
+

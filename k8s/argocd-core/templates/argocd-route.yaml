@@ -7,11 +7,15 @@ spec:
   parentRefs:
     - name: tooling-gateway
       namespace: istio-system
+      sectionName: https
+  hostnames:
+    - "argocd.gustavo.inno-on.cloud"
   rules:
     - matches:
         - path:
             type: PathPrefix
-            value: /argocd
+            value: /
       backendRefs:
         - name: argocd-core-server
           port: 80
+

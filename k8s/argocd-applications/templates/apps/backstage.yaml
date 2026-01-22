@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: backstage
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  project: business-applications
+  source:
+    repoURL: {{ .Values.gitRepo.url }}
+    targetRevision: {{ .Values.gitRepo.branch }}
+    path: k8s/backstage
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        # AWS Configuration
+        - name: awsAccountId
+          value: "{{ .Values.awsAccountId }}"
+        - name: secrets.awsRegion
+          value: "{{ .Values.awsRegion }}"
+        # Route/Domain Configuration
+        - name: route.hostname
+          value: "backstage.{{ .Values.domainName }}"
+        - name: secrets.appBaseUrl
+          value: "https://backstage.{{ .Values.domainName }}"
+        - name: secrets.backendBaseUrl
+          value: "https://backstage.{{ .Values.domainName }}/api"
+        # PostgreSQL Configuration (CloudNativePG)
+        - name: postgres.host
+          value: "backstage-postgres-rw.backstage.svc.cluster.local"
+        - name: postgres.port
+          value: "5432"
+        - name: postgres.database
+          value: "backstage"
+        - name: postgres.secretName
+          value: "backstage-postgres-app-user"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: backstage
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+

@@ -1,0 +1,66 @@
+# External DNS Configuration
+
+external-dns:
+  # Provider configuration
+  provider: aws
+
+  # DNS domain filter - only manage records in this domain
+  domainFilters:
+    - gustavo.inno-on.cloud
+
+  # Route53 zone type
+  aws:
+    region: "" # Received from argocd app
+    zoneType: public
+    preferCNAME: false
+
+  # Source configuration - what resources to watch
+  sources:
+    - service
+    - ingress
+    - gateway-httproute
+
+  # Policy for managing DNS records
+  policy: sync  # Options: sync, upsert-only
+
+  # Registry for tracking managed records
+  registry: txt
+  txtOwnerId: eks-cluster
+
+  # Service account with Pod Identity (no annotations needed)
+  serviceAccount:
+    create: true
+    name: external-dns
+
+  # Resources
+  resources:
+    limits:
+      memory: 256Mi
+      cpu: 100m
+    requests:
+      memory: 128Mi
+      cpu: 50m
+
+  # Log level
+  logLevel: info
+  logFormat: json
+
+  # Interval for checking DNS records
+  interval: 1m
+
+  # Trigger loop on events in addition to interval
+  triggerLoopOnEvent: true
+
+  # Security
+  podSecurityContext:
+    fsGroup: 65534
+    runAsNonRoot: true
+    runAsUser: 65534
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
+

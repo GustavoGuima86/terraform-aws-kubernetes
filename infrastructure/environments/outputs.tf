@@ -3,6 +3,16 @@ output "awsRegion" {
   description = "main hosted aws region"
 }
 
+output "aws_account_id" {
+  value       = data.aws_caller_identity.current.account_id
+  description = "The AWS Account ID"
+}
+
+output "domain_name" {
+  value       = var.domain_name
+  description = "The base domain name"
+}
+
 output "eks_cluster_endpoint" {
   value       = module.eks.cluster_endpoint
   description = "The EKS cluster endpoint."
@@ -92,3 +102,22 @@ output "mimir_service_account_name" {
   value       = module.observability.mimir_service_account_name
   description = "The name of the Mimir service account."
 }
+
+# External DNS and Certificate outputs
+output "external_dns_role_arn" {
+  value       = module.external_dns.iam_role_arn
+  description = "The ARN of the IAM role for external-dns"
+}
+
+output "certificate_arn" {
+  value       = module.external_dns.certificate_arn
+  description = "The ARN of the ACM certificate for ArgoCD"
+}
+
+output "hosted_zone_id" {
+  value       = module.external_dns.hosted_zone_id
+  description = "The Route53 hosted zone ID"
+}
+
+
+

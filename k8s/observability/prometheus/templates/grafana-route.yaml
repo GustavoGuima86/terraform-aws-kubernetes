@@ -8,11 +8,13 @@ spec:
   parentRefs:
     - name: tooling-gateway
       namespace: istio-system
+  hostnames:
+    - "grafana.gustavo.inno-on.cloud"
   rules:
     - matches:
         - path:
             type: PathPrefix
-            value: /grafana
+            value: /
       backendRefs:
         - name: kube-prometheus-stack-grafana
           port: 80

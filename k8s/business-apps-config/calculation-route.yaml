@@ -9,7 +9,7 @@ spec:
   - name: tooling-gateway # Assuming the same gateway is used for business apps
     namespace: istio-system
   hostnames:
-  - "calculation.example.com" # Placeholder, user should replace this
+  - "calculation.gustavo.inno-on.cloud" # Placeholder, user should replace this
   rules:
   - matches:
     - path:

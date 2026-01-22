@@ -1,0 +1,54 @@
+# CloudNativePG Operator Configuration
+
+# Override values for the cloudnative-pg chart
+cloudnative-pg:
+  # Controller replicas
+  replicaCount: 2
+
+  # Image configuration
+  image:
+    repository: ghcr.io/cloudnative-pg/cloudnative-pg
+    pullPolicy: IfNotPresent
+    tag: "" # Defaults to chart appVersion
+
+  # Resource limits for the operator
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # Monitoring configuration
+  monitoring:
+    # Enable PodMonitor for Prometheus
+    podMonitorEnabled: true
+    podMonitor:
+      enabled: true
+
+  # Webhook configuration
+  webhook:
+    port: 9443
+    mutating:
+      create: true
+    validating:
+      create: true
+
+  # Service account
+  serviceAccount:
+    create: true
+    name: cloudnative-pg
+
+  # Additional configurations
+  config:
+    # Enable/disable features
+    create: true
+    data:
+      INHERITED_ANNOTATIONS: "prometheus.io/*"
+      INHERITED_LABELS: "app.kubernetes.io/*"
+
+  # CRDs installation
+  crds:
+    create: true
+

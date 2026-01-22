@@ -1,6 +1,10 @@
 # values.yaml for the consolidated istio chart
 # We will rely on the default values of the subcharts for now.
 
+# ACM Certificate ARN for HTTPS (injected by ArgoCD from Terraform outputs)
+acmCertificateArn: ""
+rootDomain: ""
+
 gateway:
   service:
     type: ClusterIP

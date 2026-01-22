@@ -1,3 +1,6 @@
+# Data sources
+data "aws_caller_identity" "current" {}
+
 module "vpc" {
   source = "../modules/vpc"
 
@@ -31,7 +34,6 @@ module "eks" {
 
 
 # Create AWS resources for observability (S3 buckets, IAM roles)
-# Helm charts are deployed by ArgoCD from k8s/ directory
 module "observability" {
   source = "../modules/observability"
 
@@ -39,6 +41,18 @@ module "observability" {
   namespace         = var.observability_namespace
   loki_bucket_name  = var.loki_bucket_name
   mimir_bucket_name = var.mimir_bucket_name
+
+  depends_on = [module.eks]
+}
+
+# External DNS - IAM role via Pod Identity and ACM certificate management
+module "external_dns" {
+  source = "../modules/external-dns"
+
+  cluster_name         = module.eks.cluster_name
+  namespace            = "external-dns"
+  service_account_name = "external-dns"
+  domain_name          = var.domain_name
 
   depends_on = [module.eks]
 }
