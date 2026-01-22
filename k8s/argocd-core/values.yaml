@@ -17,7 +17,6 @@ argo-cd:
     ingress:
       enabled: false
     extraArgs:
-      - --rootpath=/argocd
       - --insecure # Allowing unsecure just for test, when domain is available remove it
 
   repoServer:

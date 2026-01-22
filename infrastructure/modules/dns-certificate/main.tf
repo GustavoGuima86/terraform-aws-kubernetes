@@ -4,12 +4,12 @@ data "aws_route53_zone" "main" {
   private_zone = false
 }
 
-# Create ACM Certificate for ArgoCD subdomain
+# Create ACM Certificate with wildcard for all subdomains
 resource "aws_acm_certificate" "certificate" {
   domain_name       = var.domain_name
   validation_method = "DNS"
 
-  subject_alternative_names = []
+  subject_alternative_names = ["*.${var.domain_name}"]
 
   lifecycle {
     create_before_destroy = true
