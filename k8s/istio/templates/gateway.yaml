@@ -13,7 +13,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "{{ .Values.acmCertificateArn }}"
     service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     # External DNS annotation - creates DNS records for ArgoCD and Backstage
-    external-dns.alpha.kubernetes.io/hostname: "argocd.gustavo.inno-on.cloud,backstage.gustavo.inno-on.cloud"
+    external-dns.alpha.kubernetes.io/hostname: "{{ .Values.rootDomain }}"
 spec:
   gatewayClassName: istio
   listeners:

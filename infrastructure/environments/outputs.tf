@@ -109,7 +109,7 @@ output "external_dns_role_arn" {
   description = "The ARN of the IAM role for external-dns"
 }
 
-output "certificate_arn" {
+output "acmCertificateArn" {
   value       = module.dns.certificate_arn
   description = "The ARN of the ACM certificate for ArgoCD"
 }
