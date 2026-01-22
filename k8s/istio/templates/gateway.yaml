@@ -25,9 +25,7 @@ spec:
         from: All
   - name: https
     port: 443
-    protocol: HTTPS
+    protocol: HTTP
     allowedRoutes:
       namespaces:
         from: All
-    tls:
-      mode: Passthrough
