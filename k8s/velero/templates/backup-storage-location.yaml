@@ -1,0 +1,12 @@
+apiVersion: velero.io/v1
+kind: BackupStorageLocation
+metadata:
+  name: {{ .Values.configuration.backupStorageLocation.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  provider: {{ .Values.configuration.provider }}
+  objectStorage:
+    bucket: {{ .Values.configuration.backupStorageLocation.bucket }}
+  config:
+    region: {{ .Values.configuration.backupStorageLocation.config.region }}
+
