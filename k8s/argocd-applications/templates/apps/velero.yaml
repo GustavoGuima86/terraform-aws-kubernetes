@@ -14,9 +14,13 @@ spec:
         - values.yaml
       parameters:
         - name: configuration.backupStorageLocation.bucket
-          value: "{{ .Values.velero_bucket_name }}"
+          value: "{{ .Values.veleroBucketName }}"
         - name: configuration.backupStorageLocation.config.region
-          value: "{{ .Values.velero_bucket_region }}"
+          value: "{{ .Values.veleroBucketRegion }}"
+        - name: configuration.backupStorageLocation.config.s3Url
+          value: "https://s3.{{ .Values.veleroBucketRegion }}.amazonaws.com"
+        - name: configuration.volumeSnapshotLocation.config.region
+          value: "{{ .Values.veleroBucketRegion }}"
   destination:
     server: https://kubernetes.default.svc
     namespace: velero

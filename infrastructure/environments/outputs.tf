@@ -109,6 +109,11 @@ output "external_dns_role_arn" {
   description = "The ARN of the IAM role for external-dns"
 }
 
+output "certificate_arn" {
+  value       = module.dns.certificate_arn
+  description = "The ARN of the ACM certificate"
+}
+
 output "acmCertificateArn" {
   value       = module.dns.certificate_arn
   description = "The ARN of the ACM certificate for ArgoCD"
@@ -117,5 +122,16 @@ output "acmCertificateArn" {
 output "hosted_zone_id" {
   value       = module.dns.hosted_zone_id
   description = "The Route53 hosted zone ID"
+}
+
+# Velero outputs
+output "velero_bucket_name" {
+  value       = module.eks.velero_bucket_name
+  description = "The name of the Velero S3 bucket"
+}
+
+output "velero_bucket_region" {
+  value       = module.eks.velero_bucket_region
+  description = "The region of the Velero S3 bucket"
 }
 
