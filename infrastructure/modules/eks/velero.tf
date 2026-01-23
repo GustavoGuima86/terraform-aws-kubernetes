@@ -17,8 +17,8 @@ module "velero_s3_pod_identity" {
   associations = {
     custom-association = {
       cluster_name    = var.cluster_name
-      namespace       = "velero"
-      service_account = "velero-sa"
+      namespace       = local.velero_sa_namespace
+      service_account = local.velero_sa_name
     }
   }
 }

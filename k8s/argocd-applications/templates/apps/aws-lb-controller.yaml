@@ -16,11 +16,13 @@ spec:
     helm:
       parameters:
       - name: aws-load-balancer-controller.clusterName
-        value: "{{ .Values.eksClusterName }}"
+        value: "{{ .Values.eks_cluster_name }}"
       - name: aws-load-balancer-controller.region
-        value: "{{ .Values.awsRegion }}"
+        value: "{{ .Values.aws_region }}"
       - name: aws-load-balancer-controller.vpcId
-        value: "{{ .Values.vpcId }}"
+        value: "{{ .Values.vpc_id }}"
+      - name: aws-load-balancer-controller.serviceAccount.name
+        value: "{{ .Values.aws_lb_controller_sa_name }}"
   destination:
     server: https://kubernetes.default.svc
     namespace: kube-system

@@ -15,8 +15,8 @@ module "karpenter" {
 
 resource "aws_eks_pod_identity_association" "karpenter" {
   cluster_name    = module.eks.cluster_name
-  namespace       = var.karpenter_namespace
-  service_account = "karpenter"
+  namespace       = local.karpenter_sa_namespace
+  service_account = local.karpenter_sa_name
   role_arn        = module.karpenter.iam_role_arn
 
   depends_on = [module.karpenter]

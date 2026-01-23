@@ -18,9 +18,9 @@ spec:
         - values.yaml
       parameters:
         - name: acmCertificateArn
-          value: "{{ .Values.acmCertificateArn }}"
+          value: "{{ .Values.certificate_arn }}"
         - name: rootDomain
-          value: "{{ .Values.domainName }}"
+          value: "{{ .Values.domain_name }}"
   destination:
     server: https://kubernetes.default.svc
     namespace: istio-system

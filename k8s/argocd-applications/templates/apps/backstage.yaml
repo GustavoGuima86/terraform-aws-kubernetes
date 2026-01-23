@@ -19,16 +19,16 @@ spec:
       parameters:
         # AWS Configuration
         - name: awsAccountId
-          value: "{{ .Values.awsAccountId }}"
+          value: "{{ .Values.aws_account_id }}"
         - name: secrets.awsRegion
-          value: "{{ .Values.awsRegion }}"
+          value: "{{ .Values.aws_region }}"
         # Route/Domain Configuration
         - name: route.hostname
-          value: "backstage.{{ .Values.domainName }}"
+          value: "backstage.{{ .Values.domain_name }}"
         - name: secrets.appBaseUrl
-          value: "https://backstage.{{ .Values.domainName }}"
+          value: "https://backstage.{{ .Values.domain_name }}"
         - name: secrets.backendBaseUrl
-          value: "https://backstage.{{ .Values.domainName }}/api"
+          value: "https://backstage.{{ .Values.domain_name }}/api"
         # PostgreSQL Configuration (CloudNativePG)
         - name: postgres.host
           value: "backstage-postgres-rw.backstage.svc.cluster.local"

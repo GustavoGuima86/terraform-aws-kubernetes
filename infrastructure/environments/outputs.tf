@@ -1,137 +1,212 @@
-output "awsRegion" {
-  value       = var.targetRegion
-  description = "main hosted aws region"
-}
+# ==============================================================================
+# Core Infrastructure Outputs
+# ==============================================================================
 
 output "aws_account_id" {
   value       = data.aws_caller_identity.current.account_id
-  description = "The AWS Account ID"
+  description = "AWS Account ID"
 }
 
 output "domain_name" {
   value       = var.domain_name
-  description = "The base domain name"
-}
-
-output "eks_cluster_endpoint" {
-  value       = module.eks.cluster_endpoint
-  description = "The EKS cluster endpoint."
-}
-
-output "eks_cluster_ca_certificate" {
-  value       = module.eks.cluster_certificate_authority_data
-  description = "The base64 encoded certificate authority data for the EKS cluster."
-}
-
-output "eks_cluster_name" {
-  value       = module.eks.cluster_name
-  description = "The name of the EKS cluster."
-}
-
-output "loki_bucket_name" {
-  value       = module.observability.loki_bucket_name
-  description = "The name of the Loki S3 bucket."
-}
-
-output "mimir_bucket_name" {
-  value       = module.observability.mimir_bucket_name
-  description = "The name of the Mimir S3 bucket."
+  description = "Base domain name"
 }
 
 output "aws_region" {
   value       = var.targetRegion
-  description = "The AWS region where the infrastructure is deployed."
+  description = "AWS region"
 }
+
+output "vpc_id" {
+  value       = module.vpc.vpc_id
+  description = "VPC ID"
+}
+
+# ==============================================================================
+# EKS Cluster Outputs
+# ==============================================================================
+
+output "eks_cluster_endpoint" {
+  value       = module.eks.cluster_endpoint
+  description = "EKS cluster endpoint"
+}
+
+output "eks_cluster_ca_certificate" {
+  value       = module.eks.cluster_certificate_authority_data
+  description = "EKS cluster CA certificate (base64 encoded)"
+}
+
+output "eks_cluster_name" {
+  value       = module.eks.cluster_name
+  description = "EKS cluster name"
+}
+
+# ==============================================================================
+# Database Outputs
+# ==============================================================================
 
 output "db_secret_arn" {
   value       = module.rds.rds_database_secret_arn
-  description = "The ARN of the database secret."
+  description = "Database secret ARN"
   sensitive   = true
 }
 
 output "db_url" {
   value       = module.rds.rds_database_url
-  description = "The database URL."
+  description = "Database URL"
 }
 
 output "db_port" {
   value       = module.rds.rds_database_port
-  description = "The database port."
+  description = "Database port"
 }
 
-output "vpc_id" {
-  value       = module.vpc.vpc_id
-  description = "The ID of the VPC."
-}
+# ==============================================================================
+# Karpenter Outputs
+# ==============================================================================
 
 output "karpenter_controller_iam_role_arn" {
   value       = module.eks.karpenter_controller_iam_role_arn
-  description = "The ARN of the IAM role for the Karpenter controller."
+  description = "Karpenter controller IAM role ARN"
 }
+
 output "karpenter_node_iam_role_name" {
   value       = module.eks.karpenter_node_iam_role_name
-  description = "The name of the IAM role for nodes launched by Karpenter."
+  description = "Karpenter node IAM role name"
 }
 
 output "karpenter_interruption_queue_name" {
   value       = module.eks.karpenter_interruption_queue_name
-  description = "The name of the SQS queue for Karpenter interruption events."
+  description = "Karpenter interruption queue name"
 }
 
 output "karpenter_interruption_queue_url" {
   value       = module.eks.karpenter_interruption_queue_url
-  description = "The URL of the SQS queue for Karpenter interruption events."
+  description = "Karpenter interruption queue URL"
+}
+
+# ==============================================================================
+# Observability Outputs
+# ==============================================================================
+
+output "loki_bucket_name" {
+  value       = module.observability.loki_bucket_name
+  description = "Loki S3 bucket name"
 }
 
 output "loki_service_account_role_arn" {
   value       = module.observability.loki_pod_identity_role_arn
-  description = "The ARN of the IAM role for the Loki service account."
+  description = "Loki service account IAM role ARN"
 }
 
 output "loki_service_account_name" {
   value       = module.observability.loki_service_account_name
-  description = "The name of the Loki service account."
+  description = "Loki service account name"
+}
+
+output "mimir_bucket_name" {
+  value       = module.observability.mimir_bucket_name
+  description = "Mimir S3 bucket name"
 }
 
 output "mimir_service_account_role_arn" {
   value       = module.observability.mimir_pod_identity_role_arn
-  description = "The ARN of the IAM role for the Mimir service account."
+  description = "Mimir service account IAM role ARN"
 }
 
 output "mimir_service_account_name" {
   value       = module.observability.mimir_service_account_name
-  description = "The name of the Mimir service account."
+  description = "Mimir service account name"
 }
 
-# External DNS and Certificate outputs
+# ==============================================================================
+# DNS and Certificate Outputs
+# ==============================================================================
+
 output "external_dns_role_arn" {
   value       = module.eks.external_dns_role_arn
-  description = "The ARN of the IAM role for external-dns"
+  description = "External DNS IAM role ARN"
 }
 
 output "certificate_arn" {
   value       = module.dns.certificate_arn
-  description = "The ARN of the ACM certificate"
-}
-
-output "acmCertificateArn" {
-  value       = module.dns.certificate_arn
-  description = "The ARN of the ACM certificate for ArgoCD"
+  description = "ACM certificate ARN"
 }
 
 output "hosted_zone_id" {
   value       = module.dns.hosted_zone_id
-  description = "The Route53 hosted zone ID"
+  description = "Route53 hosted zone ID"
 }
 
-# Velero outputs
+# ==============================================================================
+# Backup Outputs
+# ==============================================================================
+
 output "velero_bucket_name" {
   value       = module.eks.velero_bucket_name
-  description = "The name of the Velero S3 bucket"
+  description = "Velero S3 bucket name"
 }
 
 output "velero_bucket_region" {
   value       = module.eks.velero_bucket_region
-  description = "The region of the Velero S3 bucket"
+  description = "Velero S3 bucket region"
+}
+
+# ==============================================================================
+# IAM Role ARNs for Service Accounts
+# ==============================================================================
+
+output "aws_lb_controller_role_arn" {
+  value       = module.eks.aws_lb_controller_role_arn
+  description = "AWS Load Balancer Controller IAM role ARN"
+}
+
+output "velero_service_account_role_arn" {
+  value       = module.eks.velero_service_account_role_arn
+  description = "Velero service account IAM role ARN"
+}
+
+output "ebs_csi_controller_role_arn" {
+  value       = module.eks.ebs_csi_controller_role_arn
+  description = "EBS CSI controller IAM role ARN"
+}
+
+output "secrets_csi_driver_role_arn" {
+  value       = module.eks.secrets_csi_driver_role_arn
+  description = "Secrets Store CSI driver IAM role ARN"
+}
+
+# ==============================================================================
+# Service Account Names
+# ==============================================================================
+
+output "aws_lb_controller_sa_name" {
+  value       = module.eks.aws_lb_controller_sa_name
+  description = "AWS Load Balancer Controller service account name"
+}
+
+output "karpenter_sa_name" {
+  value       = module.eks.karpenter_sa_name
+  description = "Karpenter service account name"
+}
+
+output "external_dns_sa_name" {
+  value       = module.eks.external_dns_sa_name
+  description = "External DNS service account name"
+}
+
+output "velero_sa_name" {
+  value       = module.eks.velero_sa_name
+  description = "Velero service account name"
+}
+
+output "ebs_csi_controller_sa_name" {
+  value       = module.eks.ebs_csi_controller_sa_name
+  description = "EBS CSI controller service account name"
+}
+
+output "secrets_csi_driver_sa_name" {
+  value       = module.eks.secrets_csi_driver_sa_name
+  description = "Secrets Store CSI driver service account name"
 }
 

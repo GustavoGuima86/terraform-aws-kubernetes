@@ -16,14 +16,14 @@ module "aws_lb_controller_pod_identity" {
   attach_aws_lb_controller_policy = true
 
   association_defaults = {
-    namespace       = "kube-system"
-    service_account = "aws-load-balancer-controller"
+    namespace       = local.aws_lb_controller_sa_namespace
+    service_account = local.aws_lb_controller_sa_name
   }
 
   associations = {
     controller = {
-      service_account = "aws-load-balancer-controller"
-      namespace       = "kube-system"
+      service_account = local.aws_lb_controller_sa_name
+      namespace       = local.aws_lb_controller_sa_namespace
       cluster_name    = module.eks.cluster_name
     }
   }
@@ -74,8 +74,8 @@ data "aws_secretsmanager_secret" "secrets" {
 
 resource "aws_eks_pod_identity_association" "secrets_csi" {
   cluster_name    = var.cluster_name
-  service_account = "secret-sci"
-  namespace       = "kube-system"
+  service_account = local.secrets_csi_driver_sa_name
+  namespace       = local.secrets_csi_driver_sa_namespace
 
   role_arn   = module.aws_ebs_csi_pod_identity_secret.iam_role_arn
   depends_on = [module.eks]
@@ -131,8 +131,8 @@ module "external_dns_pod_identity" {
   associations = {
     external_dns = {
       cluster_name    = var.cluster_name
-      namespace       = "external-dns"
-      service_account = "external-dns"
+      namespace       = local.external_dns_sa_namespace
+      service_account = local.external_dns_sa_name
     }
   }
 

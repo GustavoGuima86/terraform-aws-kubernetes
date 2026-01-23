@@ -143,60 +143,74 @@ This stage deploys ArgoCD Core and then all other Kubernetes-native applications
     ```bash
     helm upgrade --install argocd-applications k8s/argocd-applications \
       --namespace argocd --create-namespace \
-      --set awsAccountId=$(jq -r .aws_account_id.value infrastructure/environments/tf_outputs.json) \
-      --set domainName=$(jq -r .domain_name.value infrastructure/environments/tf_outputs.json) \
-      --set acmCertificateArn=$(jq -r .acmCertificateArn.value infrastructure/environments/tf_outputs.json) \
-      --set argocdDomainName=$(jq -r .argocdDomainName.value infrastructure/environments/tf_outputs.json) \
-      --set hostedZoneId=$(jq -r .hosted_zone_id.value infrastructure/environments/tf_outputs.json) \
-      --set externalDnsRoleArn=$(jq -r .external_dns_role_arn.value infrastructure/environments/tf_outputs.json) \
-      --set awsAccountId=$(jq -r .aws_account_id.value infrastructure/environments/tf_outputs.json) \
-      --set dbSecretArn=$(jq -r .db_secret_arn.value infrastructure/environments/tf_outputs.json) \
-      --set dbUrl=$(jq -r .db_url.value infrastructure/environments/tf_outputs.json) \
-      --set dbPort=$(jq -r .db_port.value infrastructure/environments/tf_outputs.json) \
-      --set eksClusterEndpoint=$(jq -r .eks_cluster_endpoint.value infrastructure/environments/tf_outputs.json) \
-      --set eksClusterCaCertificate=$(jq -r .eks_cluster_ca_certificate.value infrastructure/environments/tf_outputs.json) \
-      --set eksClusterName=$(jq -r .eks_cluster_name.value infrastructure/environments/tf_outputs.json) \
-      --set lokiBucketName=$(jq -r .loki_bucket_name.value infrastructure/environments/tf_outputs.json) \
-      --set mimirBucketName=$(jq -r .mimir_bucket_name.value infrastructure/environments/tf_outputs.json) \
-      --set awsRegion=$(jq -r .aws_region.value infrastructure/environments/tf_outputs.json) \
-      --set vpcId=$(jq -r .vpc_id.value infrastructure/environments/tf_outputs.json) \
-      --set veleroBucketName=$(jq -r .velero_bucket_name.value infrastructure/environments/tf_outputs.json) \
-      --set veleroBucketRegion=$(jq -r .velero_bucket_region.value infrastructure/environments/tf_outputs.json) \
-      --set karpenterNodeIamRoleName=$(jq -r .karpenter_node_iam_role_name.value infrastructure/environments/tf_outputs.json) \
-      --set karpenterInterruptionQueueName=$(jq -r .karpenter_interruption_queue_name.value infrastructure/environments/tf_outputs.json) \
-      --set lokiServiceAccountName=$(jq -r .loki_service_account_name.value infrastructure/environments/tf_outputs.json) \
-      --set mimirServiceAccountName=$(jq -r .mimir_service_account_name.value infrastructure/environments/tf_outputs.json) \
-      --set kubePrometheusRelease="kube-prometheus-stack" \
+      --set aws_account_id=$(jq -r .aws_account_id.value infrastructure/environments/tf_outputs.json) \
+      --set aws_region=$(jq -r .aws_region.value infrastructure/environments/tf_outputs.json) \
+      --set domain_name=$(jq -r .domain_name.value infrastructure/environments/tf_outputs.json) \
+      --set certificate_arn=$(jq -r .certificate_arn.value infrastructure/environments/tf_outputs.json) \
+      --set hosted_zone_id=$(jq -r .hosted_zone_id.value infrastructure/environments/tf_outputs.json) \
+      --set vpc_id=$(jq -r .vpc_id.value infrastructure/environments/tf_outputs.json) \
+      --set db_secret_arn=$(jq -r .db_secret_arn.value infrastructure/environments/tf_outputs.json) \
+      --set db_url=$(jq -r .db_url.value infrastructure/environments/tf_outputs.json) \
+      --set db_port=$(jq -r .db_port.value infrastructure/environments/tf_outputs.json) \
+      --set eks_cluster_endpoint=$(jq -r .eks_cluster_endpoint.value infrastructure/environments/tf_outputs.json) \
+      --set eks_cluster_ca_certificate=$(jq -r .eks_cluster_ca_certificate.value infrastructure/environments/tf_outputs.json) \
+      --set eks_cluster_name=$(jq -r .eks_cluster_name.value infrastructure/environments/tf_outputs.json) \
+      --set loki_bucket_name=$(jq -r .loki_bucket_name.value infrastructure/environments/tf_outputs.json) \
+      --set loki_service_account_name=$(jq -r .loki_service_account_name.value infrastructure/environments/tf_outputs.json) \
+      --set mimir_bucket_name=$(jq -r .mimir_bucket_name.value infrastructure/environments/tf_outputs.json) \
+      --set mimir_service_account_name=$(jq -r .mimir_service_account_name.value infrastructure/environments/tf_outputs.json) \
+      --set velero_bucket_name=$(jq -r .velero_bucket_name.value infrastructure/environments/tf_outputs.json) \
+      --set velero_bucket_region=$(jq -r .velero_bucket_region.value infrastructure/environments/tf_outputs.json) \
+      --set velero_sa_name=$(jq -r .velero_sa_name.value infrastructure/environments/tf_outputs.json) \
+      --set karpenter_node_iam_role_name=$(jq -r .karpenter_node_iam_role_name.value infrastructure/environments/tf_outputs.json) \
+      --set karpenter_interruption_queue_name=$(jq -r .karpenter_interruption_queue_name.value infrastructure/environments/tf_outputs.json) \
+      --set karpenter_sa_name=$(jq -r .karpenter_sa_name.value infrastructure/environments/tf_outputs.json) \
+      --set external_dns_role_arn=$(jq -r .external_dns_role_arn.value infrastructure/environments/tf_outputs.json) \
+      --set external_dns_sa_name=$(jq -r .external_dns_sa_name.value infrastructure/environments/tf_outputs.json) \
+      --set aws_lb_controller_role_arn=$(jq -r .aws_lb_controller_role_arn.value infrastructure/environments/tf_outputs.json) \
+      --set aws_lb_controller_sa_name=$(jq -r .aws_lb_controller_sa_name.value infrastructure/environments/tf_outputs.json) \
+      --set ebs_csi_controller_sa_name=$(jq -r .ebs_csi_controller_sa_name.value infrastructure/environments/tf_outputs.json) \
+      --set secrets_csi_driver_sa_name=$(jq -r .secrets_csi_driver_sa_name.value infrastructure/environments/tf_outputs.json) \
+      --set kube_prometheus_release="kube-prometheus-stack" \
       --set gitRepo.url="https://github.com/GustavoGuima86/terraform-aws-kubernetes" \
       --set gitRepo.branch="new-2026-features"
     ```
 
 ### Parameter Mapping Table
 
-| ArgoCD Value (values.yaml)      | Terraform Output Name                |
-|----------------------------------|--------------------------------------|
-| awsAccountId                     | aws_account_id                       |
-| awsRegion                        | aws_region                           |
-| domainName                       | domain_name                          |
-| veleroBucketName                 | velero_bucket_name                   |
-| veleroBucketRegion               | velero_bucket_region                 |
-| lokiBucketName                   | loki_bucket_name                     |
-| mimirBucketName                  | mimir_bucket_name                    |
-| acmCertificateArn                | acmCertificateArn                    |
-| argocdDomainName                 | argocdDomainName                     |
-| hostedZoneId                     | hosted_zone_id                       |
-| dbSecretArn                      | db_secret_arn                        |
-| dbUrl                            | db_url                               |
-| dbPort                           | db_port                              |
-| eksClusterEndpoint               | eks_cluster_endpoint                 |
-| eksClusterCaCertificate          | eks_cluster_ca_certificate           |
-| eksClusterName                   | eks_cluster_name                     |
-| karpenterNodeIamRoleName         | karpenter_node_iam_role_name         |
-| karpenterInterruptionQueueName   | karpenter_interruption_queue_name    |
-| externalDnsRoleArn               | external_dns_role_arn                |
-| vpcId                            | vpc_id                               |
-| lokiServiceAccountName           | loki_service_account_name            |
-| mimirServiceAccountName          | mimir_service_account_name           |
+| ArgoCD Value (values.yaml)       | Terraform Output Name                | Description |
+|----------------------------------|--------------------------------------|-------------|
+| aws_account_id                   | aws_account_id                       | AWS Account ID |
+| aws_region                       | aws_region                           | AWS Region |
+| domain_name                      | domain_name                          | Base domain name |
+| certificate_arn                  | certificate_arn                      | ACM certificate ARN |
+| hosted_zone_id                   | hosted_zone_id                       | Route53 hosted zone ID |
+| vpc_id                           | vpc_id                               | VPC ID |
+| db_secret_arn                    | db_secret_arn                        | Database secret ARN |
+| db_url                           | db_url                               | Database URL |
+| db_port                          | db_port                              | Database port |
+| eks_cluster_endpoint             | eks_cluster_endpoint                 | EKS cluster endpoint |
+| eks_cluster_ca_certificate       | eks_cluster_ca_certificate           | EKS cluster CA certificate |
+| eks_cluster_name                 | eks_cluster_name                     | EKS cluster name |
+| loki_bucket_name                 | loki_bucket_name                     | Loki S3 bucket name |
+| loki_service_account_name        | loki_service_account_name            | Loki service account name |
+| mimir_bucket_name                | mimir_bucket_name                    | Mimir S3 bucket name |
+| mimir_service_account_name       | mimir_service_account_name           | Mimir service account name |
+| velero_bucket_name               | velero_bucket_name                   | Velero S3 bucket name |
+| velero_bucket_region             | velero_bucket_region                 | Velero S3 bucket region |
+| velero_sa_name                   | velero_sa_name                       | Velero service account name |
+| karpenter_node_iam_role_name     | karpenter_node_iam_role_name         | Karpenter node IAM role name |
+| karpenter_interruption_queue_name| karpenter_interruption_queue_name    | Karpenter interruption queue name |
+| karpenter_sa_name                | karpenter_sa_name                    | Karpenter service account name |
+| external_dns_role_arn            | external_dns_role_arn                | External DNS IAM role ARN |
+| external_dns_sa_name             | external_dns_sa_name                 | External DNS service account name |
+| aws_lb_controller_role_arn       | aws_lb_controller_role_arn           | AWS LB Controller IAM role ARN |
+| aws_lb_controller_sa_name        | aws_lb_controller_sa_name            | AWS LB Controller service account name |
+| ebs_csi_controller_sa_name       | ebs_csi_controller_sa_name           | EBS CSI Controller service account name |
+| secrets_csi_driver_sa_name       | secrets_csi_driver_sa_name           | Secrets Store CSI driver service account name |
+| kube_prometheus_release          | (hardcoded)                          | Prometheus stack release name |
+
+**Note**: All parameter names now use snake_case convention for consistency. Service account names are managed by Terraform and passed to Helm charts to eliminate hardcoded values.
 
 All values are required for a full, automated deployment. Ensure your `tf_outputs.json` is up to date after each Terraform apply.
 

@@ -1,3 +1,7 @@
+# ==============================================================================
+# Loki Configuration
+# ==============================================================================
+
 loki:
   loki:
     auth_enabled: false
@@ -13,8 +17,8 @@ loki:
 
     storage_config:
        aws:
-         region: "" # Set by ArgoCD
-         bucketnames: "" # Set by ArgoCD
+         region: "" # From Terraform
+         bucketnames: "" # From Terraform
          s3forcepathstyle: false
     ingester:
        chunk_encoding: snappy
@@ -24,14 +28,14 @@ loki:
     storage:
         type: s3
         bucketNames:
-          chunks: "" # Set by ArgoCD
-          ruler: "" # Set by ArgoCD
+          chunks: "" # From Terraform
+          ruler: "" # From Terraform
         s3:
-          region: "" # Set by ArgoCD
+          region: "" # From Terraform
 
   serviceAccount:
     create: true
-    name: "" # Set by ArgoCD
+    name: "" # From Terraform
 
   deploymentMode: SingleBinary
 

@@ -1,52 +1,72 @@
-# ArgoCD Applications Configuration with Deployment Waves
+# ==============================================================================
+# ArgoCD Applications Configuration
+# ==============================================================================
 
-deploymentMethod: "gitops" # Can be 'gitops' or 'local'
-
-argocdNamespace: "argocd" # Can be overridden via --set flags
+deploymentMethod: "gitops"
+argocdNamespace: "argocd"
 
 gitRepo:
   url: ""
   branch: ""
 
-# Values from Terraform outputs (set via --set flags in helm upgrade)
+# ==============================================================================
+# Terraform Outputs - Set via helm --set flags
+# ==============================================================================
 
-dbPort: ""
-dbSecretArn: ""
-dbUrl: ""
+# Core Infrastructure
+aws_account_id: ""
+aws_region: ""
+domain_name: ""
+vpc_id: ""
 
-eksClusterEndpoint: ""
-eksClusterCaCertificate: ""
-eksClusterName: ""
+# Database
+db_port: ""
+db_secret_arn: ""
+db_url: ""
 
-lokiBucketName: ""
-mimirBucketName: ""
-awsRegion: ""
-vpcId: ""
-veleroBucketName: ""
-veleroBucketRegion: ""
+# EKS Cluster
+eks_cluster_endpoint: ""
+eks_cluster_ca_certificate: ""
+eks_cluster_name: ""
 
-# Karpenter values
-karpenterNodeIamRoleName: ""
-karpenterInterruptionQueueName: ""
+# DNS and Certificates
+certificate_arn: ""
+hosted_zone_id: ""
+argocd_domain_name: ""
 
-# External DNS values
-externalDnsRoleArn: ""
+# Observability
+loki_bucket_name: ""
+loki_service_account_name: ""
+mimir_bucket_name: ""
+mimir_service_account_name: ""
+kube_prometheus_release: "kube-prometheus-stack"
 
-# DNS and Certificate values
-acmCertificateArn: ""
-argocdDomainName: ""
-domainName: ""
-hostedZoneId: ""
-awsAccountId: ""
+# Karpenter
+karpenter_node_iam_role_name: ""
+karpenter_interruption_queue_name: ""
+karpenter_sa_name: ""
 
-# Observability values
-lokiServiceAccountName: ""
-mimirServiceAccountName: ""
-kubePrometheusRelease: "kube-prometheus-stack"
+# External DNS
+external_dns_role_arn: ""
+external_dns_sa_name: ""
 
-# Grafana values
+# AWS Load Balancer Controller
+aws_lb_controller_role_arn: ""
+aws_lb_controller_sa_name: ""
 
-# CloudNativePG values
+# Velero Backup
+velero_bucket_name: ""
+velero_bucket_region: ""
+velero_sa_name: ""
+
+# Storage
+ebs_csi_controller_sa_name: ""
+secrets_csi_driver_sa_name: ""
+
+# ==============================================================================
+# Application Settings
+# ==============================================================================
+
 cloudnativePgEnabled: true
 
 # ==============================================================================

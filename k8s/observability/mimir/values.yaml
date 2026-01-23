@@ -1,10 +1,14 @@
+# ==============================================================================
+# Mimir Configuration
+# ==============================================================================
+
 mimir-distributed:
   mimir:
     structuredConfig:
       alertmanager_storage:
         s3:
-          bucket_name: "" # Set by ArgoCD
-          endpoint: "" # Set by ArgoCD
+          bucket_name: "" # From Terraform
+          endpoint: "" # From Terraform
           insecure: true
       usage_stats:
         enabled: false

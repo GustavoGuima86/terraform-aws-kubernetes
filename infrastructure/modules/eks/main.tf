@@ -33,7 +33,7 @@ module "eks" {
       most_recent = true
       pod_identity_association = [
         {
-          service_account = "ebs-csi-controller-sa"
+          service_account = local.ebs_csi_controller_sa_name
           role_arn        = module.aws_ebs_csi_pod_identity.iam_role_arn
         }
       ]

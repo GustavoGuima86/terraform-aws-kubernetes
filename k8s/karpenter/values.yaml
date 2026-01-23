@@ -1,9 +1,11 @@
-# Karpenter Helm Values
-# Note: Cluster-specific values will be injected by Terraform and ArgoCD
+# ==============================================================================
+# Karpenter Configuration
+# Values are injected by ArgoCD from Terraform outputs
+# ==============================================================================
 
 serviceAccount:
   create: true
-  name: karpenter
+  name: "" # From Terraform
   namespace: karpenter
   annotations: {}
 
@@ -14,17 +16,17 @@ serviceMonitor:
     port: http-metrics
 
 podAnnotations:
-  eks.amazonaws.com/aws-sqs-queue-name: "" # Set by ArgoCD
+  eks.amazonaws.com/aws-sqs-queue-name: "" # From Terraform
 
 karpenter:
   nodeSelector:
     karpenter.sh/controller: "true"
-  defaultNodeRole: "" # Set by ArgoCD
+  defaultNodeRole: "" # From Terraform
   settings:
-    clusterEndpoint: "" # Set by ArgoCD
-    clusterName: "" # Set by ArgoCD
-    interruptionQueue: "" # Set by ArgoCD
-    awsRegion: "" # Set by ArgoCD
+    clusterEndpoint: "" # From Terraform
+    clusterName: "" # From Terraform
+    interruptionQueue: "" # From Terraform
+    awsRegion: "" # From Terraform
   webhook:
     enabled: false
 

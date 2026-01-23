@@ -1,22 +1,26 @@
+# ==============================================================================
+# Velero Backup Configuration
+# ==============================================================================
+
 replicaCount: 1
 
 configuration:
   provider: aws
   backupStorageLocation:
     name: default
-    bucket: "REPLACE_ME_BUCKET"
+    bucket: ""
     config:
-      region: "REPLACE_ME_REGION"
+      region: ""
       s3ForcePathStyle: true
-      s3Url: "https://s3.REPLACE_ME_REGION.amazonaws.com"
+      s3Url: ""
   volumeSnapshotLocation:
     name: default
     config:
-      region: "REPLACE_ME_REGION"
+      region: ""
 
 serviceAccount:
   create: true
-  name: velero-sa
+  name: "" # From Terraform
   annotations: {}
 
 initContainers: []

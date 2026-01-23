@@ -16,17 +16,19 @@ spec:
     helm:
       parameters:
         - name: karpenter.settings.clusterEndpoint
-          value: "{{ .Values.eksClusterEndpoint }}"
+          value: "{{ .Values.eks_cluster_endpoint }}"
         - name: karpenter.settings.clusterName
-          value: "{{ .Values.eksClusterName }}"
+          value: "{{ .Values.eks_cluster_name }}"
         - name: karpenter.defaultNodeRole
-          value: "{{ .Values.karpenterNodeIamRoleName }}"
+          value: "{{ .Values.karpenter_node_iam_role_name }}"
         - name: karpenter.settings.interruptionQueue
-          value: "{{ .Values.karpenterInterruptionQueueName }}"
+          value: "{{ .Values.karpenter_interruption_queue_name }}"
         - name: podAnnotations.eks\.amazonaws\.com/aws-sqs-queue-name
-          value: "{{ .Values.karpenterInterruptionQueueName }}"
+          value: "{{ .Values.karpenter_interruption_queue_name }}"
         - name: karpenter.settings.awsRegion
-          value: "{{ .Values.awsRegion }}"
+          value: "{{ .Values.aws_region }}"
+        - name: serviceAccount.name
+          value: "{{ .Values.karpenter_sa_name }}"
   destination:
     server: https://kubernetes.default.svc
     namespace: karpenter

@@ -1,7 +1,10 @@
+# ==============================================================================
+# ArgoCD Core Configuration
+# ==============================================================================
+
 argo-cd:
   global:
     image:
-      # Updating this to a recent version fixes the original "cp --update" error
       tag: "v2.12.3"
 
   # Core installation mode often implies not installing the heavy UI components,

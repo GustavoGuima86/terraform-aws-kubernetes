@@ -1,9 +1,9 @@
-# values.yaml for the consolidated istio chart
-# We will rely on the default values of the subcharts for now.
+# ==============================================================================
+# Istio Gateway Configuration
+# ==============================================================================
 
-# ACM Certificate ARN for HTTPS (injected by ArgoCD from Terraform outputs)
-acmCertificateArn: ""
-rootDomain: ""
+acmCertificateArn: "" # From Terraform
+rootDomain: "" # From Terraform
 
 gateway:
   service:

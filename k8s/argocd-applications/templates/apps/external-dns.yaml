@@ -18,9 +18,11 @@ spec:
         - values.yaml
       parameters:
         - name: external-dns.aws.region
-          value: "{{ .Values.awsRegion }}"
+          value: "{{ .Values.aws_region }}"
         - name: external-dns.domainFilters[0]
-          value: "{{ .Values.domainName }}"
+          value: "{{ .Values.domain_name }}"
+        - name: external-dns.serviceAccount.name
+          value: "{{ .Values.external_dns_sa_name }}"
   destination:
     server: https://kubernetes.default.svc
     namespace: external-dns
