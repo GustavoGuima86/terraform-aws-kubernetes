@@ -10,6 +10,7 @@ This project automates the creation of a complete Kubernetes environment on AWS,
 -   **Container Infrastructure**: ECR for private container image storage.
 -   **Database**: A managed AWS RDS instance.
 -   **Observability Stack**: A full observability stack including Grafana, Prometheus, Loki, and Mimir.
+-   **Cost Monitoring**: OpenCost for real-time Kubernetes cost allocation and monitoring.
 -   **Runtime Security**: Falco for runtime threat detection and security monitoring.
 -   **GitOps Engine**: ArgoCD for managing all Kubernetes applications and configurations directly from this Git repository.
 -   **Auto-Scaling**: Karpenter for intelligent and efficient node provisioning.
@@ -165,6 +166,8 @@ This stage deploys ArgoCD Core and then all other Kubernetes-native applications
       --set velero_sa_name=$(jq -r .velero_sa_name.value infrastructure/environments/tf_outputs.json) \
       --set falco_role_arn=$(jq -r .falco_role_arn.value infrastructure/environments/tf_outputs.json) \
       --set falco_sa_name=$(jq -r .falco_sa_name.value infrastructure/environments/tf_outputs.json) \
+      --set opencost_role_arn=$(jq -r .opencost_role_arn.value infrastructure/environments/tf_outputs.json) \
+      --set opencost_sa_name=$(jq -r .opencost_sa_name.value infrastructure/environments/tf_outputs.json) \
       --set karpenter_node_iam_role_name=$(jq -r .karpenter_node_iam_role_name.value infrastructure/environments/tf_outputs.json) \
       --set karpenter_interruption_queue_name=$(jq -r .karpenter_interruption_queue_name.value infrastructure/environments/tf_outputs.json) \
       --set karpenter_sa_name=$(jq -r .karpenter_sa_name.value infrastructure/environments/tf_outputs.json) \
@@ -204,6 +207,8 @@ This stage deploys ArgoCD Core and then all other Kubernetes-native applications
 | velero_sa_name                   | velero_sa_name                       | Velero service account name |
 | falco_role_arn                   | falco_role_arn                       | Falco IAM role ARN |
 | falco_sa_name                    | falco_sa_name                        | Falco service account name |
+| opencost_role_arn                | opencost_role_arn                    | OpenCost IAM role ARN |
+| opencost_sa_name                 | opencost_sa_name                     | OpenCost service account name |
 | karpenter_node_iam_role_name     | karpenter_node_iam_role_name         | Karpenter node IAM role name |
 | karpenter_interruption_queue_name| karpenter_interruption_queue_name    | Karpenter interruption queue name |
 | karpenter_sa_name                | karpenter_sa_name                    | Karpenter service account name |
@@ -293,6 +298,72 @@ Default Falco rules are included, with custom rules defined for:
 -   Kubernetes secret access monitoring
 
 Additional custom rules can be added in the `customRules` section of the values file.
+
+## Cost Monitoring with OpenCost
+
+OpenCost is a CNCF incubating project that provides real-time cost allocation and monitoring for Kubernetes clusters. This project integrates OpenCost with AWS pricing data for accurate cost tracking.
+
+### Key Features
+
+-   **Real-time Cost Allocation**: Track costs by namespace, deployment, service, label, and pod
+-   **AWS Pricing Integration**: Automatic integration with AWS pricing APIs for accurate cost data
+-   **Multi-dimensional Analysis**: Break down costs by:
+    -   Compute resources (CPU, memory, GPU)
+    -   Storage (persistent volumes, EBS)
+    -   Network egress
+    -   Load balancers
+    -   Spot vs on-demand instances
+-   **Cost Explorer Integration**: Access to AWS Cost Explorer data for out-of-cluster costs
+-   **Prometheus Integration**: Seamless integration with kube-prometheus-stack for metrics
+
+### Components Deployed
+
+1.  **OpenCost Core**: Cost allocation engine that collects and processes resource usage data
+2.  **OpenCost UI**: Web interface for visualizing and analyzing costs
+3.  **Cost Model**: Custom AWS pricing configuration for accurate regional pricing
+4.  **Persistent Storage**: 10Gi PVC for storing historical cost data
+
+### Access the OpenCost UI
+
+Once deployed, the OpenCost UI is accessible via Istio ingress at:
+```
+https://opencost.<your-domain>
+```
+
+The UI provides:
+-   Real-time cost dashboards
+-   Cost allocation by Kubernetes concepts (namespace, pod, service, etc.)
+-   Cost trends and forecasting
+-   Efficiency metrics and recommendations
+-   Export capabilities (CSV, JSON)
+
+### AWS Integration
+
+OpenCost is configured with Pod Identity to securely access AWS services:
+-   **Cost Explorer API**: Retrieve actual AWS billing data
+-   **Pricing API**: Get current AWS pricing for EC2, EBS, and other services
+-   **EC2 API**: Access spot pricing history and instance type details
+-   **CloudWatch**: Retrieve usage metrics
+-   **S3/Athena/Glue**: Query Cost and Usage Reports (CUR) if configured
+
+### Cost Optimization
+
+OpenCost helps identify:
+-   Over-provisioned resources
+-   Idle resources consuming costs
+-   Spot instance savings opportunities
+-   Namespace and team cost allocation
+-   Cost trends and anomalies
+
+### Prometheus Metrics
+
+OpenCost exposes cost metrics to Prometheus, enabling:
+-   Custom cost alerts in Grafana
+-   Integration with existing dashboards
+-   Historical cost analysis
+-   Cost-based autoscaling decisions
+
+Configure additional settings in [k8s/opencost/values.yaml](k8s/opencost/values.yaml).
 
 ## Cleanup
 

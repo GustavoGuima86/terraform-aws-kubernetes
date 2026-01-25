@@ -20,11 +20,11 @@ falco:
     kind: modern_ebpf
   
   # Service account for Pod Identity
+  # Note: Service account is created via template with Pod Identity annotation
   serviceAccount:
-    create: true
+    create: false
     name: falco
-    annotations:
-      # Pod Identity annotation will be added via template
+    annotations: {}
   
   # Falco configuration
   falco:
@@ -116,10 +116,9 @@ falcosidekick:
   
   # Service account for Pod Identity (if needed for AWS services)
   serviceAccount:
-    create: true
+    create: false
     name: falcosidekick
-    annotations:
-      # Pod Identity annotation will be added via template if needed
+    annotations: {}
   
   # Replicas for HA
   replicaCount: 2

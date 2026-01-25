@@ -1,0 +1,11 @@
+apiVersion: v2
+name: opencost
+description: OpenCost cost monitoring for Kubernetes with AWS pricing integration
+type: application
+version: 1.0.0
+appVersion: "1.113.0"
+
+dependencies:
+  - name: opencost
+    version: 1.43.1
+    repository: https://opencost.github.io/opencost-helm-chart

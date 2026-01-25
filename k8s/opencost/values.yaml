@@ -1,0 +1,143 @@
+# ==============================================================================
+# OpenCost Configuration
+# ==============================================================================
+
+# AWS Integration
+aws_region: ""
+aws_account_id: ""
+opencost_role_arn: ""
+opencost_sa_name: "opencost"
+eks_cluster_name: ""
+
+# Istio Ingress
+domain_name: ""
+certificate_arn: ""
+
+# Observability Integration
+kube_prometheus_release: "kube-prometheus-stack"
+
+# ==============================================================================
+# OpenCost Configuration
+# ==============================================================================
+opencost:
+  # Service account for Pod Identity
+  # Note: Service account is created via template with Pod Identity annotation
+  serviceAccount:
+    create: false
+    name: ""  # Set via Helm parameter opencost_sa_name
+    annotations: {}
+  
+  # OpenCost configuration
+  opencost:
+    exporter:
+      # Enable AWS pricing integration
+      cloudProviderApiKey: ""  # Not needed with Pod Identity
+      
+      # AWS cost configuration
+      aws:
+        # Service key secret for AWS access (not needed with Pod Identity)
+        secret_name: ""
+        access_key_id: ""
+        secret_access_key: ""
+      
+      # Default cluster ID
+      defaultClusterId: "default-cluster"
+      
+      # CSV cost model for on-prem or custom pricing
+      csv_region: ""
+      csv_path: ""
+      
+      # Resource configuration
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 999m
+          memory: 1Gi
+    
+    # Prometheus integration
+    prometheus:
+      # Connect to kube-prometheus-stack
+      internal:
+        enabled: true
+        serviceName: kube-prometheus-stack-prometheus
+        namespaceName: observability
+        port: 9090
+      
+      # External prometheus (if needed)
+      external:
+        enabled: false
+        url: ""
+    
+    # UI configuration
+    ui:
+      enabled: true
+      ingress:
+        enabled: false  # We'll use Istio Gateway API instead
+      
+      resources:
+        requests:
+          cpu: 10m
+          memory: 55Mi
+        limits:
+          cpu: 999m
+          memory: 1Gi
+  
+  # Metrics configuration
+  metrics:
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: kube-prometheus-stack
+  
+  # Persistence for cost data
+  persistence:
+    enabled: true
+    storageClass: gp3-secure
+    size: 10Gi
+    accessMode: ReadWriteOnce
+  
+  # Extra environment variables for AWS configuration
+  extraEnv:
+    # AWS configuration
+    - name: AWS_REGION
+      value: ""  # Set via Helm parameter
+    - name: AWS_CLUSTER_ID
+      value: ""  # Set via Helm parameter
+    - name: CLOUD_PROVIDER_API_KEY
+      value: ""
+    
+    # Cost model configuration
+    - name: EMIT_KSM_V1_METRICS
+      value: "false"
+    - name: EMIT_KSM_V1_METRICS_ONLY
+      value: "false"
+    - name: LOG_LEVEL
+      value: "info"
+    
+    # Pricing configuration
+    - name: CONFIG_PATH
+      value: "/tmp/custom-config"
+    - name: CLOUD_COST_ENABLED
+      value: "true"
+    - name: CLOUD_COST_MONTH_TO_DATE_INTERVAL
+      value: "6h"
+    - name: CLOUD_COST_REFRESH_RATE_HOURS
+      value: "6"
+    - name: CLOUD_COST_QUERY_WINDOW_DAYS
+      value: "7"
+    - name: CLOUD_COST_RUN_WINDOW_DAYS
+      value: "3"
+  
+  # Priority class
+  priorityClassName: ""
+  
+  # Tolerations
+  tolerations: []
+  
+  # Node selector
+  nodeSelector: {}
+  
+  # Affinity
+  affinity: {}

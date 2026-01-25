@@ -171,6 +171,11 @@ output "falco_role_arn" {
   description = "Falco IAM role ARN"
 }
 
+output "opencost_role_arn" {
+  value       = module.eks.opencost_role_arn
+  description = "OpenCost IAM role ARN"
+}
+
 output "ebs_csi_controller_role_arn" {
   value       = module.eks.ebs_csi_controller_role_arn
   description = "EBS CSI controller IAM role ARN"
@@ -208,6 +213,11 @@ output "velero_sa_name" {
 output "falco_sa_name" {
   value       = module.eks.falco_sa_name
   description = "Falco service account name"
+}
+
+output "opencost_sa_name" {
+  value       = module.eks.opencost_sa_name
+  description = "OpenCost service account name"
 }
 
 output "ebs_csi_controller_sa_name" {

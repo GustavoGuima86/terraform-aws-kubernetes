@@ -147,6 +147,16 @@ output "falco_sa_name" {
   value       = local.falco_sa_name
 }
 
+output "opencost_role_arn" {
+  description = "OpenCost IAM role ARN"
+  value       = module.opencost_pod_identity.iam_role_arn
+}
+
+output "opencost_sa_name" {
+  description = "OpenCost service account name"
+  value       = local.opencost_sa_name
+}
+
 output "ebs_csi_controller_sa_name" {
   description = "EBS CSI controller service account name"
   value       = local.ebs_csi_controller_sa_name

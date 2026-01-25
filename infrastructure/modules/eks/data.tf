@@ -38,6 +38,10 @@ locals {
   falco_sa_name      = "falco"
   falco_sa_namespace = "falco"
 
+  # OpenCost Cost Monitoring
+  opencost_sa_name      = "opencost"
+  opencost_sa_namespace = "opencost"
+
   # EBS CSI Controller
   ebs_csi_controller_sa_name      = "ebs-csi-controller-sa"
   ebs_csi_controller_sa_namespace = "kube-system"

@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: opencost
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: observability
+  source:
+    repoURL: {{ .Values.gitRepo.url }}
+    targetRevision: {{ .Values.gitRepo.branch }}
+    path: k8s/opencost
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: aws_region
+          value: "{{ .Values.aws_region }}"
+        - name: aws_account_id
+          value: "{{ .Values.aws_account_id }}"
+        - name: opencost_role_arn
+          value: "{{ .Values.opencost_role_arn }}"
+        - name: opencost_sa_name
+          value: "{{ .Values.opencost_sa_name }}"
+        - name: eks_cluster_name
+          value: "{{ .Values.eks_cluster_name }}"
+        - name: domain_name
+          value: "{{ .Values.domain_name }}"
+        - name: certificate_arn
+          value: "{{ .Values.certificate_arn }}"
+        - name: kube_prometheus_release
+          value: "{{ .Values.kube_prometheus_release }}"
+        - name: opencost.serviceAccount.name
+          value: "{{ .Values.opencost_sa_name }}"
+        - name: opencost.extraEnv[0].value
+          value: "{{ .Values.aws_region }}"
+        - name: opencost.extraEnv[1].value
+          value: "{{ .Values.eks_cluster_name }}"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: opencost
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

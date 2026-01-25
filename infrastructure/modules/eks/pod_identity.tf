@@ -210,3 +210,131 @@ module "falco_pod_identity" {
   }
 
 }
+
+# ==============================================================================
+# OpenCost Cost Monitoring Pod Identity
+# ==============================================================================
+
+# IAM policy for OpenCost (Cost Explorer, CE, Pricing APIs)
+data "aws_iam_policy_document" "opencost" {
+  # Cost Explorer API permissions
+  statement {
+    effect = "Allow"
+    actions = [
+      "ce:GetCostAndUsage",
+      "ce:GetCostForecast",
+      "ce:GetDimensionValues",
+      "ce:GetReservationUtilization",
+      "ce:GetSavingsPlansUtilization",
+      "ce:GetTags"
+    ]
+    resources = ["*"]
+  }
+
+  # Pricing API permissions
+  statement {
+    effect = "Allow"
+    actions = [
+      "pricing:GetProducts",
+      "pricing:DescribeServices"
+    ]
+    resources = ["*"]
+  }
+
+  # EC2 permissions for instance details
+  statement {
+    effect = "Allow"
+    actions = [
+      "ec2:DescribeInstances",
+      "ec2:DescribeInstanceTypes",
+      "ec2:DescribeRegions",
+      "ec2:DescribeAvailabilityZones",
+      "ec2:DescribeSpotPriceHistory"
+    ]
+    resources = ["*"]
+  }
+
+  # EKS permissions for cluster details
+  statement {
+    effect = "Allow"
+    actions = [
+      "eks:DescribeCluster",
+      "eks:ListClusters"
+    ]
+    resources = ["*"]
+  }
+
+  # CloudWatch for metrics
+  statement {
+    effect = "Allow"
+    actions = [
+      "cloudwatch:GetMetricStatistics",
+      "cloudwatch:ListMetrics"
+    ]
+    resources = ["*"]
+  }
+
+  # S3 for CUR (Cost and Usage Reports) if configured
+  statement {
+    effect = "Allow"
+    actions = [
+      "s3:GetObject",
+      "s3:ListBucket"
+    ]
+    resources = [
+      "arn:aws:s3:::${var.cluster_name}-cur-reports*",
+      "arn:aws:s3:::${var.cluster_name}-cur-reports*/*"
+    ]
+  }
+
+  # Athena for querying CUR data
+  statement {
+    effect = "Allow"
+    actions = [
+      "athena:GetQueryExecution",
+      "athena:GetQueryResults",
+      "athena:StartQueryExecution",
+      "athena:StopQueryExecution"
+    ]
+    resources = ["*"]
+  }
+
+  # Glue for CUR data catalog
+  statement {
+    effect = "Allow"
+    actions = [
+      "glue:GetDatabase",
+      "glue:GetTable",
+      "glue:GetPartitions"
+    ]
+    resources = ["*"]
+  }
+}
+
+# IAM policy
+resource "aws_iam_policy" "opencost" {
+  name        = "${var.cluster_name}-opencost-policy"
+  description = "Policy for OpenCost to access AWS cost and pricing data"
+  policy      = data.aws_iam_policy_document.opencost.json
+}
+
+# EKS Pod Identity for OpenCost
+module "opencost_pod_identity" {
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "~> 2.5"
+
+  name = "${var.cluster_name}-opencost"
+
+  additional_policy_arns = {
+    opencost = aws_iam_policy.opencost.arn
+  }
+
+  associations = {
+    opencost = {
+      cluster_name    = var.cluster_name
+      namespace       = local.opencost_sa_namespace
+      service_account = local.opencost_sa_name
+    }
+  }
+
+}

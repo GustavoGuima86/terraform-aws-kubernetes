@@ -1,0 +1,27 @@
+{{- if .Values.domain_name }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: opencost-ui-route
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: opencost-ui
+    gateway: istio-gateway
+spec:
+  parentRefs:
+    - name: istio-gateway
+      namespace: istio-system
+      sectionName: https-443
+  hostnames:
+    - "opencost.{{ .Values.domain_name }}"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: "/"
+      backendRefs:
+        - name: opencost
+          port: 9090
+          weight: 100
+{{- end }}
