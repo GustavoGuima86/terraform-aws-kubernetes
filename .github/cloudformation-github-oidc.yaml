@@ -1,0 +1,191 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'GitHub Actions OIDC Provider and IAM Role for CI/CD Pipeline'
+
+Parameters:
+  GitHubOrg:
+    Type: String
+    Description: GitHub organization or username
+    Default: 'your-github-org'
+  
+  GitHubRepo:
+    Type: String
+    Description: GitHub repository name
+    Default: 'terraform-aws-kubernetes'
+  
+  RoleName:
+    Type: String
+    Description: Name for the IAM role
+    Default: 'GitHubActionsRole'
+  
+  TerraformStateBucketName:
+    Type: String
+    Description: S3 bucket name for Terraform state
+    Default: ''
+  
+  CreateStateBucket:
+    Type: String
+    Description: Whether to create the S3 bucket for Terraform state
+    Default: 'true'
+    AllowedValues:
+      - 'true'
+      - 'false'
+
+Conditions:
+  CreateBucket: !Equals [!Ref CreateStateBucket, 'true']
+  HasBucketName: !Not [!Equals [!Ref TerraformStateBucketName, '']]
+
+Resources:
+  # GitHub OIDC Provider
+  GitHubOIDCProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      ThumbprintList:
+        - 6938fd4d98bab03faadb97b34396831e3780aea1
+      Tags:
+        - Key: Name
+          Value: github-actions-oidc-provider
+        - Key: ManagedBy
+          Value: CloudFormation
+
+  # IAM Role for GitHub Actions
+  GitHubActionsRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref RoleName
+      Description: Role for GitHub Actions to deploy Terraform infrastructure and Kubernetes applications
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !GetAtt GitHubOIDCProvider.Arn
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+              StringLike:
+                token.actions.githubusercontent.com:sub: !Sub 'repo:${GitHubOrg}/${GitHubRepo}:*'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+      Tags:
+        - Key: Name
+          Value: !Ref RoleName
+        - Key: ManagedBy
+          Value: CloudFormation
+
+  # S3 Bucket for Terraform State
+  TerraformStateBucket:
+    Type: AWS::S3::Bucket
+    Condition: CreateBucket
+    Properties:
+      BucketName: !If
+        - HasBucketName
+        - !Ref TerraformStateBucketName
+        - !Sub '${AWS::StackName}-terraform-state-${AWS::AccountId}'
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      LifecycleConfiguration:
+        Rules:
+          - Id: DeleteOldVersions
+            Status: Enabled
+            NoncurrentVersionExpirationInDays: 90
+      Tags:
+        - Key: Name
+          Value: terraform-state-bucket
+        - Key: ManagedBy
+          Value: CloudFormation
+
+  # S3 Bucket Policy
+  TerraformStateBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Condition: CreateBucket
+    Properties:
+      Bucket: !Ref TerraformStateBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: DenyUnencryptedObjectUploads
+            Effect: Deny
+            Principal: '*'
+            Action: s3:PutObject
+            Resource: !Sub '${TerraformStateBucket.Arn}/*'
+            Condition:
+              StringNotEquals:
+                s3:x-amz-server-side-encryption: AES256
+          - Sid: DenyInsecureTransport
+            Effect: Deny
+            Principal: '*'
+            Action: s3:*
+            Resource:
+              - !GetAtt TerraformStateBucket.Arn
+              - !Sub '${TerraformStateBucket.Arn}/*'
+            Condition:
+              Bool:
+                aws:SecureTransport: false
+
+Outputs:
+  GitHubOIDCProviderArn:
+    Description: ARN of the GitHub OIDC Provider
+    Value: !GetAtt GitHubOIDCProvider.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-OIDCProviderArn'
+
+  GitHubActionsRoleArn:
+    Description: ARN of the IAM Role for GitHub Actions
+    Value: !GetAtt GitHubActionsRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-GitHubActionsRoleArn'
+
+  GitHubActionsRoleName:
+    Description: Name of the IAM Role for GitHub Actions
+    Value: !Ref GitHubActionsRole
+    Export:
+      Name: !Sub '${AWS::StackName}-GitHubActionsRoleName'
+
+  TerraformStateBucketName:
+    Description: Name of the S3 bucket for Terraform state
+    Condition: CreateBucket
+    Value: !Ref TerraformStateBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-TerraformStateBucket'
+
+  TerraformStateBucketArn:
+    Description: ARN of the S3 bucket for Terraform state
+    Condition: CreateBucket
+    Value: !GetAtt TerraformStateBucket.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-TerraformStateBucketArn'
+
+  TerraformStateLockTableName:
+    Description: Name of the DynamoDB table for Terraform state locking
+    Value: !Ref TerraformStateLockTable
+    Export:
+      Name: !Sub '${AWS::StackName}-TerraformStateLockTable'
+
+  TerraformStateLockTableArn:
+    Description: ARN of the DynamoDB table for Terraform state locking
+    Value: !GetAtt TerraformStateLockTable.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-TerraformStateLockTableArn'
+
+  GitHubSecretsInstructions:
+    Description: Instructions for configuring GitHub Secrets
+    Value: !Sub |
+      Add these secrets to your GitHub repository (Settings → Secrets and variables → Actions):
+      
+      AWS_ROLE_ARN = ${GitHubActionsRole.Arn}
+      TF_STATE_BUCKET = ${TerraformStateBucket}
+      
+      Note: S3 native locking is used (no DynamoDB table required)
