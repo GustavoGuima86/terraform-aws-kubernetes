@@ -166,6 +166,11 @@ output "velero_service_account_role_arn" {
   description = "Velero service account IAM role ARN"
 }
 
+output "falco_role_arn" {
+  value       = module.eks.falco_role_arn
+  description = "Falco IAM role ARN"
+}
+
 output "ebs_csi_controller_role_arn" {
   value       = module.eks.ebs_csi_controller_role_arn
   description = "EBS CSI controller IAM role ARN"
@@ -198,6 +203,11 @@ output "external_dns_sa_name" {
 output "velero_sa_name" {
   value       = module.eks.velero_sa_name
   description = "Velero service account name"
+}
+
+output "falco_sa_name" {
+  value       = module.eks.falco_sa_name
+  description = "Falco service account name"
 }
 
 output "ebs_csi_controller_sa_name" {

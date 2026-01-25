@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: falco
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: infrastructure
+  source:
+    repoURL: {{ .Values.gitRepo.url }}
+    targetRevision: {{ .Values.gitRepo.branch }}
+    path: k8s/falco
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: aws_region
+          value: "{{ .Values.aws_region }}"
+        - name: falco_role_arn
+          value: "{{ .Values.falco_role_arn }}"
+        - name: falco_sa_name
+          value: "{{ .Values.falco_sa_name }}"
+        - name: domain_name
+          value: "{{ .Values.domain_name }}"
+        - name: certificate_arn
+          value: "{{ .Values.certificate_arn }}"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: falco
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

@@ -34,6 +34,10 @@ locals {
   velero_sa_name      = "velero-sa"
   velero_sa_namespace = "velero"
 
+  # Falco Runtime Security
+  falco_sa_name      = "falco"
+  falco_sa_namespace = "falco"
+
   # EBS CSI Controller
   ebs_csi_controller_sa_name      = "ebs-csi-controller-sa"
   ebs_csi_controller_sa_namespace = "kube-system"

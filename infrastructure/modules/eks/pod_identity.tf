@@ -137,3 +137,76 @@ module "external_dns_pod_identity" {
   }
 
 }
+
+# ==============================================================================
+# Falco Runtime Security Pod Identity
+# ==============================================================================
+
+# IAM policy for Falco (CloudWatch Logs, SNS, SQS)
+data "aws_iam_policy_document" "falco" {
+  # CloudWatch Logs permissions
+  statement {
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:DescribeLogGroups",
+      "logs:DescribeLogStreams"
+    ]
+    resources = [
+      "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/eks/${var.cluster_name}/falco*"
+    ]
+  }
+
+  # SNS permissions (optional, for alerts)
+  statement {
+    effect = "Allow"
+    actions = [
+      "sns:Publish"
+    ]
+    resources = [
+      "arn:aws:sns:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:falco-*"
+    ]
+  }
+
+  # SQS permissions (optional, for event queuing)
+  statement {
+    effect = "Allow"
+    actions = [
+      "sqs:SendMessage",
+      "sqs:GetQueueUrl"
+    ]
+    resources = [
+      "arn:aws:sqs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:falco-*"
+    ]
+  }
+}
+
+# IAM policy
+resource "aws_iam_policy" "falco" {
+  name        = "${var.cluster_name}-falco-policy"
+  description = "Policy for Falco to send events to CloudWatch, SNS, and SQS"
+  policy      = data.aws_iam_policy_document.falco.json
+}
+
+# EKS Pod Identity for Falco
+module "falco_pod_identity" {
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "~> 2.5"
+
+  name = "${var.cluster_name}-falco"
+
+  additional_policy_arns = {
+    falco = aws_iam_policy.falco.arn
+  }
+
+  associations = {
+    falco = {
+      cluster_name    = var.cluster_name
+      namespace       = local.falco_sa_namespace
+      service_account = local.falco_sa_name
+    }
+  }
+
+}

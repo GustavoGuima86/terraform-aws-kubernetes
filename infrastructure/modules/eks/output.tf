@@ -137,6 +137,16 @@ output "velero_sa_name" {
   value       = local.velero_sa_name
 }
 
+output "falco_role_arn" {
+  description = "Falco IAM role ARN"
+  value       = module.falco_pod_identity.iam_role_arn
+}
+
+output "falco_sa_name" {
+  description = "Falco service account name"
+  value       = local.falco_sa_name
+}
+
 output "ebs_csi_controller_sa_name" {
   description = "EBS CSI controller service account name"
   value       = local.ebs_csi_controller_sa_name

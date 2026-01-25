@@ -10,6 +10,7 @@ This project automates the creation of a complete Kubernetes environment on AWS,
 -   **Container Infrastructure**: ECR for private container image storage.
 -   **Database**: A managed AWS RDS instance.
 -   **Observability Stack**: A full observability stack including Grafana, Prometheus, Loki, and Mimir.
+-   **Runtime Security**: Falco for runtime threat detection and security monitoring.
 -   **GitOps Engine**: ArgoCD for managing all Kubernetes applications and configurations directly from this Git repository.
 -   **Auto-Scaling**: Karpenter for intelligent and efficient node provisioning.
 
@@ -162,6 +163,8 @@ This stage deploys ArgoCD Core and then all other Kubernetes-native applications
       --set velero_bucket_name=$(jq -r .velero_bucket_name.value infrastructure/environments/tf_outputs.json) \
       --set velero_bucket_region=$(jq -r .velero_bucket_region.value infrastructure/environments/tf_outputs.json) \
       --set velero_sa_name=$(jq -r .velero_sa_name.value infrastructure/environments/tf_outputs.json) \
+      --set falco_role_arn=$(jq -r .falco_role_arn.value infrastructure/environments/tf_outputs.json) \
+      --set falco_sa_name=$(jq -r .falco_sa_name.value infrastructure/environments/tf_outputs.json) \
       --set karpenter_node_iam_role_name=$(jq -r .karpenter_node_iam_role_name.value infrastructure/environments/tf_outputs.json) \
       --set karpenter_interruption_queue_name=$(jq -r .karpenter_interruption_queue_name.value infrastructure/environments/tf_outputs.json) \
       --set karpenter_sa_name=$(jq -r .karpenter_sa_name.value infrastructure/environments/tf_outputs.json) \
@@ -199,6 +202,8 @@ This stage deploys ArgoCD Core and then all other Kubernetes-native applications
 | velero_bucket_name               | velero_bucket_name                   | Velero S3 bucket name |
 | velero_bucket_region             | velero_bucket_region                 | Velero S3 bucket region |
 | velero_sa_name                   | velero_sa_name                       | Velero service account name |
+| falco_role_arn                   | falco_role_arn                       | Falco IAM role ARN |
+| falco_sa_name                    | falco_sa_name                        | Falco service account name |
 | karpenter_node_iam_role_name     | karpenter_node_iam_role_name         | Karpenter node IAM role name |
 | karpenter_interruption_queue_name| karpenter_interruption_queue_name    | Karpenter interruption queue name |
 | karpenter_sa_name                | karpenter_sa_name                    | Karpenter service account name |
@@ -232,6 +237,62 @@ During the review of the ArgoCD configuration, the following issues and recommen
 -   **Empty Helm Parameters**: Several applications have empty Helm parameters that should be populated from Terraform outputs. These values need to be passed down from the parent `argocd-applications` chart to the individual application charts.
 -   **Inconsistent `repoURL` for gateway-api-crds**: The `gateway-api-crds` application points to an external repository and uses `HEAD` as the target revision, which is not recommended for production. It should be pinned to a specific version.
 -   **Missing Secret Configuration**: The `db_secret_arn` from Terraform outputs is not being used in the `SecretProviderClass` for the database. The connection between the secret created by Terraform and the `SecretProviderClass` needs to be established.
+
+## Runtime Security with Falco
+
+Falco is a CNCF graduated project that provides real-time runtime security monitoring for Kubernetes clusters. This project integrates Falco with the following features:
+
+### Key Features
+
+-   **eBPF-based Detection**: Uses modern eBPF technology for efficient kernel-level event monitoring with minimal performance impact
+-   **Real-time Threat Detection**: Monitors system calls, Kubernetes audit logs, and container events to detect:
+    -   Suspicious shell executions in containers
+    -   Unauthorized file access
+    -   Kubernetes secret access
+    -   Network anomalies
+    -   Privilege escalation attempts
+    -   Process anomalies
+
+### Components Deployed
+
+1.  **Falco**: Core runtime security engine running as a DaemonSet on all nodes
+2.  **Falcosidekick**: Alert forwarding system that can send events to:
+    -   AWS CloudWatch Logs
+    -   AWS SNS (for notifications)
+    -   AWS SQS (for event queuing)
+    -   Slack (webhook integration)
+    -   Loki (for log aggregation)
+3.  **Falcosidekick UI**: Web interface for viewing and analyzing Falco events in real-time
+
+### Access the Falco UI
+
+Once deployed, the Falco UI is accessible via Istio ingress at:
+```
+https://falco.<your-domain>
+```
+
+The UI provides:
+-   Real-time event stream visualization
+-   Event filtering and search capabilities
+-   Alert statistics and dashboards
+-   Event priority classification
+
+### AWS Integration
+
+Falco is configured with Pod Identity to securely access AWS services:
+-   **CloudWatch Logs**: Send security events to CloudWatch for centralized logging
+-   **SNS**: Publish critical alerts to SNS topics for immediate notification
+-   **SQS**: Queue events for downstream processing
+
+Configure these integrations by updating the Falco values in [k8s/falco/values.yaml](k8s/falco/values.yaml).
+
+### Custom Rules
+
+Default Falco rules are included, with custom rules defined for:
+-   Terminal shell detection in containers
+-   Kubernetes secret access monitoring
+
+Additional custom rules can be added in the `customRules` section of the values file.
 
 ## Cleanup
 

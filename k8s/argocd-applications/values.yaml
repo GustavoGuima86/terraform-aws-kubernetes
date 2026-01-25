@@ -59,6 +59,10 @@ velero_bucket_name: ""
 velero_bucket_region: ""
 velero_sa_name: ""
 
+# Falco Runtime Security
+falco_role_arn: ""
+falco_sa_name: ""
+
 # Storage
 ebs_csi_controller_sa_name: ""
 secrets_csi_driver_sa_name: ""
@@ -95,6 +99,8 @@ argocdProjects:
       - namespace: "cnpg-system"
         server: "https://kubernetes.default.svc"
       - namespace: "external-dns"
+        server: "https://kubernetes.default.svc"
+      - namespace: "falco"
         server: "https://kubernetes.default.svc"
     clusterResourceWhitelist:
       - group: "*"
