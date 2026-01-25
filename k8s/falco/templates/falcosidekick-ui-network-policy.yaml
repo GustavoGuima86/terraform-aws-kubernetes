@@ -1,0 +1,44 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: falcosidekick-ui-network-policy
+  namespace: falco
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: falcosidekick-ui
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Allow ingress from Istio gateway
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: istio-system
+      ports:
+        - protocol: TCP
+          port: 2802
+  egress:
+    # Allow DNS resolution
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    
+    # Allow access to Falcosidekick API
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: falcosidekick
+      ports:
+        - protocol: TCP
+          port: 2801

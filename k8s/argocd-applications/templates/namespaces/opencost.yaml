@@ -1,9 +1,8 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: observability
+  name: opencost
   labels:
-    kubernetes.io/metadata.name: observability
     nodepool: tooling
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
