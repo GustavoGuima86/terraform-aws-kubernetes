@@ -21,7 +21,7 @@ spec:
         component: falco
       annotations:
         summary: "Falco is down"
-        description: "Falco has been down for more than 5 minutes on node {{ $labels.instance }}."
+        description: "Falco has been down for more than 5 minutes on node {{ `{{` }} $labels.instance {{ `}}` }}."
 
     - alert: FalcoHighSecurityEventRate
       expr: |
@@ -32,7 +32,7 @@ spec:
         component: falco
       annotations:
         summary: "High rate of critical security events"
-        description: "Falco is detecting high rate of critical/error events ({{ $value }}/s) on {{ $labels.hostname }}."
+        description: "Falco is detecting high rate of critical/error events ({{ `{{` }} $value {{ `}}` }}/s) on {{ `{{` }} $labels.hostname {{ `}}` }}."
 
     - alert: FalcoKernelModuleLoadFailed
       expr: |
@@ -43,7 +43,7 @@ spec:
         component: falco
       annotations:
         summary: "Falco kernel module not loaded"
-        description: "Falco kernel module failed to load on {{ $labels.hostname }}."
+        description: "Falco kernel module failed to load on {{ `{{` }} $labels.hostname {{ `}}` }}."
 
     - alert: FalcoDroppedEvents
       expr: |
@@ -54,7 +54,7 @@ spec:
         component: falco
       annotations:
         summary: "Falco is dropping events"
-        description: "Falco is dropping {{ $value }} events/s on {{ $labels.hostname }}, may be overloaded."
+        description: "Falco is dropping {{ `{{` }} $value {{ `}}` }} events/s on {{ `{{` }} $labels.hostname {{ `}}` }}, may be overloaded."
 
     - alert: FalcoHighCPUUsage
       expr: |
@@ -65,7 +65,7 @@ spec:
         component: falco
       annotations:
         summary: "Falco high CPU usage"
-        description: "Falco is using {{ $value | humanizePercentage }} CPU on {{ $labels.instance }}."
+        description: "Falco is using {{ `{{` }} $value | humanizePercentage {{ `}}` }} CPU on {{ `{{` }} $labels.instance {{ `}}` }}."
 
     - alert: FalcoHighMemoryUsage
       expr: |
@@ -76,7 +76,7 @@ spec:
         component: falco
       annotations:
         summary: "Falco high memory usage"
-        description: "Falco is using {{ $value | humanize }}GB memory on {{ $labels.instance }}."
+        description: "Falco is using {{ `{{` }} $value | humanize {{ `}}` }}GB memory on {{ `{{` }} $labels.instance {{ `}}` }}."
 
     - alert: FalcoRuleLoadFailed
       expr: |
@@ -87,7 +87,7 @@ spec:
         component: falco
       annotations:
         summary: "Falco failed to load rules"
-        description: "Falco has no rules loaded on {{ $labels.hostname }}."
+        description: "Falco has no rules loaded on {{ `{{` }} $labels.hostname {{ `}}` }}."
 
     - alert: FalcoContainerPrivilegedExecution
       expr: |
@@ -98,5 +98,5 @@ spec:
         component: falco
       annotations:
         summary: "Privileged container execution detected"
-        description: "Falco detected privileged container execution on {{ $labels.hostname }}."
+        description: "Falco detected privileged container execution on {{ `{{` }} $labels.hostname {{ `}}` }}."
 

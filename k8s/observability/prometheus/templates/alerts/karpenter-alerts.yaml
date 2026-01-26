@@ -54,7 +54,7 @@ spec:
         component: karpenter
       annotations:
         summary: "High interruption queue depth"
-        description: "Karpenter interruption queue has {{ $value }} messages pending."
+        description: "Karpenter interruption queue has {{ `{{` }} $value {{ `}}` }} messages pending."
 
     - alert: KarpenterNodeClaimStuckProvisioning
       expr: |
@@ -65,7 +65,7 @@ spec:
         component: karpenter
       annotations:
         summary: "NodeClaims stuck in provisioning"
-        description: "{{ $value }} NodeClaims have been provisioning for more than 15 minutes."
+        description: "{{ `{{` }} $value {{ `}}` }} NodeClaims have been provisioning for more than 15 minutes."
 
     - alert: KarpenterHighDisruptionRate
       expr: |

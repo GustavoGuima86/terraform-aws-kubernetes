@@ -34,7 +34,7 @@ spec:
         component: istio
       annotations:
         summary: "High request latency detected"
-        description: "Service {{ $labels.destination_service_name }} has P99 latency > 1s for 5 minutes."
+        description: "Service {{ `{{` }} $labels.destination_service_name {{ `}}` }} has P99 latency > 1s for 5 minutes."
 
     - alert: IstioHighRequestErrorRate
       expr: |
@@ -48,7 +48,7 @@ spec:
         component: istio
       annotations:
         summary: "High error rate in service mesh"
-        description: "Service {{ $labels.destination_service_name }} has error rate > 5% for 5 minutes."
+        description: "Service {{ `{{` }} $labels.destination_service_name {{ `}}` }} has error rate > 5% for 5 minutes."
 
     - alert: IstioGalleyValidationFailed
       expr: |
@@ -84,5 +84,5 @@ spec:
         component: istio
       annotations:
         summary: "Istio proxy high memory usage"
-        description: "Istio proxy in pod {{ $labels.pod }} is using > 90% of memory limit."
+        description: "Istio proxy in pod {{ `{{` }} $labels.pod {{ `}}` }} is using > 90% of memory limit."
 

@@ -21,7 +21,7 @@ spec:
         component: vpc-cni
       annotations:
         summary: "VPC CNI plugin is down"
-        description: "VPC CNI plugin has been down for more than 5 minutes on node {{ $labels.instance }}."
+        description: "VPC CNI plugin has been down for more than 5 minutes on node {{ `{{` }} $labels.instance {{ `}}` }}."
 
     - alert: VPCCNIIPAddressExhaustion
       expr: |
@@ -32,7 +32,7 @@ spec:
         component: vpc-cni
       annotations:
         summary: "VPC CNI IP address exhaustion"
-        description: "Node {{ $labels.instance }} has less than 10% IP addresses available ({{ $value | humanizePercentage }})."
+        description: "Node {{ `{{` }} $labels.instance {{ `}}` }} has less than 10% IP addresses available ({{ `{{` }} $value | humanizePercentage {{ `}}` }})."
 
     - alert: VPCCNIIPAddressAllocationErrors
       expr: |
@@ -43,7 +43,7 @@ spec:
         component: vpc-cni
       annotations:
         summary: "VPC CNI IP allocation errors"
-        description: "VPC CNI is experiencing IP allocation errors on node {{ $labels.instance }}."
+        description: "VPC CNI is experiencing IP allocation errors on node {{ `{{` }} $labels.instance {{ `}}` }}."
 
     - alert: VPCCNIENIAllocationFailed
       expr: |
@@ -54,7 +54,7 @@ spec:
         component: vpc-cni
       annotations:
         summary: "VPC CNI ENI allocation failed"
-        description: "VPC CNI failed to allocate ENI on node {{ $labels.instance }}."
+        description: "VPC CNI failed to allocate ENI on node {{ `{{` }} $labels.instance {{ `}}` }}."
 
     - alert: VPCCNIHighENIUtilization
       expr: |
@@ -65,7 +65,7 @@ spec:
         component: vpc-cni
       annotations:
         summary: "High ENI utilization"
-        description: "Node {{ $labels.instance }} is using {{ $value | humanizePercentage }} of available ENIs."
+        description: "Node {{ `{{` }} $labels.instance {{ `}}` }} is using {{ `{{` }} $value | humanizePercentage {{ `}}` }} of available ENIs."
 
     - alert: VPCCNIPodDeletionDelay
       expr: |
@@ -76,7 +76,7 @@ spec:
         component: vpc-cni
       annotations:
         summary: "High VPC CNI pod deletion delay"
-        description: "VPC CNI is taking more than 5 minutes to clean up pod ENIs on {{ $labels.instance }}."
+        description: "VPC CNI is taking more than 5 minutes to clean up pod ENIs on {{ `{{` }} $labels.instance {{ `}}` }}."
 
     - alert: VPCCNIReconciliationErrors
       expr: |
@@ -87,7 +87,7 @@ spec:
         component: vpc-cni
       annotations:
         summary: "VPC CNI reconciliation errors"
-        description: "VPC CNI is experiencing reconciliation errors on node {{ $labels.instance }}."
+        description: "VPC CNI is experiencing reconciliation errors on node {{ `{{` }} $labels.instance {{ `}}` }}."
 
     - alert: VPCCNIIMDSErrors
       expr: |

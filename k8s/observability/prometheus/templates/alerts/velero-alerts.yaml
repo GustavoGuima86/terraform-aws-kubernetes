@@ -32,7 +32,7 @@ spec:
         component: velero
       annotations:
         summary: "Velero backup failed"
-        description: "Velero backup '{{ $labels.schedule }}' has failed in the last hour."
+        description: "Velero backup '{{ `{{` }} $labels.schedule {{ `}}` }}' has failed in the last hour."
 
     - alert: VeleroBackupPartialFailure
       expr: |
@@ -43,7 +43,7 @@ spec:
         component: velero
       annotations:
         summary: "Velero backup partially failed"
-        description: "Velero backup '{{ $labels.schedule }}' has partially failed in the last hour."
+        description: "Velero backup '{{ `{{` }} $labels.schedule {{ `}}` }}' has partially failed in the last hour."
 
     - alert: VeleroBackupMissing
       expr: |
@@ -54,7 +54,7 @@ spec:
         component: velero
       annotations:
         summary: "Velero backup missing"
-        description: "Velero backup schedule '{{ $labels.schedule }}' hasn't completed successfully in over 24 hours."
+        description: "Velero backup schedule '{{ `{{` }} $labels.schedule {{ `}}` }}' hasn't completed successfully in over 24 hours."
 
     - alert: VeleroRestoreFailed
       expr: |
@@ -65,7 +65,7 @@ spec:
         component: velero
       annotations:
         summary: "Velero restore failed"
-        description: "Velero restore '{{ $labels.schedule }}' has failed in the last hour."
+        description: "Velero restore '{{ `{{` }} $labels.schedule {{ `}}` }}' has failed in the last hour."
 
     - alert: VeleroRestorePartialFailure
       expr: |
@@ -98,5 +98,5 @@ spec:
         component: velero
       annotations:
         summary: "Velero backup taking too long"
-        description: "Velero backup '{{ $labels.schedule }}' is taking more than 1 hour."
+        description: "Velero backup '{{ `{{` }} $labels.schedule {{ `}}` }}' is taking more than 1 hour."
 

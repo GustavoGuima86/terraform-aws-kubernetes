@@ -43,7 +43,7 @@ spec:
         component: argocd
       annotations:
         summary: "ArgoCD application out of sync"
-        description: "Application {{ $labels.name }} in namespace {{ $labels.namespace }} has been out of sync for 15 minutes."
+        description: "Application {{ `{{` }} $labels.name {{ `}}` }} in namespace {{ `{{` }} $labels.namespace {{ `}}` }} has been out of sync for 15 minutes."
 
     - alert: ArgoCDApplicationUnhealthy
       expr: |
@@ -54,7 +54,7 @@ spec:
         component: argocd
       annotations:
         summary: "ArgoCD application unhealthy"
-        description: "Application {{ $labels.name }} in namespace {{ $labels.namespace }} is unhealthy (status: {{ $labels.health_status }})."
+        description: "Application {{ `{{` }} $labels.name {{ `}}` }} in namespace {{ `{{` }} $labels.namespace {{ `}}` }} is unhealthy (status: {{ `{{` }} $labels.health_status {{ `}}` }})."
 
     - alert: ArgoCDApplicationSyncFailed
       expr: |
@@ -65,7 +65,7 @@ spec:
         component: argocd
       annotations:
         summary: "ArgoCD application sync failed"
-        description: "Application {{ $labels.name }} sync has failed in the last 5 minutes."
+        description: "Application {{ `{{` }} $labels.name {{ `}}` }} sync has failed in the last 5 minutes."
 
     - alert: ArgoCDHighReconciliationDuration
       expr: |
@@ -78,7 +78,7 @@ spec:
         component: argocd
       annotations:
         summary: "High ArgoCD reconciliation duration"
-        description: "Application {{ $labels.name }} has P95 reconciliation time > 60s."
+        description: "Application {{ `{{` }} $labels.name {{ `}}` }} has P95 reconciliation time > 60s."
 
     - alert: ArgoCDRepoServerHighLatency
       expr: |
@@ -102,5 +102,5 @@ spec:
         component: argocd
       annotations:
         summary: "ArgoCD tracking too many resources"
-        description: "ArgoCD is tracking more than 1000 resources on cluster {{ $labels.server }}."
+        description: "ArgoCD is tracking more than 1000 resources on cluster {{ `{{` }} $labels.server {{ `}}` }}."
 

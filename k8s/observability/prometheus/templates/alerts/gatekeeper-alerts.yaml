@@ -32,7 +32,7 @@ spec:
         component: gatekeeper
       annotations:
         summary: "High rate of Gatekeeper denials"
-        description: "Gatekeeper is denying {{ $value }} requests/s, policy violations detected."
+        description: "Gatekeeper is denying {{ `{{` }} $value {{ `}}` }} requests/s, policy violations detected."
 
     - alert: GatekeeperWebhookTimeout
       expr: |
@@ -67,7 +67,7 @@ spec:
         component: gatekeeper
       annotations:
         summary: "Gatekeeper constraint not synced"
-        description: "Gatekeeper constraint template {{ $labels.constraint_template }} has ingestion errors."
+        description: "Gatekeeper constraint template {{ `{{` }} $labels.constraint_template {{ `}}` }} has ingestion errors."
 
     - alert: GatekeeperMutationFailed
       expr: |
@@ -89,7 +89,7 @@ spec:
         component: gatekeeper
       annotations:
         summary: "Gatekeeper audit violations detected"
-        description: "{{ $value }} violations detected for constraint {{ $labels.constraint_name }}."
+        description: "{{ `{{` }} $value {{ `}}` }} violations detected for constraint {{ `{{` }} $labels.constraint_name {{ `}}` }}."
 
     - alert: GatekeeperCertificateExpiringSoon
       expr: |
@@ -100,5 +100,5 @@ spec:
         component: gatekeeper
       annotations:
         summary: "Gatekeeper certificate expiring soon"
-        description: "Gatekeeper certificate {{ $labels.name }} expires in less than 7 days."
+        description: "Gatekeeper certificate {{ `{{` }} $labels.name {{ `}}` }} expires in less than 7 days."
 
