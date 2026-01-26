@@ -57,6 +57,9 @@ spec:
           env:
             - name: NODE_ENV
               value: "production"
+            # Force schema-based plugin division (override Docker image config)
+            - name: BACKEND_DATABASE_PLUGIN_DIVISION_MODE
+              value: "schema"
             # Get PostgreSQL username and password from CloudNativePG-generated secret
             - name: POSTGRES_USER
               valueFrom:
@@ -68,9 +71,6 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: password
-            # Tell Backstage to use our ConfigMap file
-            - name: APP_CONFIG_app_config_production_yaml
-              value: "true"
           volumeMounts:
             - name: backstage-config
               mountPath: /app/app-config.production.yaml
