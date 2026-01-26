@@ -72,11 +72,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: password
-          volumeMounts:
-            - name: backstage-config
-              mountPath: /app/app-config.production.yaml
-              subPath: app-config.production.yaml
-              readOnly: true
+{{/*          volumeMounts:*/}}
+{{/*            - name: backstage-config*/}}
+{{/*              mountPath: /app/app-config.production.yaml*/}}
+{{/*              subPath: app-config.production.yaml*/}}
+{{/*              readOnly: true*/}}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- if .Values.livenessProbe.enabled }}
