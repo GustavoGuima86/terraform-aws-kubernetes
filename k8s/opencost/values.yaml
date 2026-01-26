@@ -21,7 +21,7 @@ route:
     name: tooling-gateway
     namespace: istio-system
     sectionName: https
-  serviceName: opencost
+  serviceName: opencost-opencost
   servicePort: 9090
 
 # Observability Integration
@@ -125,6 +125,10 @@ opencost:
     - name: CLOUD_COST_RUN_WINDOW_DAYS
       value: "3"
 
+    # AWS Cost Explorer configuration
+    # See: https://opencost.io/docs/configuration/aws#aws-cloud-costs
+    - name: AWS_PRICING_API_ENABLED
+      value: "true"
 
     # Cost model configuration
     - name: EMIT_KSM_V1_METRICS
