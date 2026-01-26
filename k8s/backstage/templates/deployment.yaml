@@ -68,6 +68,14 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.postgres.secretName }}
                   key: password
+            # Tell Backstage to use our ConfigMap file
+            - name: APP_CONFIG_app_config_production_yaml
+              value: "true"
+          volumeMounts:
+            - name: backstage-config
+              mountPath: /app/app-config.production.yaml
+              subPath: app-config.production.yaml
+              readOnly: true
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- if .Values.livenessProbe.enabled }}
@@ -90,3 +98,10 @@ spec:
             timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           {{- end }}
+      volumes:
+        - name: backstage-config
+          configMap:
+            name: backstage-config
+            items:
+              - key: app-config.production.yaml
+                path: app-config.production.yaml
