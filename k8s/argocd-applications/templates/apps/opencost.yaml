@@ -33,6 +33,10 @@ spec:
           value: "{{ .Values.certificate_arn }}"
         - name: kube_prometheus_release
           value: "{{ .Values.kube_prometheus_release }}"
+        - name: route.enabled
+          value: "true"
+        - name: route.hostname
+          value: "opencost.{{ .Values.domain_name }}"
         - name: opencost.serviceAccount.name
           value: "{{ .Values.opencost_sa_name }}"
         - name: opencost.extraEnv[0].value

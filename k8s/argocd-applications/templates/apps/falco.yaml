@@ -27,6 +27,10 @@ spec:
           value: "{{ .Values.domain_name }}"
         - name: certificate_arn
           value: "{{ .Values.certificate_arn }}"
+        - name: route.enabled
+          value: "true"
+        - name: route.hostname
+          value: "falco.{{ .Values.domain_name }}"
   destination:
     server: https://kubernetes.default.svc
     namespace: falco
