@@ -21,7 +21,7 @@ route:
     name: tooling-gateway
     namespace: istio-system
     sectionName: https
-  serviceName: opencost-opencost
+  serviceName: opencost
   servicePort: 9090
 
 # Observability Integration
@@ -31,6 +31,9 @@ kube_prometheus_release: "kube-prometheus-stack"
 # OpenCost Configuration
 # ==============================================================================
 opencost:
+  # Override the full name to ensure consistent service naming
+  fullnameOverride: opencost
+
   # Service account for Pod Identity
   # Note: Service account is created via template with Pod Identity annotation
   serviceAccount:
