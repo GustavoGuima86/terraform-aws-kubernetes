@@ -9,9 +9,20 @@ opencost_role_arn: ""
 opencost_sa_name: "opencost"
 eks_cluster_name: ""
 
-# Istio Ingress
+# Istio Ingress (deprecated - use route config below)
 domain_name: ""
 certificate_arn: ""
+
+# HTTPRoute configuration
+route:
+  enabled: false
+  hostname: "opencost.gustavo.inno-on.cloud"
+  gateway:
+    name: tooling-gateway
+    namespace: istio-system
+    sectionName: https
+  serviceName: opencost
+  servicePort: 9090
 
 # Observability Integration
 kube_prometheus_release: "kube-prometheus-stack"
@@ -26,27 +37,27 @@ opencost:
     create: false
     name: ""  # Set via Helm parameter opencost_sa_name
     annotations: {}
-  
+
   # OpenCost configuration
   opencost:
     exporter:
       # Enable AWS pricing integration
       cloudProviderApiKey: ""  # Not needed with Pod Identity
-      
+
       # AWS cost configuration
       aws:
         # Service key secret for AWS access (not needed with Pod Identity)
         secret_name: ""
         access_key_id: ""
         secret_access_key: ""
-      
+
       # Default cluster ID
       defaultClusterId: "default-cluster"
-      
+
       # CSV cost model for on-prem or custom pricing
       csv_region: ""
       csv_path: ""
-      
+
       # Resource configuration
       resources:
         requests:
@@ -55,7 +66,7 @@ opencost:
         limits:
           cpu: 999m
           memory: 1Gi
-    
+
     # Prometheus integration
     prometheus:
       # Connect to kube-prometheus-stack
@@ -64,18 +75,18 @@ opencost:
         serviceName: kube-prometheus-stack-prometheus
         namespaceName: observability
         port: 9090
-      
+
       # External prometheus (if needed)
       external:
         enabled: false
         url: ""
-    
+
     # UI configuration
     ui:
       enabled: true
       ingress:
         enabled: false  # We'll use Istio Gateway API instead
-      
+
       resources:
         requests:
           cpu: 10m
@@ -83,21 +94,21 @@ opencost:
         limits:
           cpu: 999m
           memory: 1Gi
-  
+
   # Metrics configuration
   metrics:
     serviceMonitor:
       enabled: true
       additionalLabels:
         release: kube-prometheus-stack
-  
+
   # Persistence for cost data
   persistence:
     enabled: true
     storageClass: gp3-secure
     size: 10Gi
     accessMode: ReadWriteOnce
-  
+
   # Extra environment variables for AWS configuration
   extraEnv:
     # AWS configuration
@@ -107,7 +118,7 @@ opencost:
       value: ""  # Set via Helm parameter
     - name: CLOUD_PROVIDER_API_KEY
       value: ""
-    
+
     # Cost model configuration
     - name: EMIT_KSM_V1_METRICS
       value: "false"
@@ -115,7 +126,7 @@ opencost:
       value: "false"
     - name: LOG_LEVEL
       value: "info"
-    
+
     # Pricing configuration
     - name: CONFIG_PATH
       value: "/tmp/custom-config"
@@ -129,15 +140,15 @@ opencost:
       value: "7"
     - name: CLOUD_COST_RUN_WINDOW_DAYS
       value: "3"
-  
+
   # Priority class
   priorityClassName: ""
-  
+
   # Tolerations
   tolerations: []
-  
+
   # Node selector
   nodeSelector: {}
-  
+
   # Affinity
   affinity: {}

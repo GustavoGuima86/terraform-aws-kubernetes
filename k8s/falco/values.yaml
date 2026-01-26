@@ -7,9 +7,20 @@ aws_region: ""
 falco_role_arn: ""
 falco_sa_name: "falco"
 
-# Istio Ingress
+# Istio Ingress (deprecated - use route config below)
 domain_name: ""
 certificate_arn: ""
+
+# HTTPRoute configuration
+route:
+  enabled: false
+  hostname: "falco.gustavo.inno-on.cloud"
+  gateway:
+    name: tooling-gateway
+    namespace: istio-system
+    sectionName: https
+  serviceName: falcosidekick-ui
+  servicePort: 2802
 
 # ==============================================================================
 # Falco Configuration
