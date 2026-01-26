@@ -57,8 +57,9 @@ spec:
           env:
             - name: NODE_ENV
               value: "production"
-            # Force schema-based plugin division (override Docker image config)
-            - name: BACKEND_DATABASE_PLUGIN_DIVISION_MODE
+            # Override database plugin division mode via environment variable
+            # Format: APP_CONFIG_<path>_<to>_<key> where dots become underscores
+            - name: APP_CONFIG_backend_database_pluginDivisionMode
               value: "schema"
             # Get PostgreSQL username and password from CloudNativePG-generated secret
             - name: POSTGRES_USER
