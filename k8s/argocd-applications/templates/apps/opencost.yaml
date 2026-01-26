@@ -39,6 +39,8 @@ spec:
           value: "{{ .Values.aws_region }}"
         - name: opencost.extraEnv[1].value
           value: "{{ .Values.eks_cluster_name }}"
+        - name: opencost.extraEnv[2].value
+          value: "AWS"
   destination:
     server: https://kubernetes.default.svc
     namespace: opencost
