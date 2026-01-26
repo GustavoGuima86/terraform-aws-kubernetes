@@ -47,15 +47,6 @@ opencost:
       # Default cluster ID (should match EKS cluster name)
       defaultClusterId: "default-cluster"  # Override via Helm parameter eks_cluster_name
 
-      # Enable cloud cost integration
-      # Using AWS Cost Explorer API via Pod Identity - no API key needed
-      cloudCost:
-        enabled: true
-
-      # CSV cost model for on-prem or custom pricing
-      csv_region: ""
-      csv_path: ""
-
       # Resource configuration
       resources:
         requests:
@@ -115,6 +106,10 @@ opencost:
       value: ""  # Set via Helm parameter
     - name: AWS_CLUSTER_ID
       value: ""  # Set via Helm parameter (EKS cluster name)
+
+    # Cloud provider - CRITICAL for AWS cloud cost detection
+    - name: CLOUD_PROVIDER
+      value: "AWS"
 
     # Enable cloud cost features
     - name: CLOUD_COST_ENABLED

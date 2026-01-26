@@ -33,6 +33,8 @@ spec:
           value: "{{ .Values.kube_prometheus_release }}"
         - name: opencost.serviceAccount.name
           value: "{{ .Values.opencost_sa_name }}"
+        - name: opencost.opencost.exporter.defaultClusterId
+          value: "{{ .Values.eks_cluster_name }}"
         - name: opencost.extraEnv[0].value
           value: "{{ .Values.aws_region }}"
         - name: opencost.extraEnv[1].value
