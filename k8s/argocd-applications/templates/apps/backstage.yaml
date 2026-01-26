@@ -30,6 +30,8 @@ spec:
         - name: secrets.backendBaseUrl
           value: "https://backstage.{{ .Values.domain_name }}/api"
         # PostgreSQL Configuration (CloudNativePG)
+        - name: postgres.enabled
+          value: "true"
         - name: postgres.host
           value: "backstage-postgres-rw.backstage.svc.cluster.local"
         - name: postgres.port
@@ -38,6 +40,10 @@ spec:
           value: "app"
         - name: postgres.secretName
           value: "backstage-postgres-app"
+        - name: postgres.storageClass
+          value: "gp3-secure"
+        - name: postgres.storageSize
+          value: "20Gi"
   destination:
     server: https://kubernetes.default.svc
     namespace: backstage
