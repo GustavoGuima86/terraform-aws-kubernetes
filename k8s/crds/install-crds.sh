@@ -2,7 +2,7 @@
 set -euo pipefail
 
 echo "Installing Velero CRDs..."
-VELERO_VERSION="v1.12.0"
+VELERO_VERSION="v1.17.2"
 
 # Install Velero CRDs for v1.12.0 (matches the deployed version)
 # Note: v1.12.0 does NOT have DataDownload/DataUpload CRDs (those are v1.15+)
