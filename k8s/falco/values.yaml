@@ -19,7 +19,7 @@ route:
     name: tooling-gateway
     namespace: istio-system
     sectionName: https
-  serviceName: falcosidekick-ui
+  serviceName: falco-falcosidekick-ui
   servicePort: 2802
 
 # ==============================================================================

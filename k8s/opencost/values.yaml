@@ -41,18 +41,13 @@ opencost:
   # OpenCost configuration
   opencost:
     exporter:
-      # Enable AWS pricing integration
-      cloudProviderApiKey: ""  # Not needed with Pod Identity
+      # Default cluster ID (should match EKS cluster name)
+      defaultClusterId: "default-cluster"  # Override via Helm parameter eks_cluster_name
 
-      # AWS cost configuration
-      aws:
-        # Service key secret for AWS access (not needed with Pod Identity)
-        secret_name: ""
-        access_key_id: ""
-        secret_access_key: ""
-
-      # Default cluster ID
-      defaultClusterId: "default-cluster"
+      # Enable cloud cost integration
+      # Using AWS Cost Explorer API via Pod Identity - no API key needed
+      cloudCost:
+        enabled: true
 
       # CSV cost model for on-prem or custom pricing
       csv_region: ""
@@ -111,25 +106,14 @@ opencost:
 
   # Extra environment variables for AWS configuration
   extraEnv:
-    # AWS configuration
+    # AWS configuration for cloud costs
+    # Using Pod Identity for authentication - no static credentials needed
     - name: AWS_REGION
       value: ""  # Set via Helm parameter
     - name: AWS_CLUSTER_ID
-      value: ""  # Set via Helm parameter
-    - name: CLOUD_PROVIDER_API_KEY
-      value: ""
+      value: ""  # Set via Helm parameter (EKS cluster name)
 
-    # Cost model configuration
-    - name: EMIT_KSM_V1_METRICS
-      value: "false"
-    - name: EMIT_KSM_V1_METRICS_ONLY
-      value: "false"
-    - name: LOG_LEVEL
-      value: "info"
-
-    # Pricing configuration
-    - name: CONFIG_PATH
-      value: "/tmp/custom-config"
+    # Enable cloud cost features
     - name: CLOUD_COST_ENABLED
       value: "true"
     - name: CLOUD_COST_MONTH_TO_DATE_INTERVAL
@@ -140,6 +124,17 @@ opencost:
       value: "7"
     - name: CLOUD_COST_RUN_WINDOW_DAYS
       value: "3"
+
+
+    # Cost model configuration
+    - name: EMIT_KSM_V1_METRICS
+      value: "false"
+    - name: EMIT_KSM_V1_METRICS_ONLY
+      value: "false"
+    - name: LOG_LEVEL
+      value: "info"
+    - name: CONFIG_PATH
+      value: "/tmp/custom-config"
 
   # Priority class
   priorityClassName: ""
