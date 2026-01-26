@@ -36,10 +36,14 @@ spec:
       listen_addresses: "*"
 
   # Bootstrap configuration - initialize database
+  # CloudNativePG will auto-create:
+  # - Database: app
+  # - User: app
+  # - Secret: backstage-postgres-app (with username, password, dbname, host, port)
   bootstrap:
     initdb:
-      database: backstage
-      owner: backstage
+      database: app
+      owner: app
 
   # Monitoring configuration
   monitoring:

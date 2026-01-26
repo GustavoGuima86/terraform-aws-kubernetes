@@ -35,9 +35,9 @@ spec:
         - name: postgres.port
           value: "5432"
         - name: postgres.database
-          value: "backstage"
+          value: "app"
         - name: postgres.secretName
-          value: "backstage-postgres-app-user"
+          value: "backstage-postgres-app"
   destination:
     server: https://kubernetes.default.svc
     namespace: backstage

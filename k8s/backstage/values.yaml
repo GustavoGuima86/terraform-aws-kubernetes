@@ -51,10 +51,10 @@ readinessProbe:
 
 # PostgreSQL configuration (from CloudNativePG)
 postgres:
-  secretName: backstage-postgres-app-user
+  secretName: backstage-postgres-app
   host: backstage-postgres-rw.backstage.svc.cluster.local
   port: 5432
-  database: backstage
+  database: app
 
 # Backstage secrets (from secrets.yaml)
 secrets:
