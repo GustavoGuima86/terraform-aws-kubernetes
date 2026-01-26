@@ -154,6 +154,12 @@ argocdProjects:
         kind: "Deployment"
       - group: "networking.k8s.io"
         kind: "Ingress"
+      - group: "rbac.authorization.k8s.io"
+        kind: "ClusterRole"
+      - group: "rbac.authorization.k8s.io"
+        kind: "ClusterRoleBinding"
+      - group: "gateway.networking.k8s.io"
+        kind: "HTTPRoute"
 
 # ArgoCD Route for OpenShift
 argocdRoute:
