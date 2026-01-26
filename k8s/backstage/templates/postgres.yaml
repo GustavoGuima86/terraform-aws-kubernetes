@@ -6,6 +6,10 @@ kind: Cluster
 metadata:
   name: backstage-postgres
   namespace: {{ .Release.Namespace }}
+  labels:
+    app: backstage-postgres
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
 spec:
   # Single instance for Backstage (can be increased to 3 for HA)
   instances: 1
@@ -33,8 +37,6 @@ spec:
       work_mem: "2621kB"
       min_wal_size: "1GB"
       max_wal_size: "2GB"
-      # Listen on all interfaces for in-cluster connections
-      listen_addresses: "*"
 
   # Bootstrap configuration - initialize database
   # CloudNativePG will auto-create:
