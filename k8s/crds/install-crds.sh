@@ -4,8 +4,7 @@ set -euo pipefail
 echo "Installing Velero CRDs..."
 VELERO_VERSION="v1.17.2"
 
-# Install Velero CRDs for v1.12.0 (matches the deployed version)
-# Note: v1.12.0 does NOT have DataDownload/DataUpload CRDs (those are v1.15+)
+# Install Velero CRDs for v1.17.2 (includes all v1 and v2alpha1 CRDs)
 kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO_VERSION}/config/crd/v1/bases/velero.io_backups.yaml"
 kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO_VERSION}/config/crd/v1/bases/velero.io_backupstoragelocations.yaml"
 kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO_VERSION}/config/crd/v1/bases/velero.io_deletebackuprequests.yaml"
@@ -17,13 +16,10 @@ kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO
 kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO_VERSION}/config/crd/v1/bases/velero.io_serverstatusrequests.yaml"
 kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO_VERSION}/config/crd/v1/bases/velero.io_volumesnapshotlocations.yaml"
 kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO_VERSION}/config/crd/v1/bases/velero.io_backuprepositories.yaml"
+kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO_VERSION}/config/crd/v2alpha1/bases/velero.io_datadownloads.yaml"
+kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO_VERSION}/config/crd/v2alpha1/bases/velero.io_datauploads.yaml"
 
-# Note: v1.12.0 does NOT include:
-# - velero.io_datadownloads (added in v1.15+)
-# - velero.io_datauploads (added in v1.15+)
-# These are part of the Data Mover functionality introduced in later versions
-
-echo "Velero CRDs for v1.12.0 installed successfully."
+echo "Velero CRDs for v1.17.2 installed successfully (13 CRDs including Data Mover)."
 
 echo "Installing Argo CD CRDs..."
 kubectl apply -k "https://github.com/argoproj/argo-cd/manifests/crds?ref=v2.12.3"

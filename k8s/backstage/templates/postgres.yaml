@@ -57,7 +57,5 @@ spec:
     limits:
       memory: "1Gi"
       cpu: "500m"
-
----
 # No need for manual secret - CloudNativePG auto-generates it
 # The secret will be named: backstage-postgres-app-user

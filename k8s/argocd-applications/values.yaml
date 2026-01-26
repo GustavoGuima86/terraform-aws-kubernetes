@@ -160,6 +160,12 @@ argocdProjects:
         kind: "ClusterRoleBinding"
       - group: "gateway.networking.k8s.io"
         kind: "HTTPRoute"
+      - group: "postgresql.cnpg.io"
+        kind: "Cluster"
+      - group: "postgresql.cnpg.io"
+        kind: "Pooler"
+      - group: "postgresql.cnpg.io"
+        kind: "ScheduledBackup"
 
 # ArgoCD Route for OpenShift
 argocdRoute:
