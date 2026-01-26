@@ -15,7 +15,7 @@ spec:
   # Storage configuration
   storage:
     size: 20Gi
-    storageClass: gp3
+    storageClass: gp3-secure
 
   # PostgreSQL configuration parameters
   postgresql:
@@ -57,5 +57,5 @@ spec:
     limits:
       memory: "1Gi"
       cpu: "500m"
-# No need for manual secret - CloudNativePG auto-generates it
-# The secret will be named: backstage-postgres-app-user
+# Note: CloudNativePG auto-generates the secret: backstage-postgres-app
+# This secret contains: username, password, dbname, host, port, uri, etc.
