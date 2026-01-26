@@ -21,6 +21,7 @@ module "velero_s3_pod_identity" {
       service_account = local.velero_sa_name
     }
   }
+  depends_on = [module.eks]
 }
 
 

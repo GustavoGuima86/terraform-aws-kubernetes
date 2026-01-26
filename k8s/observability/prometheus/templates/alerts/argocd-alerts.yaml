@@ -1,0 +1,106 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: argocd-alerts
+  namespace: observability
+  labels:
+    app: kube-prometheus-stack
+    release: {{ .Release.Name }}
+spec:
+  groups:
+  - name: argocd
+    interval: 30s
+    rules:
+    # ArgoCD Availability Alerts
+    - alert: ArgoCDServerDown
+      expr: |
+        up{job=~"argocd.*server.*"} == 0
+      for: 5m
+      labels:
+        severity: critical
+        component: argocd
+      annotations:
+        summary: "ArgoCD server is down"
+        description: "ArgoCD server has been down for more than 5 minutes in cluster {{ .Values.clusterName }}."
+
+    - alert: ArgoCDRepoServerDown
+      expr: |
+        up{job=~"argocd.*repo.*"} == 0
+      for: 5m
+      labels:
+        severity: critical
+        component: argocd
+      annotations:
+        summary: "ArgoCD repo server is down"
+        description: "ArgoCD repo server has been down for more than 5 minutes."
+
+    - alert: ArgoCDApplicationOutOfSync
+      expr: |
+        argocd_app_info{sync_status!="Synced"} == 1
+      for: 15m
+      labels:
+        severity: warning
+        component: argocd
+      annotations:
+        summary: "ArgoCD application out of sync"
+        description: "Application {{ $labels.name }} in namespace {{ $labels.namespace }} has been out of sync for 15 minutes."
+
+    - alert: ArgoCDApplicationUnhealthy
+      expr: |
+        argocd_app_info{health_status!="Healthy"} == 1
+      for: 10m
+      labels:
+        severity: warning
+        component: argocd
+      annotations:
+        summary: "ArgoCD application unhealthy"
+        description: "Application {{ $labels.name }} in namespace {{ $labels.namespace }} is unhealthy (status: {{ $labels.health_status }})."
+
+    - alert: ArgoCDApplicationSyncFailed
+      expr: |
+        argocd_app_sync_total{phase="Failed"} > 0
+      for: 5m
+      labels:
+        severity: warning
+        component: argocd
+      annotations:
+        summary: "ArgoCD application sync failed"
+        description: "Application {{ $labels.name }} sync has failed in the last 5 minutes."
+
+    - alert: ArgoCDHighReconciliationDuration
+      expr: |
+        histogram_quantile(0.95,
+          sum(rate(argocd_app_reconcile_bucket[5m])) by (namespace, name, le)
+        ) > 60
+      for: 10m
+      labels:
+        severity: warning
+        component: argocd
+      annotations:
+        summary: "High ArgoCD reconciliation duration"
+        description: "Application {{ $labels.name }} has P95 reconciliation time > 60s."
+
+    - alert: ArgoCDRepoServerHighLatency
+      expr: |
+        histogram_quantile(0.95,
+          sum(rate(argocd_git_request_duration_seconds_bucket[5m])) by (le)
+        ) > 30
+      for: 10m
+      labels:
+        severity: warning
+        component: argocd
+      annotations:
+        summary: "High ArgoCD repo server latency"
+        description: "ArgoCD repo server P95 latency is > 30s."
+
+    - alert: ArgoCDResourceExhaustion
+      expr: |
+        sum(argocd_cluster_api_resources) by (server) > 1000
+      for: 5m
+      labels:
+        severity: warning
+        component: argocd
+      annotations:
+        summary: "ArgoCD tracking too many resources"
+        description: "ArgoCD is tracking more than 1000 resources on cluster {{ $labels.server }}."
+

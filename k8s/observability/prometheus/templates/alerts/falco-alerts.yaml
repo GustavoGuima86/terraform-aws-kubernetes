@@ -1,0 +1,102 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: falco-alerts
+  namespace: observability
+  labels:
+    app: kube-prometheus-stack
+    release: {{ .Release.Name }}
+spec:
+  groups:
+  - name: falco
+    interval: 30s
+    rules:
+    # Falco Availability Alerts
+    - alert: FalcoDown
+      expr: |
+        up{job="falco"} == 0
+      for: 5m
+      labels:
+        severity: critical
+        component: falco
+      annotations:
+        summary: "Falco is down"
+        description: "Falco has been down for more than 5 minutes on node {{ $labels.instance }}."
+
+    - alert: FalcoHighSecurityEventRate
+      expr: |
+        rate(falco_events{priority=~"Critical|Error"}[5m]) > 10
+      for: 5m
+      labels:
+        severity: critical
+        component: falco
+      annotations:
+        summary: "High rate of critical security events"
+        description: "Falco is detecting high rate of critical/error events ({{ $value }}/s) on {{ $labels.hostname }}."
+
+    - alert: FalcoKernelModuleLoadFailed
+      expr: |
+        falco_kernel_release_loaded == 0
+      for: 5m
+      labels:
+        severity: critical
+        component: falco
+      annotations:
+        summary: "Falco kernel module not loaded"
+        description: "Falco kernel module failed to load on {{ $labels.hostname }}."
+
+    - alert: FalcoDroppedEvents
+      expr: |
+        rate(falco_events_dropped_total[5m]) > 1
+      for: 10m
+      labels:
+        severity: warning
+        component: falco
+      annotations:
+        summary: "Falco is dropping events"
+        description: "Falco is dropping {{ $value }} events/s on {{ $labels.hostname }}, may be overloaded."
+
+    - alert: FalcoHighCPUUsage
+      expr: |
+        rate(process_cpu_seconds_total{job="falco"}[5m]) > 0.8
+      for: 10m
+      labels:
+        severity: warning
+        component: falco
+      annotations:
+        summary: "Falco high CPU usage"
+        description: "Falco is using {{ $value | humanizePercentage }} CPU on {{ $labels.instance }}."
+
+    - alert: FalcoHighMemoryUsage
+      expr: |
+        process_resident_memory_bytes{job="falco"} / 1024 / 1024 / 1024 > 2
+      for: 10m
+      labels:
+        severity: warning
+        component: falco
+      annotations:
+        summary: "Falco high memory usage"
+        description: "Falco is using {{ $value | humanize }}GB memory on {{ $labels.instance }}."
+
+    - alert: FalcoRuleLoadFailed
+      expr: |
+        falco_rules_loaded == 0
+      for: 5m
+      labels:
+        severity: critical
+        component: falco
+      annotations:
+        summary: "Falco failed to load rules"
+        description: "Falco has no rules loaded on {{ $labels.hostname }}."
+
+    - alert: FalcoContainerPrivilegedExecution
+      expr: |
+        rate(falco_events{rule="Run Privileged Container"}[5m]) > 0
+      for: 1m
+      labels:
+        severity: warning
+        component: falco
+      annotations:
+        summary: "Privileged container execution detected"
+        description: "Falco detected privileged container execution on {{ $labels.hostname }}."
+

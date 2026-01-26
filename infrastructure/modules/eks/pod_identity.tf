@@ -336,5 +336,5 @@ module "opencost_pod_identity" {
       service_account = local.opencost_sa_name
     }
   }
-
+  depends_on = [module.eks]
 }
