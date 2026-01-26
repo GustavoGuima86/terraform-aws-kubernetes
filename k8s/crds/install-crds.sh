@@ -2,9 +2,10 @@
 set -euo pipefail
 
 echo "Installing Velero CRDs..."
-VELERO_VERSION="v1.14.1"
+VELERO_VERSION="v1.12.0"
 
-# Install core Velero CRDs that exist in v1.14.1
+# Install Velero CRDs for v1.12.0 (matches the deployed version)
+# Note: v1.12.0 does NOT have DataDownload/DataUpload CRDs (those are v1.15+)
 kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO_VERSION}/config/crd/v1/bases/velero.io_backups.yaml"
 kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO_VERSION}/config/crd/v1/bases/velero.io_backupstoragelocations.yaml"
 kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO_VERSION}/config/crd/v1/bases/velero.io_deletebackuprequests.yaml"
@@ -17,10 +18,12 @@ kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO
 kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO_VERSION}/config/crd/v1/bases/velero.io_volumesnapshotlocations.yaml"
 kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO_VERSION}/config/crd/v1/bases/velero.io_backuprepositories.yaml"
 
-# Note: datadownloads and datauploads CRDs were added in later versions
-# If you need these CRDs, update to a newer Velero version
+# Note: v1.12.0 does NOT include:
+# - velero.io_datadownloads (added in v1.15+)
+# - velero.io_datauploads (added in v1.15+)
+# These are part of the Data Mover functionality introduced in later versions
 
-echo "Velero CRDs installed successfully."
+echo "Velero CRDs for v1.12.0 installed successfully."
 
 echo "Installing Argo CD CRDs..."
 kubectl apply -k "https://github.com/argoproj/argo-cd/manifests/crds?ref=v2.12.3"

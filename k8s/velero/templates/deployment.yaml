@@ -60,12 +60,20 @@ spec:
             - /velero
           args:
             - server
+            - --features=
+            - --uploader-type=restic
           env:
             - name: AWS_REGION
               value: {{ .Values.configuration.backupStorageLocation.config.region | quote }}
             - name: BUCKET
               value: {{ .Values.configuration.backupStorageLocation.bucket | quote }}
-          volumeMounts: []
+            - name: VELERO_SCRATCH_DIR
+              value: /scratch
+          volumeMounts:
+            - name: scratch
+              mountPath: /scratch
       initContainers: []
-      volumes: []
+      volumes:
+        - name: scratch
+          emptyDir: {}
 
