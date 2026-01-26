@@ -27,16 +27,10 @@ spec:
           value: "{{ .Values.opencost_sa_name }}"
         - name: eks_cluster_name
           value: "{{ .Values.eks_cluster_name }}"
-        - name: domain_name
-          value: "{{ .Values.domain_name }}"
-        - name: certificate_arn
-          value: "{{ .Values.certificate_arn }}"
-        - name: kube_prometheus_release
-          value: "{{ .Values.kube_prometheus_release }}"
-        - name: route.enabled
-          value: "true"
         - name: route.hostname
           value: "opencost.{{ .Values.domain_name }}"
+        - name: kube_prometheus_release
+          value: "{{ .Values.kube_prometheus_release }}"
         - name: opencost.serviceAccount.name
           value: "{{ .Values.opencost_sa_name }}"
         - name: opencost.extraEnv[0].value

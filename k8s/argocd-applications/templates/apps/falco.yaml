@@ -23,12 +23,6 @@ spec:
           value: "{{ .Values.falco_role_arn }}"
         - name: falco_sa_name
           value: "{{ .Values.falco_sa_name }}"
-        - name: domain_name
-          value: "{{ .Values.domain_name }}"
-        - name: certificate_arn
-          value: "{{ .Values.certificate_arn }}"
-        - name: route.enabled
-          value: "true"
         - name: route.hostname
           value: "falco.{{ .Values.domain_name }}"
   destination:

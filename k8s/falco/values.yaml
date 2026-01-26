@@ -13,7 +13,7 @@ certificate_arn: ""
 
 # HTTPRoute configuration
 route:
-  enabled: false
+  enabled: true
   hostname: "falco.gustavo.inno-on.cloud"
   gateway:
     name: tooling-gateway
