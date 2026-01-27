@@ -82,7 +82,7 @@ secrets:
   scaffolderDefaultAuthorName: "Backstage"
   scaffolderDefaultAuthorEmail: "backstage@example.com"
   appBaseUrl: "https://backstage.example.com"
-  backendBaseUrl: "https://backstage.example.com/api"
+  backendBaseUrl: "https://backstage.example.com"
 
 # HTTPRoute configuration
 route:
