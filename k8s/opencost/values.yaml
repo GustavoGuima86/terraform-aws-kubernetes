@@ -34,12 +34,12 @@ opencost:
   # Override the full name to ensure consistent service naming
   fullnameOverride: opencost
 
-  # Service account for Pod Identity
-  # Note: Service account is created via template with Pod Identity annotation
+  # Service account for Pod Identity Agent
+  # Pod Identity Agent uses EKS-level associations, not service account annotations
   serviceAccount:
-    create: false
+    create: true
     name: ""  # Set via Helm parameter opencost_sa_name
-    annotations: {}
+    annotations: {}  # No annotations needed for Pod Identity Agent
 
   # OpenCost configuration
   opencost:
