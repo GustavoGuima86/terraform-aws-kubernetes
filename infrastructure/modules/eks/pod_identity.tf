@@ -208,7 +208,7 @@ module "falco_pod_identity" {
       service_account = local.falco_sa_name
     }
   }
-
+  depends_on = [module.eks]
 }
 
 # ==============================================================================

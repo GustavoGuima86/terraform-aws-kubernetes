@@ -6,7 +6,7 @@
 aws_region: ""
 aws_account_id: ""
 opencost_role_arn: ""
-opencost_sa_name: "opencost"
+opencost_sa_name: ""
 eks_cluster_name: ""
 
 # Istio Ingress (deprecated - use route config below)
@@ -45,7 +45,23 @@ opencost:
   opencost:
     exporter:
       # Default cluster ID (should match EKS cluster name)
-      defaultClusterId: "default-cluster"  # Override via Helm parameter eks_cluster_name
+      defaultClusterId: ""  # Override via Helm parameter eks_cluster_name
+
+      # Cloud provider configuration
+      cloudProviderApiKey: ""  # Not needed for AWS with Pod Identity
+
+      # AWS-specific configuration (not needed with Pod Identity)
+      # When using Pod Identity, OpenCost automatically gets credentials from the service account
+      aws:
+        access_key_id: ""
+        secret_access_key: ""
+
+      # Enable cloud costs
+      cloudCost:
+        enabled: true
+        provider: "AWS"
+        # secretName: ""  # NOT needed - we're using Pod Identity instead
+        # secretKey: ""   # NOT needed - we're using Pod Identity instead
 
       # Resource configuration
       resources:
@@ -104,7 +120,7 @@ opencost:
     # Using Pod Identity for authentication - no static credentials needed
     - name: AWS_REGION
       value: ""  # Set via Helm parameter
-    - name: AWS_CLUSTER_ID
+    - name: CLUSTER_ID
       value: ""  # Set via Helm parameter (EKS cluster name)
 
     # Cloud provider - CRITICAL for AWS cloud cost detection
@@ -115,18 +131,13 @@ opencost:
     - name: CLOUD_COST_ENABLED
       value: "true"
     - name: CLOUD_COST_MONTH_TO_DATE_INTERVAL
-      value: "6h"
+      value: "1h"
     - name: CLOUD_COST_REFRESH_RATE_HOURS
-      value: "6"
+      value: "1"
     - name: CLOUD_COST_QUERY_WINDOW_DAYS
       value: "7"
     - name: CLOUD_COST_RUN_WINDOW_DAYS
       value: "3"
-
-    # AWS Cost Explorer configuration
-    # See: https://opencost.io/docs/configuration/aws#aws-cloud-costs
-    - name: AWS_PRICING_API_ENABLED
-      value: "true"
 
     # Cost model configuration
     - name: EMIT_KSM_V1_METRICS
@@ -135,8 +146,6 @@ opencost:
       value: "false"
     - name: LOG_LEVEL
       value: "info"
-    - name: CONFIG_PATH
-      value: "/tmp/custom-config"
 
   # Priority class
   priorityClassName: ""
