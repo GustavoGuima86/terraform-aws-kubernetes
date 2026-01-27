@@ -80,9 +80,9 @@ secrets:
   catalogS3Bucket: "backstage-catalog-bucket"
   organizationName: "My Organization"
   scaffolderDefaultAuthorName: "Backstage"
-  scaffolderDefaultAuthorEmail: "backstage@example.com"
-  appBaseUrl: "https://backstage.example.com"
-  backendBaseUrl: "https://backstage.example.com"
+  scaffolderDefaultAuthorEmail: "backstage@gustavo.inno-on.cloud"
+  appBaseUrl: "https://backstage.gustavo.inno-on.cloud"
+  backendBaseUrl: "https://backstage.gustavo.inno-on.cloud"
 
 # HTTPRoute configuration
 route:
