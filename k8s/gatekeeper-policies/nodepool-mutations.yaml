@@ -65,7 +65,7 @@ spec:
       - kube-system
       - gatekeeper-system
       - observability
-      - falso
+      - falco
   location: "spec.nodeSelector.nodepool"
   parameters:
     assign:
@@ -95,7 +95,7 @@ spec:
       - kube-system
       - gatekeeper-system
       - observability
-      - falso
+      - falco
   location: "spec.nodeSelector.nodepool"
   parameters:
     assign:

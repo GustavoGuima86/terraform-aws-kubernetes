@@ -131,9 +131,9 @@ opencost:
     - name: CLOUD_COST_ENABLED
       value: "true"
     - name: CLOUD_COST_MONTH_TO_DATE_INTERVAL
-      value: "1h"
+      value: "6"
     - name: CLOUD_COST_REFRESH_RATE_HOURS
-      value: "1"
+      value: "6"
     - name: CLOUD_COST_QUERY_WINDOW_DAYS
       value: "7"
     - name: CLOUD_COST_RUN_WINDOW_DAYS
@@ -144,6 +144,8 @@ opencost:
       value: "false"
     - name: EMIT_KSM_V1_METRICS_ONLY
       value: "false"
+    - name: LOG_LEVEL
+      value: "info"
     - name: LOG_LEVEL
       value: "info"
 
