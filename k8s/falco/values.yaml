@@ -101,12 +101,12 @@ falco:
       - rule: Terminal shell in container
         desc: A shell was used as the entrypoint/exec point into a container with an attached terminal.
         condition: >
-          spawned_process and container
-          and shell_procs and proc.tty != 0
-          and container_entrypoint
-          and not user_expected_terminal_shell_in_container_conditions
+          evt.type = execve and evt.dir=< and container.id != host 
+          and proc.name in (ash, bash, csh, ksh, sh, tcsh, zsh, dash)
+          and proc.tty != 0
+          and not proc.name in (docker, kubectl, crictl)
         output: >
-          A shell was spawned in a container with an attached terminal (user=%user.name user_loginuid=%user.loginuid %container.info
+          A shell was spawned in a container with an attached terminal (user=%user.name %container.info
           shell=%proc.name parent=%proc.pname cmdline=%proc.cmdline terminal=%proc.tty container_id=%container.id image=%container.image.repository)
         priority: NOTICE
         tags: [container, shell, mitre_execution, T1059]
@@ -114,9 +114,9 @@ falco:
       - rule: Unauthorized Process in Container
         desc: Detect processes not matching the expected container behavior
         condition: >
-          spawned_process and container
-          and not proc.name in (known_drop_and_execute_containers, user_known_exec_in_container_activities)
-          and proc.name in (netcat, ncat, nc, socat, nmap, wget, curl)
+          evt.type = execve and evt.dir=< and container.id != host
+          and proc.name in (netcat, ncat, nc, nmap, wget, curl, socat)
+          and not container.image.repository in (nicolaka/netshoot, alpine, busybox, curlimages/curl)
         output: >
           Suspicious process started in container (user=%user.name command=%proc.cmdline container=%container.name 
           image=%container.image.repository:%container.image.tag parent=%proc.pname)
@@ -130,9 +130,10 @@ falco:
       - rule: Kubernetes Secret Access
         desc: Detect access to Kubernetes secrets
         condition: >
-          open_read and container and
-          fd.name glob /var/run/secrets/kubernetes.io/*
-          and not proc.name in (allowed_k8s_secret_readers)
+          (evt.type in (open,openat,openat2) and evt.is_open_read=true and fd.typechar='f')
+          and fd.name glob "/var/run/secrets/kubernetes.io/*"
+          and container.id != host
+          and not proc.name in (nginx, envoy, aws-node, kube-proxy, fluentd, fluent-bit, prometheus)
         output: >
           Kubernetes secret accessed (user=%user.name command=%proc.cmdline file=%fd.name %container.info 
           image=%container.image.repository:%container.image.tag)
@@ -142,8 +143,11 @@ falco:
       - rule: Read Sensitive File in Container
         desc: Detect attempts to read sensitive files
         condition: >
-          open_read and container and sensitive_files
-          and not proc.name in (docker, oci, podman, crio, kubelet)
+          (evt.type in (open,openat,openat2) and evt.is_open_read=true and fd.typechar='f')
+          and container.id != host
+          and (fd.name in (/etc/shadow, /etc/sudoers, /etc/pam.conf, /etc/security/pwquality.conf) or
+               fd.name startswith /etc/sudoers.d/ or fd.name startswith /etc/pam.d/)
+          and not proc.name in (shadowutils, vipw, vigr, systemd, systemd-logind)
         output: >
           Sensitive file opened for reading (user=%user.name command=%proc.cmdline file=%fd.name 
           container=%container.name image=%container.image.repository:%container.image.tag)
@@ -153,9 +157,10 @@ falco:
       - rule: AWS EC2 Metadata Service Access
         desc: Detect access to EC2 instance metadata service (potential SSRF or credential theft)
         condition: >
-          outbound and container
-          and fd.sip="169.254.169.254"
-          and not proc.name in (aws-node, vpc-cni, amazon-cloudwatch-agent)
+          evt.type = connect and evt.dir=< and fd.sip="169.254.169.254"
+          and container.id != host
+          and not proc.name in (aws-node, vpc-cni, amazon-cloudwatch-agent, aws-iam-authenticator)
+          and not container.image.repository contains aws
         output: >
           Container accessing AWS metadata service (user=%user.name command=%proc.cmdline container=%container.name 
           image=%container.image.repository:%container.image.tag connection=%fd.name)
@@ -169,10 +174,11 @@ falco:
       - rule: Write Below Binary Directory
         desc: Detect writes to binary directories (potential malware installation)
         condition: >
-          write_below_binary_dir and not package_mgmt_procs
-          and not exe_running_docker_save
-          and not python_running_get_pip
-          and not known_bin_writers
+          (evt.type in (open,openat,openat2) and evt.is_open_write=true and fd.typechar='f' and fd.num>=0)
+          and (fd.name startswith /bin/ or fd.name startswith /sbin/ or 
+               fd.name startswith /usr/bin/ or fd.name startswith /usr/sbin/)
+          and container
+          and not proc.name in (dpkg, rpm, yum, dnf, apt, apt-get, apk, pacman)
         output: >
           File written below a known binary directory (user=%user.name command=%proc.cmdline 
           file=%fd.name parent=%proc.pname container=%container.name image=%container.image.repository)
@@ -182,9 +188,11 @@ falco:
       - rule: Write Below Etc Directory
         desc: Detect writes to /etc directory (configuration tampering)
         condition: >
-          write_etc_common and not proc.name in (systemd, dbus-daemon, systemd-resolved)
-          and not package_mgmt_procs
-          and not container_entrypoint
+          (evt.type in (open,openat,openat2) and evt.is_open_write=true and fd.typechar='f' and fd.num>=0)
+          and fd.name startswith /etc/
+          and container
+          and not proc.name in (dpkg, rpm, yum, dnf, apt, apt-get, apk, systemd, dbus-daemon)
+          and not proc.pname in (dockerd, containerd, crio, podman)
         output: >
           File below /etc written (user=%user.name command=%proc.cmdline file=%fd.name 
           container=%container.name image=%container.image.repository:%container.image.tag)
@@ -194,8 +202,11 @@ falco:
       - rule: Suspicious File Modification in Container
         desc: Detect modifications to important system files
         condition: >
-          modify and container
-          and fd.name in (/etc/passwd, /etc/shadow, /etc/sudoers, /etc/ssh/sshd_config)
+          (evt.type in (open,openat,openat2) and evt.is_open_write=true and fd.typechar='f')
+          and container
+          and (fd.name in (/etc/passwd, /etc/shadow, /etc/sudoers, /etc/ssh/sshd_config) or
+               fd.name startswith /etc/sudoers.d/)
+          and not proc.name in (shadowutils, vipw, vigr, systemd)
         output: >
           Critical system file modified in container (user=%user.name command=%proc.cmdline file=%fd.name 
           container=%container.name image=%container.image.repository:%container.image.tag)
@@ -209,7 +220,7 @@ falco:
       - rule: Outbound Connection to Suspicious Port
         desc: Detect outbound connections to commonly used hacking/backdoor ports
         condition: >
-          outbound and container
+          evt.type = connect and evt.dir=< and container.id != host
           and fd.sport in (4444, 5555, 6666, 7777, 8888, 9999, 31337, 12345)
         output: >
           Suspicious outbound connection detected (user=%user.name command=%proc.cmdline 
@@ -220,11 +231,14 @@ falco:
       - rule: Cryptocurrency Mining Activity
         desc: Detect potential cryptocurrency mining in containers
         condition: >
-          spawned_process and container
-          and (proc.name in (xmrig, minerd, cpuminer, ethminer, cryptonight) or
+          evt.type = execve and evt.dir=< and container.id != host
+          and (proc.name in (xmrig, minerd, cpuminer, ethminer, cryptonight, xmr-stak) or
                proc.cmdline contains "stratum+tcp" or
+               proc.cmdline contains "stratum+ssl" or
                proc.cmdline contains "cryptonight" or
-               proc.cmdline contains "nicehash")
+               proc.cmdline contains "nicehash" or
+               proc.cmdline contains "xmrig" or
+               proc.cmdline contains "monero")
         output: >
           Potential cryptocurrency mining detected (user=%user.name command=%proc.cmdline 
           container=%container.name image=%container.image.repository:%container.image.tag)
@@ -234,10 +248,11 @@ falco:
       - rule: Reverse Shell Activity
         desc: Detect reverse shell attempts
         condition: >
-          spawned_process and container
-          and ((proc.name = "bash" and proc.cmdline contains "dev/tcp") or
-               (proc.name in (nc, ncat, netcat, socat) and (proc.cmdline contains "-e" or proc.cmdline contains "-c")) or
-               (proc.cmdline contains "/bin/sh" and proc.cmdline contains "-i"))
+          evt.type = execve and evt.dir=< and container.id != host
+          and ((proc.name in (bash, sh) and (proc.cmdline contains "/dev/tcp" or proc.cmdline contains "/dev/udp")) or
+               (proc.name in (nc, ncat, netcat, socat) and (proc.cmdline contains "-e" or proc.cmdline contains "-c" or proc.cmdline contains "exec")) or
+               (proc.cmdline contains "/bin/sh" and proc.cmdline contains "-i" and proc.cmdline contains ">&") or
+               (proc.cmdline contains "bash -i"))
         output: >
           Reverse shell activity detected (user=%user.name command=%proc.cmdline 
           container=%container.name image=%container.image.repository:%container.image.tag parent=%proc.pname)
@@ -251,8 +266,10 @@ falco:
       - rule: Set Setuid or Setgid Bit
         desc: Detect setting setuid/setgid bits (privilege escalation technique)
         condition: >
-          chmod and (evt.arg.mode contains "S_ISUID" or evt.arg.mode contains "S_ISGID")
-          and not proc.name in (dpkg, rpm, yum, apt, apt-get)
+          evt.type = chmod and evt.dir=< and container.id != host
+          and (evt.arg.mode contains "S_ISUID" or evt.arg.mode contains "S_ISGID" or 
+               evt.arg.mode contains "04" or evt.arg.mode contains "02")
+          and not proc.name in (dpkg, rpm, yum, apt, apt-get, pacman, apk)
         output: >
           Setuid or setgid bit set via chmod (user=%user.name command=%proc.cmdline file=%evt.arg.filename 
           mode=%evt.arg.mode container=%container.name)
@@ -262,7 +279,7 @@ falco:
       - rule: Sudo Command Execution
         desc: Detect sudo command usage in containers
         condition: >
-          spawned_process and container
+          evt.type = execve and evt.dir=< and container.id != host
           and proc.name = "sudo"
         output: >
           Sudo command executed in container (user=%user.name command=%proc.cmdline 
@@ -277,9 +294,9 @@ falco:
       - rule: Container Run as Root User
         desc: Detect containers running as root (violates security best practice)
         condition: >
-          container_started and container
+          evt.type = container and container.id != host
           and user.uid = 0
-          and not user_known_privileged_containers
+          and not container.image.repository in (falco, falcosidekick, aws-node, kube-proxy, calico-node, cilium, coredns)
         output: >
           Container started as root user (user=%user.name container=%container.name 
           image=%container.image.repository:%container.image.tag)
@@ -289,10 +306,12 @@ falco:
       - rule: Package Management Process Launched in Container
         desc: Detect package manager usage in running containers (potential supply chain attack)
         condition: >
-          spawned_process and container
-          and package_mgmt_procs
-          and not package_mgmt_ancestor_procs
-          and not user_known_package_manager_in_container
+          evt.type = execve and evt.dir=< and container.id != host
+          and proc.name in (dpkg, rpm, yum, dnf, apt, apt-get, apk, pacman, pip, pip3, gem, npm, composer)
+          and not proc.pname in (dockerd, containerd, crio, podman, buildkit, kaniko)
+          and not container.image.repository startswith "build"
+          and not container.image.repository contains "jenkins"
+          and not container.image.repository contains "gitlab"
         output: >
           Package manager process launched in container (user=%user.name command=%proc.cmdline 
           container=%container.name image=%container.image.repository:%container.image.tag)
@@ -306,9 +325,10 @@ falco:
       - rule: K8s Service Account Token Access
         desc: Detect reading of service account token from container
         condition: >
-          open_read and container
+          (evt.type in (open,openat,openat2) and evt.is_open_read=true and fd.typechar='f')
           and fd.name = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-          and not proc.name in (kubectl, kubelet, kube-proxy)
+          and container.id != host
+          and not proc.name in (kubectl, kubelet, kube-proxy, aws-iam-authenticator)
         output: >
           Service account token accessed (user=%user.name command=%proc.cmdline 
           container=%container.name image=%container.image.repository:%container.image.tag file=%fd.name)
@@ -318,35 +338,14 @@ falco:
       - rule: Kubectl Execution in Container
         desc: Detect kubectl command execution (potential cluster access)
         condition: >
-          spawned_process and container
-          and proc.name = "kubectl"
+          evt.type = execve and evt.dir=< and container.id != host
+          and proc.name in (kubectl, oc)
         output: >
           Kubectl executed in container (user=%user.name command=%proc.cmdline 
           container=%container.name image=%container.image.repository:%container.image.tag)
         priority: NOTICE
         tags: [kubernetes, process, mitre_discovery, T1613]
 
-      # ------------------------------------------------------------------------------
-      # Macros for Allowed/Expected Behavior (customize per environment)
-      # ------------------------------------------------------------------------------
-      
-      - macro: allowed_k8s_secret_readers
-        condition: (proc.name in (nginx, envoy, aws-node, kube-proxy, fluentd, fluent-bit))
-
-      - macro: user_expected_terminal_shell_in_container_conditions
-        condition: (never_true)
-
-      - macro: user_known_privileged_containers
-        condition: (container.image.repository in (falco, falcosidekick, aws-node, kube-proxy, calico-node))
-
-      - macro: user_known_package_manager_in_container
-        condition: (container.image.repository startswith "build" or container.image.repository contains "jenkins")
-
-      - macro: user_known_exec_in_container_activities
-        condition: (never_true)
-
-      - macro: known_bin_writers
-        condition: (proc.name in (node, python, ruby, java))
 
   # Resource limits
   resources:
