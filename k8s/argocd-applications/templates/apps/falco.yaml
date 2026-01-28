@@ -14,8 +14,6 @@ spec:
     targetRevision: {{ .Values.gitRepo.branch }}
     path: k8s/falco
     helm:
-      valueFiles:
-        - values.yaml
       parameters:
         - name: aws_region
           value: "{{ .Values.aws_region }}"
@@ -25,6 +23,20 @@ spec:
           value: "{{ .Values.falco_sa_name }}"
         - name: route.hostname
           value: "falco.{{ .Values.domain_name }}"
+        - name: kube_prometheus_release
+          value: "{{ .Values.kube_prometheus_release }}"
+        - name: route.enabled
+          value: "true"
+        - name: route.gateway.name
+          value: "tooling-gateway"
+        - name: route.gateway.namespace
+          value: "istio-system"
+        - name: route.gateway.sectionName
+          value: "https"
+        - name: falco.enabled
+          value: "true"
+        - name: falcosidekick.enabled
+          value: "true"
   destination:
     server: https://kubernetes.default.svc
     namespace: falco
