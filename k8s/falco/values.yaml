@@ -393,34 +393,82 @@ falco:
           targetPort: 8765
           protocol: TCP
 
-# ==============================================================================
-# Falcosidekick Configuration (Alert Forwarding + UI)
-# ==============================================================================
-falcosidekick:
-  enabled: true
-
-  # Service account for Pod Identity (if needed for AWS services)
-  serviceAccount:
-    create: false
-    name: falcosidekick
-    annotations: {}
-
-  # Replicas for HA
-  replicaCount: 2
-
-  # Web UI for viewing Falco events
-  webui:
+  # ==============================================================================
+  # Falcosidekick Configuration (Alert Forwarding + UI)
+  # ==============================================================================
+  falcosidekick:
     enabled: true
-    replicaCount: 1
 
-    # Redis configuration for event storage
-    redis:
-      storageEnabled: true
-      storageSize: 1Gi
+    # Service account for Pod Identity (if needed for AWS services)
+    serviceAccount:
+      create: false
+      name: falcosidekick
+      annotations: {}
 
-    service:
-      type: ClusterIP
-      port: 2802
+    # Replicas for HA
+    replicaCount: 2
+
+    # Web UI for viewing Falco events
+    webui:
+      enabled: true
+      replicaCount: 1
+
+      # Redis configuration for event storage
+      redis:
+        storageEnabled: true
+        storageSize: 1Gi
+
+      service:
+        type: ClusterIP
+        port: 2802
+
+      resources:
+        limits:
+          cpu: 500m
+          memory: 512Mi
+        requests:
+          cpu: 100m
+          memory: 128Mi
+
+    config:
+      # Enable debug for initial setup
+      debug: true
+
+      # Enable WebUI output (critical for events to show in UI)
+      webui:
+        url: ""  # Leave empty to use default internal service
+        minimumpriority: "debug"  # Capture all events including low priority ones
+
+      # CloudWatch integration (optional - configure if needed)
+      aws:
+        # Enable CloudWatch Logs
+        cloudwatchlogs:
+          loggroup: ""  # Set to enable: "/aws/eks/falco"
+          logstream: ""  # Set to enable: "falco-events"
+          minimumpriority: "warning"
+
+        # Enable SNS notifications (optional)
+        sns:
+          topicarn: ""  # Set ARN to enable SNS notifications
+          rawjson: true
+          minimumpriority: "warning"
+
+        # Enable SQS (optional)
+        sqs:
+          url: ""  # Set URL to enable SQS
+          minimumpriority: "warning"
+
+      # Slack integration (optional)
+      slack:
+        webhookurl: ""  # Add Slack webhook URL if desired
+        minimumpriority: "warning"
+
+      # Loki integration for log aggregation
+      loki:
+        hostport: ""  # e.g., "http://loki-gateway.observability.svc.cluster.local:80"
+        minimumpriority: "debug"
+        mutualtls: false
+        checkcert: false
 
     resources:
       limits:
@@ -430,51 +478,5 @@ falcosidekick:
         cpu: 100m
         memory: 128Mi
 
-  config:
-    # Enable debug for initial setup
-    debug: true
 
-    # Enable WebUI output (critical for events to show in UI)
-    webui:
-      url: ""  # Leave empty to use default internal service
-      minimumpriority: "debug"  # Capture all events including low priority ones
-
-    # CloudWatch integration (optional - configure if needed)
-    aws:
-      # Enable CloudWatch Logs
-      cloudwatchlogs:
-        loggroup: ""  # Set to enable: "/aws/eks/falco"
-        logstream: ""  # Set to enable: "falco-events"
-        minimumpriority: "warning"
-
-      # Enable SNS notifications (optional)
-      sns:
-        topicarn: ""  # Set ARN to enable SNS notifications
-        rawjson: true
-        minimumpriority: "warning"
-
-      # Enable SQS (optional)
-      sqs:
-        url: ""  # Set URL to enable SQS
-        minimumpriority: "warning"
-
-    # Slack integration (optional)
-    slack:
-      webhookurl: ""  # Add Slack webhook URL if desired
-      minimumpriority: "warning"
-
-    # Loki integration for log aggregation
-    loki:
-      hostport: ""  # e.g., "http://loki-gateway.observability.svc.cluster.local:80"
-      minimumpriority: "debug"
-      mutualtls: false
-      checkcert: false
-
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
 

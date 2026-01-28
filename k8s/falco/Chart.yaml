@@ -9,9 +9,5 @@ dependencies:
   - name: falco
     version: 4.18.0
     repository: https://falcosecurity.github.io/charts
-    condition: falco.enabled
-  - name: falcosidekick
-    version: 0.10.3
-    repository: https://falcosecurity.github.io/charts
-    condition: falcosidekick.enabled
+
 
