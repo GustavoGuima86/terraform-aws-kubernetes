@@ -88,7 +88,7 @@ falco:
     # Outputs - send to Falcosidekick
     http_output:
       enabled: true
-      url: "http://falcosidekick:2801"
+      url: "http://falco-falcosidekick:2801"
 
     # Prometheus metrics
     metrics:
