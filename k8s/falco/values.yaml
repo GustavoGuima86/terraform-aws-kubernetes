@@ -34,11 +34,20 @@ falco:
   # Use modern eBPF driver for better performance
   driver:
     kind: modern_ebpf
-
-    # Modern eBPF probe configuration
-    modernBpf:
-      enabled: true
+    ebpf:
+      # eBPF probe configuration
       leastPrivileged: true
+
+  # Collector configuration
+  collectors:
+    enabled: true
+    docker:
+      enabled: false
+    containerd:
+      enabled: true
+      socket: /run/containerd/containerd.sock
+    crio:
+      enabled: false
 
   # Service account for Pod Identity
   # Note: Service account is created via template with Pod Identity annotation
@@ -57,7 +66,7 @@ falco:
     # Log settings
     log_stderr: true
     log_syslog: false
-    log_level: info
+    log_level: debug
 
     # Performance tuning
     syscall_event_drops:
