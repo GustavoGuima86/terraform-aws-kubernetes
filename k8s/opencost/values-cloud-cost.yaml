@@ -1,0 +1,133 @@
+# ==============================================================================
+# OpenCost Cloud Cost Configuration - READY TO DEPLOY
+# ==============================================================================
+# This file contains the actual values from your Terraform outputs
+# Use this file to deploy OpenCost with cloud cost integration enabled
+
+# AWS Integration - VALUES FROM TERRAFORM OUTPUTS
+aws_region: "eu-central-1"
+aws_account_id: "156041418374"
+opencost_role_arn: "arn:aws:iam::156041418374:role/gustavo-opencost-20260128140056829000000028"
+opencost_sa_name: "opencost"
+eks_cluster_name: "gustavo"
+
+# HTTPRoute configuration
+domain_name: "gustavo.inno-on.cloud"
+route:
+  enabled: true
+  hostname: "opencost.gustavo.inno-on.cloud"
+  gateway:
+    name: tooling-gateway
+    namespace: istio-system
+    sectionName: https
+  serviceName: opencost
+  servicePort: 9090
+
+# Observability Integration
+kube_prometheus_release: "kube-prometheus-stack"
+
+# ==============================================================================
+# OpenCost Configuration
+# ==============================================================================
+opencost:
+  fullnameOverride: opencost
+
+  # Service account for Pod Identity
+  serviceAccount:
+    create: true
+    name: "opencost"
+    annotations: {}  # No annotations needed for Pod Identity
+
+  # OpenCost configuration
+  opencost:
+    exporter:
+      # Cluster ID (matches EKS cluster name)
+      defaultClusterId: "gustavo"
+
+      # Cloud costs enabled
+      cloudCost:
+        enabled: true
+        provider: "AWS"
+
+      # Resource configuration
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 999m
+          memory: 1Gi
+
+    # Prometheus integration
+    prometheus:
+      internal:
+        enabled: true
+        serviceName: kube-prometheus-stack-prometheus
+        namespaceName: observability
+        port: 9090
+      external:
+        enabled: false
+
+    # UI configuration
+    ui:
+      enabled: true
+      ingress:
+        enabled: false  # Using Istio Gateway API
+      resources:
+        requests:
+          cpu: 10m
+          memory: 55Mi
+        limits:
+          cpu: 999m
+          memory: 1Gi
+
+  # Metrics configuration
+  metrics:
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: kube-prometheus-stack
+
+  # Persistence for cost data
+  persistence:
+    enabled: true
+    storageClass: gp3-secure
+    size: 10Gi
+    accessMode: ReadWriteOnce
+
+  # Environment variables for AWS cloud cost integration
+  extraEnv:
+    # AWS Configuration
+    - name: AWS_REGION
+      value: "eu-central-1"
+    - name: CLUSTER_ID
+      value: "gustavo"
+
+    # Cloud provider - CRITICAL for AWS cloud cost detection
+    - name: CLOUD_PROVIDER
+      value: "AWS"
+
+    # Enable cloud cost features
+    - name: CLOUD_COST_ENABLED
+      value: "true"
+    - name: CLOUD_COST_MONTH_TO_DATE_INTERVAL
+      value: "1h"
+    - name: CLOUD_COST_REFRESH_RATE_HOURS
+      value: "1"
+    - name: CLOUD_COST_QUERY_WINDOW_DAYS
+      value: "7"
+    - name: CLOUD_COST_RUN_WINDOW_DAYS
+      value: "3"
+
+    # Cost model configuration
+    - name: EMIT_KSM_V1_METRICS
+      value: "false"
+    - name: EMIT_KSM_V1_METRICS_ONLY
+      value: "false"
+    - name: LOG_LEVEL
+      value: "info"
+
+    # Enable detailed logging for troubleshooting (optional)
+    # - name: LOG_LEVEL
+    #   value: "debug"
+
