@@ -88,7 +88,17 @@ done
 
 echo "All Kube Prometheus Stack CRDs installed successfully."
 
-echo "Installing Kagent CRDs..."
-helm install kagent-crds oci://ghcr.io/kagent-dev/kagent/helm/kagent-crds --version 0.7.8
+echo "Installing CloudNativePG CRDs..."
+CNPG_VERSION="1.24.1"
+kubectl apply --server-side -f "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v${CNPG_VERSION}/config/crd/bases/postgresql.cnpg.io_backups.yaml"
+kubectl apply --server-side -f "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v${CNPG_VERSION}/config/crd/bases/postgresql.cnpg.io_clusters.yaml"
+kubectl apply --server-side -f "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v${CNPG_VERSION}/config/crd/bases/postgresql.cnpg.io_clusterimagecatalogs.yaml"
+kubectl apply --server-side -f "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v${CNPG_VERSION}/config/crd/bases/postgresql.cnpg.io_imagecatalogs.yaml"
+kubectl apply --server-side -f "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v${CNPG_VERSION}/config/crd/bases/postgresql.cnpg.io_poolers.yaml"
+kubectl apply --server-side -f "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v${CNPG_VERSION}/config/crd/bases/postgresql.cnpg.io_scheduledbackups.yaml"
+echo "CloudNativePG CRDs installed successfully."
+
+#echo "Installing Kagent CRDs..."
+#helm install kagent-crds oci://ghcr.io/kagent-dev/kagent/helm/kagent-crds --version 0.7.8
 
 

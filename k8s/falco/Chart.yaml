@@ -1,14 +1,17 @@
 apiVersion: v2
 name: falco
-description: Falco runtime security with Falcosidekick for alert forwarding and UI
+description: Falco Runtime Security with Falcosidekick UI
 type: application
 version: 1.0.0
-appVersion: "0.42.0"
+appVersion: "0.40.0"
 
 dependencies:
   - name: falco
-    version: 4.19.0
+    version: 4.18.0
     repository: https://falcosecurity.github.io/charts
+    condition: falco.enabled
   - name: falcosidekick
-    version: 0.9.9
+    version: 0.10.3
     repository: https://falcosecurity.github.io/charts
+    condition: falcosidekick.enabled
+

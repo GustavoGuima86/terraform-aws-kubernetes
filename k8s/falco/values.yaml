@@ -413,6 +413,11 @@ falcosidekick:
     enabled: true
     replicaCount: 1
 
+    # Redis configuration for event storage
+    redis:
+      storageEnabled: true
+      storageSize: 1Gi
+
     service:
       type: ClusterIP
       port: 2802
@@ -427,7 +432,12 @@ falcosidekick:
 
   config:
     # Enable debug for initial setup
-    debug: false
+    debug: true
+
+    # Enable WebUI output (critical for events to show in UI)
+    webui:
+      url: ""  # Leave empty to use default internal service
+      minimumpriority: "debug"  # Capture all events including low priority ones
 
     # CloudWatch integration (optional - configure if needed)
     aws:
