@@ -25,10 +25,10 @@ spec:
           annotations:
             summary: "Critical security event detected by Falco"
             description: |
-              Falco has detected {{ $value }} critical security events in the last 5 minutes.
-              Pod: {{ $labels.pod }}
-              Namespace: {{ $labels.namespace }}
-              Priority: {{ $labels.priority }}
+              Falco has detected {{`{{ $value }}`}} critical security events in the last 5 minutes.
+              Pod: {{`{{ $labels.pod }}`}}
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Priority: {{`{{ $labels.priority }}`}}
 
         # Cryptocurrency Mining Detection
         - alert: FalcoCryptoMiningDetected
@@ -44,8 +44,8 @@ spec:
             description: |
               Falco detected potential cryptocurrency mining activity.
               This could indicate a compromised workload.
-              Namespace: {{ $labels.namespace }}
-              Pod: {{ $labels.pod }}
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
 
         # Reverse Shell Detection
         - alert: FalcoReverseShellDetected
@@ -61,8 +61,8 @@ spec:
             description: |
               Falco detected reverse shell activity in a container.
               This is a strong indicator of compromise.
-              Namespace: {{ $labels.namespace }}
-              Pod: {{ $labels.pod }}
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
               Immediate investigation required!
 
         # AWS Metadata Service Access
@@ -79,9 +79,9 @@ spec:
             description: |
               Multiple accesses to AWS EC2 metadata service detected.
               This could indicate SSRF or credential theft attempts.
-              Namespace: {{ $labels.namespace }}
-              Pod: {{ $labels.pod }}
-              Count: {{ $value }}
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
+              Count: {{`{{ $value }}`}}
 
         # Privilege Escalation Attempts
         - alert: FalcoPrivilegeEscalation
@@ -96,9 +96,9 @@ spec:
             summary: "Privilege escalation attempt detected"
             description: |
               Falco detected a privilege escalation attempt.
-              Rule: {{ $labels.rule }}
-              Namespace: {{ $labels.namespace }}
-              Pod: {{ $labels.pod }}
+              Rule: {{`{{ $labels.rule }}`}}
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
 
         # Kubernetes Secret Access
         - alert: FalcoKubernetesSecretAccess
@@ -113,10 +113,10 @@ spec:
             summary: "High volume of Kubernetes secret access"
             description: |
               Unusual number of Kubernetes secret access events detected.
-              Rule: {{ $labels.rule }}
-              Namespace: {{ $labels.namespace }}
-              Pod: {{ $labels.pod }}
-              Count: {{ $value }}
+              Rule: {{`{{ $labels.rule }}`}}
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
+              Count: {{`{{ $value }}`}}
 
         # Binary Directory Writes
         - alert: FalcoBinaryDirectoryWrite
@@ -132,8 +132,8 @@ spec:
             description: |
               Falco detected a write operation to a binary directory.
               This could indicate malware installation or persistence attempts.
-              Namespace: {{ $labels.namespace }}
-              Pod: {{ $labels.pod }}
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
 
         # System File Modifications
         - alert: FalcoSystemFileModification
@@ -149,8 +149,8 @@ spec:
             description: |
               Falco detected modification of critical system files (/etc/passwd, /etc/shadow, etc.)
               This indicates a serious security breach.
-              Namespace: {{ $labels.namespace }}
-              Pod: {{ $labels.pod }}
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
               IMMEDIATE ACTION REQUIRED!
 
         # Package Manager Usage
@@ -167,8 +167,8 @@ spec:
             description: |
               Package manager was executed in a running container.
               This violates immutable infrastructure principles and could indicate supply chain attack.
-              Namespace: {{ $labels.namespace }}
-              Pod: {{ $labels.pod }}
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
 
         # Suspicious Network Connections
         - alert: FalcoSuspiciousNetworkConnection
@@ -183,8 +183,8 @@ spec:
             summary: "Suspicious outbound network connection"
             description: |
               Connection to commonly used hacking/backdoor port detected.
-              Namespace: {{ $labels.namespace }}
-              Pod: {{ $labels.pod }}
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
 
         # Compliance Violations
         - alert: FalcoComplianceViolation
@@ -199,9 +199,9 @@ spec:
             summary: "Multiple compliance violations detected"
             description: |
               Multiple compliance rule violations detected in the last hour.
-              Rule: {{ $labels.rule }}
-              Namespace: {{ $labels.namespace }}
-              Count: {{ $value }}
+              Rule: {{`{{ $labels.rule }}`}}
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Count: {{`{{ $value }}`}}
               Review for compliance audit purposes.
 
     # Falco System Health
@@ -218,7 +218,7 @@ spec:
           annotations:
             summary: "Falco is down"
             description: |
-              Falco instance {{ $labels.pod }} is not responding.
+              Falco instance {{`{{ $labels.pod }}`}} is not responding.
               Runtime security monitoring is not operational!
 
         - alert: FalcoHighEventDropRate
@@ -231,9 +231,9 @@ spec:
           annotations:
             summary: "Falco is dropping events"
             description: |
-              Falco is dropping {{ $value }} events per second.
+              Falco is dropping {{`{{ $value }}`}} events per second.
               This indicates performance issues or high system load.
-              Pod: {{ $labels.pod }}
+              Pod: {{`{{ $labels.pod }}`}}
               Consider tuning resources or rules.
 
         - alert: FalcoHighMemoryUsage
@@ -246,7 +246,7 @@ spec:
           annotations:
             summary: "Falco high memory usage"
             description: |
-              Falco pod {{ $labels.pod }} is using {{ $value | humanizePercentage }} of memory limit.
+              Falco pod {{`{{ $labels.pod }}`}} is using {{`{{ $value | humanizePercentage }}`}} of memory limit.
               Consider increasing memory limits.
 
         - alert: FalcosidekickDown
@@ -259,7 +259,7 @@ spec:
           annotations:
             summary: "Falcosidekick is down"
             description: |
-              Falcosidekick instance {{ $labels.pod }} is not responding.
+              Falcosidekick instance {{`{{ $labels.pod }}`}} is not responding.
               Security event forwarding is not operational.
 
         - alert: FalcosidekickHighErrorRate
@@ -272,8 +272,8 @@ spec:
           annotations:
             summary: "Falcosidekick experiencing errors"
             description: |
-              Falcosidekick is experiencing {{ $value }} errors per second.
-              Output: {{ $labels.output }}
+              Falcosidekick is experiencing {{`{{ $value }}`}} errors per second.
+              Output: {{`{{ $labels.output }}`}}
               Check output configuration and connectivity.
 {{- end }}
 
