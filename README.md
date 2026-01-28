@@ -122,7 +122,7 @@ This stage deploys foundational Kubernetes services that might be required befor
 2.  **Deploy EBS CSI StorageClass**: This deploys the `gp3-secure` StorageClass.
     ```bash
     helm upgrade --install ebs-csi-storage-class k8s/ebs-csi-storage-class \
-      --namespace kube-system # StorageClasses are cluster-wide, but Helm needs a namespace for release tracking
+      --namespace kube-system
     ```
     **Note**: You might need to configure `kubectl` before this step. You can use the command from Stage 1, step 3 to configure it.
 ### 3. Deploy ArgoCD Core and Applications with Helm

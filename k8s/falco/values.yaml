@@ -35,6 +35,11 @@ falco:
   driver:
     kind: modern_ebpf
 
+    # Modern eBPF probe configuration
+    modernBpf:
+      enabled: true
+      leastPrivileged: true
+
   # Service account for Pod Identity
   # Note: Service account is created via template with Pod Identity annotation
   serviceAccount:

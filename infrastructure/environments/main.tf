@@ -51,4 +51,5 @@ module "dns" {
   source = "../modules/dns-certificate"
 
   domain_name = var.domain_name
+  depends_on = [module.eks]
 }
