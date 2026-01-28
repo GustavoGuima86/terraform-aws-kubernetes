@@ -1,0 +1,137 @@
+{{- if .Values.falco.enabled }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: falco-rules-compliance
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: falco
+data:
+  compliance-rules.yaml: |
+    # ==============================================================================
+    # Compliance and Regulatory Rules for EKS
+    # ==============================================================================
+    # These rules help with compliance frameworks like CIS, PCI-DSS, SOC2
+    # ==============================================================================
+
+    # CIS Kubernetes Benchmark Rules
+    - rule: CIS - Anonymous Requests
+      desc: Detect anonymous requests to the API server (CIS 1.2.1)
+      condition: >
+        kevt and ka.user.name = "system:anonymous"
+        and not ka.target.resource in (healthz, livez, readyz)
+      output: >
+        Anonymous request to Kubernetes API (verb=%ka.verb uri=%ka.uri
+        user=%ka.user.name source=%ka.source.ips)
+      priority: WARNING
+      tags: [kubernetes, cis, compliance, T1078]
+
+    - rule: CIS - Privileged Container Created
+      desc: Detect creation of privileged containers (CIS 5.2.1)
+      condition: >
+        kevt and ka.verb = "create"
+        and ka.target.resource = "pods"
+        and ka.req.pod.containers.privileged = "true"
+      output: >
+        Privileged container created (user=%ka.user.name pod=%ka.resp.name
+        namespace=%ka.target.namespace image=%ka.req.pod.containers.image)
+      priority: WARNING
+      tags: [kubernetes, cis, compliance, privilege]
+
+    - rule: CIS - Container with HostPath Volume
+      desc: Detect containers mounting hostPath volumes (CIS 5.2.4)
+      condition: >
+        kevt and ka.verb in (create, update)
+        and ka.target.resource = "pods"
+        and ka.req.pod.volumes.hostpath exists
+      output: >
+        Container created with hostPath volume (user=%ka.user.name pod=%ka.resp.name
+        namespace=%ka.target.namespace path=%ka.req.pod.volumes.hostpath)
+      priority: WARNING
+      tags: [kubernetes, cis, compliance, volume]
+
+    - rule: CIS - Container Allowing Privilege Escalation
+      desc: Detect containers that allow privilege escalation (CIS 5.2.5)
+      condition: >
+        kevt and ka.verb in (create, update)
+        and ka.target.resource = "pods"
+        and ka.req.pod.containers.allow_privilege_escalation = "true"
+      output: >
+        Container allowing privilege escalation (user=%ka.user.name pod=%ka.resp.name
+        namespace=%ka.target.namespace image=%ka.req.pod.containers.image)
+      priority: WARNING
+      tags: [kubernetes, cis, compliance, privilege_escalation]
+
+    - rule: CIS - Container Running as Root
+      desc: Detect containers not enforcing runAsNonRoot (CIS 5.2.6)
+      condition: >
+        kevt and ka.verb = "create"
+        and ka.target.resource = "pods"
+        and not ka.req.pod.containers.security_context.run_as_non_root = "true"
+        and not ka.target.namespace in (kube-system, kube-public, kube-node-lease)
+      output: >
+        Container not enforcing runAsNonRoot (user=%ka.user.name pod=%ka.resp.name
+        namespace=%ka.target.namespace image=%ka.req.pod.containers.image)
+      priority: INFO
+      tags: [kubernetes, cis, compliance]
+
+    # PCI-DSS Related Rules
+    - rule: PCI - Access to Cardholder Data Environment
+      desc: Monitor access to namespaces marked as cardholder data environment
+      condition: >
+        kevt and ka.target.namespace contains "pci" or ka.target.namespace contains "payment"
+      output: >
+        Access to PCI namespace (user=%ka.user.name verb=%ka.verb resource=%ka.target.resource
+        namespace=%ka.target.namespace name=%ka.target.name)
+      priority: INFO
+      tags: [kubernetes, pci, compliance, audit]
+
+    - rule: PCI - Modification of Security Controls
+      desc: Detect modifications to security-related resources (PCI Req 10.2.5)
+      condition: >
+        kevt and ka.verb in (create, update, delete, patch)
+        and ka.target.resource in (networkpolicies, podsecuritypolicies, securitycontextconstraints, clusterroles, clusterrolebindings)
+      output: >
+        Security control modified (user=%ka.user.name verb=%ka.verb resource=%ka.target.resource
+        name=%ka.target.name namespace=%ka.target.namespace)
+      priority: WARNING
+      tags: [kubernetes, pci, compliance, security_control]
+
+    # SOC2 Audit Logging
+    - rule: SOC2 - Administrative Action
+      desc: Log all administrative actions for SOC2 audit trail
+      condition: >
+        kevt and ka.verb in (create, update, delete, patch)
+        and ka.target.resource in (deployments, statefulsets, daemonsets, services, configmaps, secrets)
+        and not ka.target.namespace in (kube-public, kube-node-lease)
+      output: >
+        Administrative action performed (user=%ka.user.name verb=%ka.verb
+        resource=%ka.target.resource name=%ka.target.name namespace=%ka.target.namespace)
+      priority: INFO
+      tags: [kubernetes, soc2, compliance, audit]
+
+    - rule: SOC2 - Privileged User Action
+      desc: Track actions by privileged users (cluster-admin, admin roles)
+      condition: >
+        kevt and (ka.user.name contains "admin" or ka.user.groups contains "system:masters")
+      output: >
+        Privileged user action (user=%ka.user.name groups=%ka.user.groups verb=%ka.verb
+        resource=%ka.target.resource name=%ka.target.name namespace=%ka.target.namespace)
+      priority: INFO
+      tags: [kubernetes, soc2, compliance, privileged]
+
+    # GDPR Data Access Monitoring
+    - rule: GDPR - Personal Data Access
+      desc: Monitor access to namespaces containing personal data
+      condition: >
+        kevt and (ka.target.namespace contains "customer" or ka.target.namespace contains "user")
+        and ka.verb in (get, list, watch)
+        and ka.target.resource in (secrets, configmaps)
+      output: >
+        Personal data namespace accessed (user=%ka.user.name verb=%ka.verb
+        resource=%ka.target.resource namespace=%ka.target.namespace)
+      priority: INFO
+      tags: [kubernetes, gdpr, compliance, privacy]
+{{- end }}
+

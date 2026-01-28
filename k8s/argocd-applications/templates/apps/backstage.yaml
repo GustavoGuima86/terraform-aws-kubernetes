@@ -28,7 +28,7 @@ spec:
         - name: secrets.appBaseUrl
           value: "https://backstage.{{ .Values.domain_name }}"
         - name: secrets.backendBaseUrl
-          value: "https://backstage.{{ .Values.domain_name }}/api"
+          value: "https://backstage.{{ .Values.domain_name }}"
         # PostgreSQL Configuration (CloudNativePG)
         - name: postgres.enabled
           value: "true"
