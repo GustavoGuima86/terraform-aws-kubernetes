@@ -1,6 +1,6 @@
 module "aws_ebs_csi_pod_identity" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "2.5.0"
+  version = "2.7.0"
 
   name = "aws-ebs-csi"
 
@@ -9,7 +9,7 @@ module "aws_ebs_csi_pod_identity" {
 
 module "aws_lb_controller_pod_identity" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "2.5.0"
+  version = "2.7.0"
 
   name = "aws-lbc"
 
@@ -32,7 +32,7 @@ module "aws_lb_controller_pod_identity" {
 
 module "aws_ebs_csi_pod_identity_secret" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "2.5.0"
+  version = "2.7.0"
 
   name = "aws-ebs-csi-secret"
 
