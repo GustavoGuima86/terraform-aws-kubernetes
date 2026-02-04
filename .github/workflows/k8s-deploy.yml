@@ -17,15 +17,15 @@ on:
         required: false
         default: false
         type: boolean
-  workflow_run:
-    workflows: ["Terraform Deploy"]
-    types:
-      - completed
-    branches:
-      - main
+  # workflow_run:
+  #   workflows: ["Terraform Deploy"]
+  #   types:
+  #     - completed
+  #   branches:
+  #     - main
 
 env:
-  AWS_REGION: 'us-east-1'
+  AWS_REGION: 'eu-central-1'
   KUBECTL_VERSION: 'v1.31.0'
   HELM_VERSION: 'v3.14.0'
 
