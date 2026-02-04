@@ -6,7 +6,69 @@
   "prHourlyLimit": 0,
   "prCreation": "immediate",
   "dependencyDashboard": true,
-
+  "regexManagers": [
+    {
+      "fileMatch": ["^infrastructure/modules/eks/main\\.tf$"],
+      "matchStrings": ["kubernetes_version\\s*=\\s*\"(?<currentValue>[\\d.]+)\""],
+      "depNameTemplate": "kubernetes",
+      "datasourceTemplate": "kubernetes"
+    },
+    {
+      "fileMatch": ["^k8s/crds/install-crds\\.sh$"],
+      "matchStrings": ["VELERO_VERSION=\\\"v?(?<currentValue>[\\d\\.]+)\\\""],
+      "depNameTemplate": "vmware-tanzu/velero",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "fileMatch": ["^k8s/crds/install-crds\\.sh$"],
+      "matchStrings": ["GATEKEEPER_VERSION=\\\"v?(?<currentValue>[\\d\\.]+)\\\""],
+      "depNameTemplate": "open-policy-agent/gatekeeper",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "fileMatch": ["^k8s/crds/install-crds\\.sh$"],
+      "matchStrings": ["CNPG_VERSION=\\\"v?(?<currentValue>[\\d\\.]+)\\\""],
+      "depNameTemplate": "cloudnative-pg/cloudnative-pg",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "fileMatch": ["^k8s/crds/install-crds\\.sh$"],
+      "matchStrings": ["CHART_VERSION=\\\"kube-prometheus-stack-(?<currentValue>[\\d\\.]+)\\\""],
+      "depNameTemplate": "prometheus-community/helm-charts",
+      "datasourceTemplate": "github-tags",
+      "versioningTemplate": "semver"
+    },
+    {
+      "fileMatch": ["^k8s/backstage/templates/deployment\\.yaml$"],
+      "matchStrings": ["image: postgres:(?<currentValue>.+)"],
+      "depNameTemplate": "postgres",
+      "datasourceTemplate": "docker"
+    },
+    {
+      "fileMatch": ["^k8s/velero/templates/deployment\\.yaml$"],
+      "matchStrings": ["image: velero/velero:v?(?<currentValue>[\\d\\.]+)"],
+      "depNameTemplate": "velero/velero",
+      "datasourceTemplate": "docker"
+    },
+    {
+      "fileMatch": ["^\\.github/workflows/k8s-deploy\\.yml$"],
+      "matchStrings": ["KUBECTL_VERSION: 'v?(?<currentValue>[\\d\\.]+)'"],
+      "depNameTemplate": "kubernetes/kubectl",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "fileMatch": ["^\\.github/workflows/k8s-deploy\\.yml$"],
+      "matchStrings": ["HELM_VERSION: 'v?(?<currentValue>[\\d\\.]+)'"],
+      "depNameTemplate": "helm/helm",
+      "datasourceTemplate": "github-releases"
+    },
+    {
+      "fileMatch": ["^\\.github/workflows/terraform-deploy\\.yml$"],
+      "matchStrings": ["TF_VERSION: '(?<currentValue>[\\d\\.]+)'"],
+      "depNameTemplate": "hashicorp/terraform",
+      "datasourceTemplate": "github-releases"
+    }
+  ],
   "packageRules": [
     {
       "description": "Group infrastructure dependencies",
@@ -17,6 +79,11 @@
       "description": "Group k8s dependencies",
       "matchFileNames": ["k8s/**"],
       "groupName": "k8s"
+    },
+    {
+      "description": "Group all other dependencies",
+      "matchPackagePatterns": ["*"],
+      "groupName": "others"
     }
   ]
 }
