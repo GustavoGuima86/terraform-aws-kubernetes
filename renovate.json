@@ -6,7 +6,7 @@
   "prHourlyLimit": 0,
   "prCreation": "immediate",
   "dependencyDashboard": true,
-  "schedule": ["every 7 days"],
+
   "packageRules": [
     {
       "description": "Group infrastructure dependencies",
