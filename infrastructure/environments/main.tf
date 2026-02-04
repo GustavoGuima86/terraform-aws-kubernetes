@@ -22,7 +22,6 @@ module "rds" {
 module "eks" {
   source = "../modules/eks"
 
-  eks_version     = var.eks_version
   private_subnets = module.vpc.private_subnets
   intra_subnets   = module.vpc.intra_subnets
   vpc_id          = module.vpc.vpc_id

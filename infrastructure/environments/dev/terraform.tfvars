@@ -2,7 +2,6 @@ cluster_name = "gustavo"
 targetRegion = "eu-central-1"
 vpc_cidr     = "10.0.0.0/16"
 vpc_name     = "eks-vpc"
-eks_version  = "1.34"
 database_configurations = {
   db_name        = "testdb"
   engine         = "postgres"

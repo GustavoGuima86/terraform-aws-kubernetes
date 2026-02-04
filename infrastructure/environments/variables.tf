@@ -16,12 +16,6 @@ variable "vpc_name" {
   type        = string
 }
 
-# EKS Cluster Version (optional)
-variable "eks_version" {
-  description = "The desired version of EKS to be used for the cluster. If not provided, the latest recommended version will be used."
-  type        = string
-}
-
 # Environment Settings - These variables are likely specific to your project and may need adjustment
 # Cluster name (optional)
 variable "cluster_name" {

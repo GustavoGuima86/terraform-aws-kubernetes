@@ -1,9 +1,3 @@
-# Desired version of Kubernetes for the EKS cluster (e.g., 1.24)
-variable "eks_version" {
-  type        = number
-  description = "The desired version of Kubernetes for the EKS cluster."
-}
-
 # List of private subnet IDs for the EKS cluster VPC
 variable "private_subnets" {
   type        = list(string)

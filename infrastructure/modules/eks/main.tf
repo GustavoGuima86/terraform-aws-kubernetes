@@ -4,10 +4,10 @@
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "~> 21.10.1"
+  version = "~> 21.15.1"
 
   name                   = var.cluster_name
-  kubernetes_version     = var.eks_version
+  kubernetes_version     = 1.35
   endpoint_public_access = true
 
   kms_key_owners = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
