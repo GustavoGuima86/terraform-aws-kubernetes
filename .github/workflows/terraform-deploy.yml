@@ -21,16 +21,16 @@ on:
           - plan
           - apply
           - destroy
-  push:
-    branches:
-      - main
-    paths:
-      - 'infrastructure/**'
-      - '.github/workflows/terraform-deploy.yml'
+  # push:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - 'infrastructure/**'
+  #     - '.github/workflows/terraform-deploy.yml'
 
 env:
   TF_VERSION: '1.6.0'
-  AWS_REGION: 'us-east-1'
+  AWS_REGION: 'eu-central-1'
 
 permissions:
   id-token: write   # Required for OIDC
