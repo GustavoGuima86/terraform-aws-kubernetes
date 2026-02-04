@@ -9,7 +9,7 @@
   "regexManagers": [
     {
       "fileMatch": ["^infrastructure/modules/eks/main\\.tf$"],
-      "matchStrings": ["kubernetes_version\\s*=\\s*\"(?<currentValue>[\\d.]+)\""],
+      "matchStrings": ["kubernetes_version\\s*=\\s*\"?(?<currentValue>[\\d.]+)\"?\\s*(?:$|#)"],
       "depNameTemplate": "kubernetes",
       "datasourceTemplate": "kubernetes"
     },
@@ -72,12 +72,12 @@
   "packageRules": [
     {
       "description": "Group infrastructure dependencies",
-      "matchFileNames": ["infrastructure/**"],
+      "matchPaths": ["infrastructure/**"],
       "groupName": "infrastructure"
     },
     {
       "description": "Group k8s dependencies",
-      "matchFileNames": ["k8s/**"],
+      "matchPaths": ["k8s/**"],
       "groupName": "k8s"
     },
     {
