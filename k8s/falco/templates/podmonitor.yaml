@@ -1,0 +1,37 @@
+{{- if .Values.falco.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: falco
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: falco
+    release: {{ .Values.kube_prometheus_release | default "kube-prometheus-stack" }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: falco
+  podMetricsEndpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: falcosidekick
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: falcosidekick
+    release: {{ .Values.kube_prometheus_release | default "kube-prometheus-stack" }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: falcosidekick
+  podMetricsEndpoints:
+    - port: metrics
+      interval: 30s
+      path: /metrics
+{{- end }}
+

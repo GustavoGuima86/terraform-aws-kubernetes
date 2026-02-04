@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: istio
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: infrastructure
+  source:
+    repoURL: {{ .Values.gitRepo.url }}
+    targetRevision: {{ .Values.gitRepo.branch }}
+    path: k8s/istio
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: acmCertificateArn
+          value: "{{ .Values.certificate_arn }}"
+        - name: rootDomain
+          value: "{{ .Values.domain_name }}"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: istio-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

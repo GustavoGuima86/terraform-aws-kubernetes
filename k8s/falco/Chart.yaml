@@ -1,0 +1,13 @@
+apiVersion: v2
+name: falco
+description: Falco Runtime Security with Falcosidekick UI
+type: application
+version: 1.0.0
+appVersion: "0.40.0"
+
+dependencies:
+  - name: falco
+    version: 4.18.0
+    repository: https://falcosecurity.github.io/charts
+
+

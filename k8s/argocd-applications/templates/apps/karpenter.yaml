@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: karpenter
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: infrastructure
+  source:
+    repoURL: {{ .Values.gitRepo.url }}
+    targetRevision: {{ .Values.gitRepo.branch }}
+    path: k8s/karpenter
+    helm:
+      parameters:
+        - name: karpenter.settings.clusterEndpoint
+          value: "{{ .Values.eks_cluster_endpoint }}"
+        - name: karpenter.settings.clusterName
+          value: "{{ .Values.eks_cluster_name }}"
+        - name: karpenter.defaultNodeRole
+          value: "{{ .Values.karpenter_node_iam_role_name }}"
+        - name: karpenter.settings.interruptionQueue
+          value: "{{ .Values.karpenter_interruption_queue_name }}"
+        - name: podAnnotations.eks\.amazonaws\.com/aws-sqs-queue-name
+          value: "{{ .Values.karpenter_interruption_queue_name }}"
+        - name: karpenter.settings.awsRegion
+          value: "{{ .Values.aws_region }}"
+        - name: serviceAccount.name
+          value: "{{ .Values.karpenter_sa_name }}"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: karpenter
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

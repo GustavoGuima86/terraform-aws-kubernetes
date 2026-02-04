@@ -1,0 +1,75 @@
+# ==============================================================================
+# Karpenter Configuration
+# Values are injected by ArgoCD from Terraform outputs
+# ==============================================================================
+
+serviceAccount:
+  create: true
+  name: "" # From Terraform
+  namespace: karpenter
+  annotations: {}
+
+serviceMonitor:
+  enabled: true
+  additionalLabels: {}
+  endpointConfig:
+    port: http-metrics
+
+podAnnotations:
+  eks.amazonaws.com/aws-sqs-queue-name: "" # From Terraform
+
+karpenter:
+  nodeSelector:
+    karpenter.sh/controller: "true"
+  defaultNodeRole: "" # From Terraform
+  settings:
+    clusterEndpoint: "" # From Terraform
+    clusterName: "" # From Terraform
+    interruptionQueue: "" # From Terraform
+    awsRegion: "" # From Terraform
+  webhook:
+    enabled: false
+
+nodepools:
+  - name: business-apps
+    amiAlias: "bottlerocket@latest"
+    instanceCategories: ["m"]
+    instanceFamilies: ["m3"]
+    capacityType: "spot"
+    instanceSizes: ["xlarge", "2xlarge"]
+    cpuLimits: 150
+    memoryLimits: "150Gi"
+    labels:
+      nodepool: business-apps
+  - name: tooling
+    amiAlias: "bottlerocket@latest"
+    instanceCategories: ["t"]
+    instanceFamilies: []
+    capacityType: "on-demand"
+    instanceSizes: ["large", "xlarge"]
+    cpuLimits: 50
+    memoryLimits: "50Gi"
+    labels:
+      nodepool: tooling
+  - name: ai-sre
+    amiAlias: "bottlerocket@latest"
+    arch: ["amd64", "arm64"]  # Support both architectures for better instance availability
+    instanceCategories: ["c", "g", "t", "m", "r"]
+    instanceFamilies: []
+    capacityType: "spot"
+    instanceSizes: ["large", "xlarge", "2xlarge", "4xlarge", "8xlarge", "12xlarge"]
+    cpuLimits: 200
+    memoryLimits: "200Gi"
+    labels:
+      nodepool: ai-sre
+#    disruption:
+#      consolidationPolicy: "WhenEmptyOrUnderutilized"
+#      consolidateAfter: "30s"
+#      expireAfter: "720h" # 30 days
+#      budgets:
+#      - nodes: "0"
+#        schedule: "0 8 * * 1-5"
+#        duration: "24h"
+#      - nodes: "100%"
+#        schedule: "0 18 * * 1-5"
+#        duration: "24h"

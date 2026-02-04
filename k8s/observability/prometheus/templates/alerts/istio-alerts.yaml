@@ -1,0 +1,88 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: istio-alerts
+  namespace: observability
+  labels:
+    app: kube-prometheus-stack
+    release: {{ .Release.Name }}
+spec:
+  groups:
+  - name: istio
+    interval: 30s
+    rules:
+    # Istio Control Plane Alerts
+    - alert: IstiodDown
+      expr: |
+        up{job="istiod"} == 0
+      for: 5m
+      labels:
+        severity: critical
+        component: istio
+      annotations:
+        summary: "Istiod is down"
+        description: "Istiod control plane has been down for more than 5 minutes in cluster {{ .Values.clusterName }}."
+
+    - alert: IstioHighRequestLatency
+      expr: |
+        histogram_quantile(0.99,
+          sum(rate(istio_request_duration_milliseconds_bucket[5m])) by (destination_service_name, le)
+        ) > 1000
+      for: 5m
+      labels:
+        severity: warning
+        component: istio
+      annotations:
+        summary: "High request latency detected"
+        description: "Service {{ `{{` }} $labels.destination_service_name {{ `}}` }} has P99 latency > 1s for 5 minutes."
+
+    - alert: IstioHighRequestErrorRate
+      expr: |
+        sum(rate(istio_requests_total{response_code=~"5.."}[5m])) by (destination_service_name)
+        /
+        sum(rate(istio_requests_total[5m])) by (destination_service_name)
+        > 0.05
+      for: 5m
+      labels:
+        severity: warning
+        component: istio
+      annotations:
+        summary: "High error rate in service mesh"
+        description: "Service {{ `{{` }} $labels.destination_service_name {{ `}}` }} has error rate > 5% for 5 minutes."
+
+    - alert: IstioGalleyValidationFailed
+      expr: |
+        galley_validation_failed > 0
+      for: 1m
+      labels:
+        severity: warning
+        component: istio
+      annotations:
+        summary: "Istio Galley validation failed"
+        description: "Istio Galley validation has failed, configuration might be invalid."
+
+    - alert: IstioPilotDuplicateEntry
+      expr: |
+        sum(rate(pilot_duplicate_envoy_clusters[5m])) > 0
+      for: 5m
+      labels:
+        severity: warning
+        component: istio
+      annotations:
+        summary: "Istio Pilot duplicate entries detected"
+        description: "Istio Pilot has duplicate entries in configuration."
+
+    - alert: IstioProxyHighMemory
+      expr: |
+        container_memory_working_set_bytes{container="istio-proxy"}
+        /
+        container_spec_memory_limit_bytes{container="istio-proxy"}
+        > 0.9
+      for: 5m
+      labels:
+        severity: warning
+        component: istio
+      annotations:
+        summary: "Istio proxy high memory usage"
+        description: "Istio proxy in pod {{ `{{` }} $labels.pod {{ `}}` }} is using > 90% of memory limit."
+

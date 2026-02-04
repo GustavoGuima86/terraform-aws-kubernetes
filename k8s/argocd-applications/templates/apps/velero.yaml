@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: velero
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: {{ .Values.gitRepo.url }}
+    targetRevision: {{ .Values.gitRepo.branch }}
+    path: k8s/velero
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: configuration.backupStorageLocation.bucket
+          value: "{{ .Values.velero_bucket_name }}"
+        - name: configuration.backupStorageLocation.config.region
+          value: "{{ .Values.velero_bucket_region }}"
+        - name: configuration.backupStorageLocation.config.s3Url
+          value: "https://s3.{{ .Values.velero_bucket_region }}.amazonaws.com"
+        - name: configuration.volumeSnapshotLocation.config.region
+          value: "{{ .Values.velero_bucket_region }}"
+        - name: serviceAccount.name
+          value: "{{ .Values.velero_sa_name }}"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: velero
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+

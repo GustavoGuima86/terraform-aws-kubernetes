@@ -1,0 +1,10 @@
+apiVersion: velero.io/v1
+kind: VolumeSnapshotLocation
+metadata:
+  name: {{ .Values.configuration.volumeSnapshotLocation.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  provider: {{ .Values.configuration.provider }}
+  config:
+    region: {{ .Values.configuration.volumeSnapshotLocation.config.region }}
+

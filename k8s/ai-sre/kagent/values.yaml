@@ -1,0 +1,48 @@
+kagent:
+  providers:
+    default: ollama
+    ollama:
+      provider: Ollama
+      model: "qwen2.5:3b"
+      config:
+        host: "http://ollama-ollama-server.ai-sre.svc.cluster.local:11434"
+
+  agents:
+    k8s-agent:
+      enabled: true
+    kgateway-agent:
+      enabled: true
+    istio-agent:
+      enabled: false
+    promql-agent:
+      enabled: false
+    observability-agent:
+      enabled: false
+    argo-rollouts-agent:
+      enabled: false
+    helm-agent:
+      enabled: false
+    cilium-policy-agent:
+      enabled: false
+    cilium-manager-agent:
+      enabled: false
+    cilium-debug-agent:
+      enabled: false
+
+  tools:
+    grafana-mcp:
+      enabled: true
+    querydoc:
+      enabled: false
+  kagent-tools:
+    enabled: true
+  kmcp:
+    enabled: false
+
+  controller:
+    env:
+      - name: BASE_URL
+        value: "/kagent"
+
+cluster:
+  host: my-cluster.example.com

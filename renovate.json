@@ -1,0 +1,19 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base"
+  ],
+  "schedule": ["every 7 days"],
+  "packageRules": [
+    {
+      "description": "Group infrastructure dependencies",
+      "matchFileNames": ["infrastructure/**"],
+      "groupName": "infrastructure"
+    },
+    {
+      "description": "Group k8s dependencies",
+      "matchFileNames": ["k8s/**"],
+      "groupName": "k8s"
+    }
+  ]
+}

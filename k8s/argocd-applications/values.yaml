@@ -1,0 +1,172 @@
+# ==============================================================================
+# ArgoCD Applications Configuration
+# ==============================================================================
+
+deploymentMethod: "gitops"
+argocdNamespace: "argocd"
+
+gitRepo:
+  url: ""
+  branch: ""
+
+# ==============================================================================
+# Terraform Outputs - Set via helm --set flags
+# ==============================================================================
+
+# Core Infrastructure
+aws_account_id: ""
+aws_region: ""
+domain_name: ""
+vpc_id: ""
+
+# Database
+db_port: ""
+db_secret_arn: ""
+db_url: ""
+
+# EKS Cluster
+eks_cluster_endpoint: ""
+eks_cluster_ca_certificate: ""
+eks_cluster_name: ""
+
+# DNS and Certificates
+certificate_arn: ""
+hosted_zone_id: ""
+argocd_domain_name: ""
+
+# Observability
+loki_bucket_name: ""
+loki_service_account_name: ""
+mimir_bucket_name: ""
+mimir_service_account_name: ""
+kube_prometheus_release: "kube-prometheus-stack"
+
+# Karpenter
+karpenter_node_iam_role_name: ""
+karpenter_interruption_queue_name: ""
+karpenter_sa_name: ""
+
+# External DNS
+external_dns_role_arn: ""
+external_dns_sa_name: ""
+
+# AWS Load Balancer Controller
+aws_lb_controller_role_arn: ""
+aws_lb_controller_sa_name: ""
+
+# Velero Backup
+velero_bucket_name: ""
+velero_bucket_region: ""
+velero_sa_name: ""
+
+# Falco Runtime Security
+falco_role_arn: ""
+falco_sa_name: ""
+
+# OpenCost Cost Monitoring
+opencost_role_arn: ""
+opencost_sa_name: ""
+
+# Storage
+ebs_csi_controller_sa_name: ""
+secrets_csi_driver_sa_name: ""
+
+# ==============================================================================
+# Application Settings
+# ==============================================================================
+
+cloudnativePgEnabled: true
+
+# ==============================================================================
+
+# ArgoCD Projects
+# ==============================================================================
+# Projects are used to segregate applications and restrict permissions.
+# The 'argocd-admin' project is created by Terraform for bootstrapping.
+# The projects defined here are created by the 'wave-0-system' ArgoCD app.
+# ==============================================================================
+argocdProjects:
+# Added a comment to force ArgoCD sync
+  - name: infrastructure
+    description: "Project for core infrastructure components like Karpenter"
+    sourceRepos:
+      - "https://github.com/GustavoGuima86/terraform-aws-kubernetes"
+    destinations:
+      - namespace: "karpenter"
+        server: "https://kubernetes.default.svc"
+      - namespace: "kube-system"
+        server: "https://kubernetes.default.svc"
+      - namespace: "gatekeeper-system"
+        server: "https://kubernetes.default.svc"
+      - namespace: "istio-system"
+        server: "https://kubernetes.default.svc"
+      - namespace: "cnpg-system"
+        server: "https://kubernetes.default.svc"
+      - namespace: "external-dns"
+        server: "https://kubernetes.default.svc"
+      - namespace: "falco"
+        server: "https://kubernetes.default.svc"
+    clusterResourceWhitelist:
+      - group: "*"
+        kind: "*"
+
+  - name: observability
+    description: "Project for the observability stack (Loki, Mimir, etc.)"
+    sourceRepos:
+      - "https://github.com/GustavoGuima86/terraform-aws-kubernetes"
+    destinations:
+      - namespace: "observability"
+        server: "https://kubernetes.default.svc"
+      - namespace: "kube-system"
+        server: "https://kubernetes.default.svc"
+      - namespace: "opencost"
+        server: "https://kubernetes.default.svc"
+    clusterResourceWhitelist:
+      - group: "*"
+        kind: "*"
+
+  - name: ai-sre
+    description: "Project for AI/SRE tools"
+    sourceRepos:
+      - "https://github.com/GustavoGuima86/terraform-aws-kubernetes"
+    destinations:
+      - namespace: "ai-sre"
+        server: "https://kubernetes.default.svc"
+    clusterResourceWhitelist:
+      - group: "*"
+        kind: "*"
+
+  - name: business-applications
+    description: "Project for all business-related applications"
+    sourceRepos:
+      - "*" # Allow applications from any repository
+    destinations:
+      - namespace: "business-apps"
+        server: "https://kubernetes.default.svc"
+      - namespace: "backstage"
+        server: "https://kubernetes.default.svc"
+    clusterResourceWhitelist:
+      - group: "argoproj.io"
+        kind: "Application"
+      - group: ""
+        kind: "Service"
+      - group: "apps"
+        kind: "Deployment"
+      - group: "networking.k8s.io"
+        kind: "Ingress"
+      - group: "rbac.authorization.k8s.io"
+        kind: "ClusterRole"
+      - group: "rbac.authorization.k8s.io"
+        kind: "ClusterRoleBinding"
+      - group: "gateway.networking.k8s.io"
+        kind: "HTTPRoute"
+      - group: "postgresql.cnpg.io"
+        kind: "Cluster"
+      - group: "postgresql.cnpg.io"
+        kind: "Pooler"
+      - group: "postgresql.cnpg.io"
+        kind: "ScheduledBackup"
+
+# ArgoCD Route for OpenShift
+argocdRoute:
+  enabled: false

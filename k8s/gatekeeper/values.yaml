@@ -1,0 +1,62 @@
+# values.yaml for gatekeeper
+
+# The number of replicas for the controller manager.
+# This value is expected to be set by helmfile from a settings file.
+# Example: replicas: {{ $settings.controller.replicaCount }}
+replicas: 1
+
+pdb:
+  controllerManager:
+    # This value is expected to be set by helmfile from a settings file.
+    # Example: minAvailable: {{ sub $settings.controller.replicaCount 1 }}
+    minAvailable: 0
+
+# The user must provide the ECR_URI environment variable
+image:
+  repository: '{{ requiredEnv "ECR_URI" }}/docker.io/openpolicyagent/gatekeeper'
+  crdRepository: '{{ requiredEnv "ECR_URI" }}/docker.io/openpolicyagent/gatekeeper-crds'
+
+controllerManager:
+  priorityClassName: system-cluster-critical
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        - labelSelector:
+            matchExpressions:
+              - key: gatekeeper.sh/operation
+                operator: In
+                values:
+                  - webhook
+          topologyKey: kubernetes.io/hostname
+  tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+postUpgrade:
+  tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+postInstall:
+  tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+preUninstall:
+  tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+audit:
+  priorityClassName: system-cluster-critical
+  tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+upgradeCRDs:
+  enabled: false

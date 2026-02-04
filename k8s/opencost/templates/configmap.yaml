@@ -1,0 +1,37 @@
+{{- if and .Values.aws_region .Values.eks_cluster_name }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: opencost-custom-config
+  namespace: {{ .Release.Namespace }}
+data:
+  # AWS-specific configuration
+  aws.json: |
+    {
+      "provider": "aws",
+      "description": "AWS Pricing Configuration",
+      "CPU": "0.031611",
+      "spotCPU": "0.006655",
+      "RAM": "0.004237",
+      "spotRAM": "0.000892",
+      "GPU": "0.95",
+      "spotGPU": "0.28",
+      "storage": "0.00005479452",
+      "zoneNetworkEgress": "0.01",
+      "regionNetworkEgress": "0.01",
+      "internetNetworkEgress": "0.09",
+      "spotLabel": "karpenter.sh/capacity-type",
+      "spotLabelValue": "spot",
+      "awsServiceKeyName": "",
+      "awsServiceKeySecret": "",
+      "awsSpotDataRegion": "{{ .Values.aws_region }}",
+      "awsSpotDataBucket": "",
+      "awsSpotDataPrefix": "",
+      "athenaBucketName": "",
+      "athenaRegion": "{{ .Values.aws_region }}",
+      "athenaDatabase": "",
+      "athenaTable": "",
+      "athenaWorkgroup": "primary",
+      "projectID": "{{ .Values.aws_account_id }}"
+    }
+{{- end }}

@@ -1,0 +1,162 @@
+# ==============================================================================
+# OpenCost Configuration
+# ==============================================================================
+
+# AWS Integration
+aws_region: ""
+aws_account_id: ""
+opencost_role_arn: ""
+opencost_sa_name: ""
+eks_cluster_name: ""
+
+# Istio Ingress (deprecated - use route config below)
+domain_name: ""
+certificate_arn: ""
+
+# HTTPRoute configuration
+route:
+  enabled: true
+  hostname: "opencost.gustavo.inno-on.cloud"
+  gateway:
+    name: tooling-gateway
+    namespace: istio-system
+    sectionName: https
+  serviceName: opencost
+  servicePort: 9090
+
+# Observability Integration
+kube_prometheus_release: "kube-prometheus-stack"
+
+# ==============================================================================
+# OpenCost Configuration
+# ==============================================================================
+opencost:
+  # Override the full name to ensure consistent service naming
+  fullnameOverride: opencost
+
+  # Service account for Pod Identity Agent
+  # Pod Identity Agent uses EKS-level associations, not service account annotations
+  serviceAccount:
+    create: true
+    name: ""  # Set via Helm parameter opencost_sa_name
+    annotations: {}  # No annotations needed for Pod Identity Agent
+
+  # OpenCost configuration
+  opencost:
+    exporter:
+      # Default cluster ID (should match EKS cluster name)
+      defaultClusterId: ""  # Override via Helm parameter eks_cluster_name
+
+      # Cloud provider configuration
+      cloudProviderApiKey: ""  # Not needed for AWS with Pod Identity
+
+      # AWS-specific configuration (not needed with Pod Identity)
+      # When using Pod Identity, OpenCost automatically gets credentials from the service account
+      aws:
+        access_key_id: ""
+        secret_access_key: ""
+
+      # Enable cloud costs
+      cloudCost:
+        enabled: true
+        provider: "AWS"
+        # secretName: ""  # NOT needed - we're using Pod Identity instead
+        # secretKey: ""   # NOT needed - we're using Pod Identity instead
+
+      # Resource configuration
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 999m
+          memory: 1Gi
+
+    # Prometheus integration
+    prometheus:
+      # Connect to kube-prometheus-stack
+      internal:
+        enabled: true
+        serviceName: kube-prometheus-stack-prometheus
+        namespaceName: observability
+        port: 9090
+
+      # External prometheus (if needed)
+      external:
+        enabled: false
+        url: ""
+
+    # UI configuration
+    ui:
+      enabled: true
+      ingress:
+        enabled: false  # We'll use Istio Gateway API instead
+
+      resources:
+        requests:
+          cpu: 10m
+          memory: 55Mi
+        limits:
+          cpu: 999m
+          memory: 1Gi
+
+  # Metrics configuration
+  metrics:
+    serviceMonitor:
+      enabled: true
+      additionalLabels:
+        release: kube-prometheus-stack
+
+  # Persistence for cost data
+  persistence:
+    enabled: true
+    storageClass: gp3-secure
+    size: 10Gi
+    accessMode: ReadWriteOnce
+
+  # Extra environment variables for AWS configuration
+  extraEnv:
+    # AWS configuration for cloud costs
+    # Using Pod Identity for authentication - no static credentials needed
+    - name: AWS_REGION
+      value: ""  # Set via Helm parameter
+    - name: CLUSTER_ID
+      value: ""  # Set via Helm parameter (EKS cluster name)
+
+    # Cloud provider - CRITICAL for AWS cloud cost detection
+    - name: CLOUD_PROVIDER
+      value: "AWS"
+
+    # Enable cloud cost features
+    - name: CLOUD_COST_ENABLED
+      value: "true"
+    - name: CLOUD_COST_MONTH_TO_DATE_INTERVAL
+      value: "6"
+    - name: CLOUD_COST_REFRESH_RATE_HOURS
+      value: "6"
+    - name: CLOUD_COST_QUERY_WINDOW_DAYS
+      value: "7"
+    - name: CLOUD_COST_RUN_WINDOW_DAYS
+      value: "3"
+
+    # Cost model configuration
+    - name: EMIT_KSM_V1_METRICS
+      value: "false"
+    - name: EMIT_KSM_V1_METRICS_ONLY
+      value: "false"
+    - name: LOG_LEVEL
+      value: "info"
+    - name: LOG_LEVEL
+      value: "info"
+
+  # Priority class
+  priorityClassName: ""
+
+  # Tolerations
+  tolerations: []
+
+  # Node selector
+  nodeSelector: {}
+
+  # Affinity
+  affinity: {}

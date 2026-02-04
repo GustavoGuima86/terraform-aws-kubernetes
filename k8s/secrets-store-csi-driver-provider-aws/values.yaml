@@ -1,0 +1,15 @@
+# Default values for secrets-store-csi-driver-provider-aws.
+# This is a wrapper chart for the upstream secrets-store-csi-driver-provider-aws Helm chart.
+
+secrets-store-csi-driver:
+  install: false
+
+serviceAccount:
+  create: false
+
+podIdentity:
+  enabled: true
+
+spec:
+  syncPolicy:
+    ignoreDifference: false

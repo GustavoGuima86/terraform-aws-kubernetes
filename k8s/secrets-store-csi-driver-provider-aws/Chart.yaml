@@ -1,0 +1,10 @@
+apiVersion: v2
+name: secrets-store-csi-driver-provider-aws
+description: AWS Provider for Secrets Store CSI Driver
+type: application
+version: 1.0.0
+appVersion: "2.1.1" # Corresponding to the version specified in the Terraform snippet
+dependencies:
+  - name: secrets-store-csi-driver-provider-aws
+    version: "2.1.1"
+    repository: "https://aws.github.io/secrets-store-csi-driver-provider-aws"

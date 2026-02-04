@@ -1,0 +1,11 @@
+# ==============================================================================
+# Istio Gateway Configuration
+# ==============================================================================
+
+acmCertificateArn: "" # From Terraform
+rootDomain: "" # From Terraform
+
+gateway:
+  service:
+    type: ClusterIP
+

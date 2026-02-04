@@ -1,0 +1,11 @@
+apiVersion: v2
+name: ollama
+description: A Helm chart for deploying Ollama
+type: application
+version: 0.1.0
+
+dependencies:
+  - name: ollama
+    version: "1.37.0"
+    repository: "https://helm.otwld.com/"
+    alias: ollama-server

@@ -1,0 +1,21 @@
+# ==============================================================================
+# AWS Load Balancer Controller Configuration
+# ==============================================================================
+
+aws-load-balancer-controller:
+  clusterName: "" # From Terraform
+  region: "" # From Terraform
+  vpcId: "" # From Terraform
+
+  serviceAccount:
+    create: true
+    name: "" # From Terraform
+
+  podIdentityAssociation:
+    enabled: true
+
+  enableCertManager: false
+  createIngressClassResource: true
+  ingressClass: alb
+  enableManageBackendSecurityGroupRules: true
+  serviceTargetENISGTags: "Name=gustavo-node"

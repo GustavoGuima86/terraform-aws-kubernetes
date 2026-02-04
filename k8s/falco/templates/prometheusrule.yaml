@@ -1,0 +1,279 @@
+{{- if .Values.falco.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: falco-alerts
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: falco
+    prometheus: kube-prometheus
+    release: {{ .Values.kube_prometheus_release | default "kube-prometheus-stack" }}
+spec:
+  groups:
+    - name: falco.security.rules
+      interval: 30s
+      rules:
+        # Critical Security Events
+        - alert: FalcoCriticalSecurityEvent
+          expr: |
+            rate(falco_events{priority="Critical"}[5m]) > 0
+          for: 1m
+          labels:
+            severity: critical
+            component: falco
+          annotations:
+            summary: "Critical security event detected by Falco"
+            description: |
+              Falco has detected {{`{{ $value }}`}} critical security events in the last 5 minutes.
+              Pod: {{`{{ $labels.pod }}`}}
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Priority: {{`{{ $labels.priority }}`}}
+
+        # Cryptocurrency Mining Detection
+        - alert: FalcoCryptoMiningDetected
+          expr: |
+            increase(falco_events{rule="Cryptocurrency Mining Activity"}[10m]) > 0
+          for: 1m
+          labels:
+            severity: critical
+            component: falco
+            attack_tactic: impact
+          annotations:
+            summary: "Cryptocurrency mining activity detected"
+            description: |
+              Falco detected potential cryptocurrency mining activity.
+              This could indicate a compromised workload.
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
+
+        # Reverse Shell Detection
+        - alert: FalcoReverseShellDetected
+          expr: |
+            increase(falco_events{rule="Reverse Shell Activity"}[10m]) > 0
+          for: 1m
+          labels:
+            severity: critical
+            component: falco
+            attack_tactic: execution
+          annotations:
+            summary: "Reverse shell activity detected"
+            description: |
+              Falco detected reverse shell activity in a container.
+              This is a strong indicator of compromise.
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
+              Immediate investigation required!
+
+        # AWS Metadata Service Access
+        - alert: FalcoAWSMetadataAccess
+          expr: |
+            increase(falco_events{rule="AWS EC2 Metadata Service Access"}[15m]) > 3
+          for: 2m
+          labels:
+            severity: warning
+            component: falco
+            attack_tactic: credential_access
+          annotations:
+            summary: "Unusual AWS metadata service access"
+            description: |
+              Multiple accesses to AWS EC2 metadata service detected.
+              This could indicate SSRF or credential theft attempts.
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
+              Count: {{`{{ $value }}`}}
+
+        # Privilege Escalation Attempts
+        - alert: FalcoPrivilegeEscalation
+          expr: |
+            increase(falco_events{rule=~"Set Setuid or Setgid Bit|Sudo Command Execution"}[10m]) > 0
+          for: 1m
+          labels:
+            severity: warning
+            component: falco
+            attack_tactic: privilege_escalation
+          annotations:
+            summary: "Privilege escalation attempt detected"
+            description: |
+              Falco detected a privilege escalation attempt.
+              Rule: {{`{{ $labels.rule }}`}}
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
+
+        # Kubernetes Secret Access
+        - alert: FalcoKubernetesSecretAccess
+          expr: |
+            increase(falco_events{rule=~"Kubernetes Secret Access|K8s Service Account Token Access"}[15m]) > 10
+          for: 5m
+          labels:
+            severity: warning
+            component: falco
+            attack_tactic: credential_access
+          annotations:
+            summary: "High volume of Kubernetes secret access"
+            description: |
+              Unusual number of Kubernetes secret access events detected.
+              Rule: {{`{{ $labels.rule }}`}}
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
+              Count: {{`{{ $value }}`}}
+
+        # Binary Directory Writes
+        - alert: FalcoBinaryDirectoryWrite
+          expr: |
+            increase(falco_events{rule="Write Below Binary Directory"}[10m]) > 0
+          for: 1m
+          labels:
+            severity: critical
+            component: falco
+            attack_tactic: persistence
+          annotations:
+            summary: "Write to binary directory detected"
+            description: |
+              Falco detected a write operation to a binary directory.
+              This could indicate malware installation or persistence attempts.
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
+
+        # System File Modifications
+        - alert: FalcoSystemFileModification
+          expr: |
+            increase(falco_events{rule="Suspicious File Modification in Container"}[10m]) > 0
+          for: 1m
+          labels:
+            severity: critical
+            component: falco
+            attack_tactic: persistence
+          annotations:
+            summary: "Critical system file modified"
+            description: |
+              Falco detected modification of critical system files (/etc/passwd, /etc/shadow, etc.)
+              This indicates a serious security breach.
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
+              IMMEDIATE ACTION REQUIRED!
+
+        # Package Manager Usage
+        - alert: FalcoPackageManagerInContainer
+          expr: |
+            increase(falco_events{rule="Package Management Process Launched in Container"}[30m]) > 5
+          for: 5m
+          labels:
+            severity: warning
+            component: falco
+            attack_tactic: persistence
+          annotations:
+            summary: "Package manager used in running container"
+            description: |
+              Package manager was executed in a running container.
+              This violates immutable infrastructure principles and could indicate supply chain attack.
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
+
+        # Suspicious Network Connections
+        - alert: FalcoSuspiciousNetworkConnection
+          expr: |
+            increase(falco_events{rule="Outbound Connection to Suspicious Port"}[10m]) > 0
+          for: 1m
+          labels:
+            severity: warning
+            component: falco
+            attack_tactic: command_and_control
+          annotations:
+            summary: "Suspicious outbound network connection"
+            description: |
+              Connection to commonly used hacking/backdoor port detected.
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Pod: {{`{{ $labels.pod }}`}}
+
+        # Compliance Violations
+        - alert: FalcoComplianceViolation
+          expr: |
+            increase(falco_events{rule=~"CIS.*|PCI.*"}[1h]) > 10
+          for: 10m
+          labels:
+            severity: info
+            component: falco
+            type: compliance
+          annotations:
+            summary: "Multiple compliance violations detected"
+            description: |
+              Multiple compliance rule violations detected in the last hour.
+              Rule: {{`{{ $labels.rule }}`}}
+              Namespace: {{`{{ $labels.namespace }}`}}
+              Count: {{`{{ $value }}`}}
+              Review for compliance audit purposes.
+
+    # Falco System Health
+    - name: falco.health.rules
+      interval: 30s
+      rules:
+        - alert: FalcoDown
+          expr: |
+            up{job="falco"} == 0
+          for: 5m
+          labels:
+            severity: critical
+            component: falco
+          annotations:
+            summary: "Falco is down"
+            description: |
+              Falco instance {{`{{ $labels.pod }}`}} is not responding.
+              Runtime security monitoring is not operational!
+
+        - alert: FalcoHighEventDropRate
+          expr: |
+            rate(falco_events_dropped_total[5m]) > 10
+          for: 5m
+          labels:
+            severity: warning
+            component: falco
+          annotations:
+            summary: "Falco is dropping events"
+            description: |
+              Falco is dropping {{`{{ $value }}`}} events per second.
+              This indicates performance issues or high system load.
+              Pod: {{`{{ $labels.pod }}`}}
+              Consider tuning resources or rules.
+
+        - alert: FalcoHighMemoryUsage
+          expr: |
+            container_memory_usage_bytes{pod=~"falco-.*"} / container_spec_memory_limit_bytes{pod=~"falco-.*"} > 0.9
+          for: 10m
+          labels:
+            severity: warning
+            component: falco
+          annotations:
+            summary: "Falco high memory usage"
+            description: |
+              Falco pod {{`{{ $labels.pod }}`}} is using {{`{{ $value | humanizePercentage }}`}} of memory limit.
+              Consider increasing memory limits.
+
+        - alert: FalcosidekickDown
+          expr: |
+            up{job="falcosidekick"} == 0
+          for: 5m
+          labels:
+            severity: warning
+            component: falcosidekick
+          annotations:
+            summary: "Falcosidekick is down"
+            description: |
+              Falcosidekick instance {{`{{ $labels.pod }}`}} is not responding.
+              Security event forwarding is not operational.
+
+        - alert: FalcosidekickHighErrorRate
+          expr: |
+            rate(falcosidekick_outputs_error_total[5m]) > 1
+          for: 5m
+          labels:
+            severity: warning
+            component: falcosidekick
+          annotations:
+            summary: "Falcosidekick experiencing errors"
+            description: |
+              Falcosidekick is experiencing {{`{{ $value }}`}} errors per second.
+              Output: {{`{{ $labels.output }}`}}
+              Check output configuration and connectivity.
+{{- end }}
+

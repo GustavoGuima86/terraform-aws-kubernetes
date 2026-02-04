@@ -1,0 +1,40 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: aws-lb-controller
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: infrastructure
+  source:
+    repoURL: {{ .Values.gitRepo.url }}
+    targetRevision: {{ .Values.gitRepo.branch }}
+    path: k8s/aws-lb-controller
+    helm:
+      parameters:
+      - name: aws-load-balancer-controller.clusterName
+        value: "{{ .Values.eks_cluster_name }}"
+      - name: aws-load-balancer-controller.region
+        value: "{{ .Values.aws_region }}"
+      - name: aws-load-balancer-controller.vpcId
+        value: "{{ .Values.vpc_id }}"
+      - name: aws-load-balancer-controller.serviceAccount.name
+        value: "{{ .Values.aws_lb_controller_sa_name }}"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

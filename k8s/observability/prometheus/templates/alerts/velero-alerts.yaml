@@ -1,0 +1,102 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: velero-alerts
+  namespace: observability
+  labels:
+    app: kube-prometheus-stack
+    release: {{ .Release.Name }}
+spec:
+  groups:
+  - name: velero
+    interval: 30s
+    rules:
+    # Velero Availability Alerts
+    - alert: VeleroDown
+      expr: |
+        up{job="velero"} == 0
+      for: 5m
+      labels:
+        severity: critical
+        component: velero
+      annotations:
+        summary: "Velero is down"
+        description: "Velero has been down for more than 5 minutes in cluster {{ .Values.clusterName }}."
+
+    - alert: VeleroBackupFailed
+      expr: |
+        increase(velero_backup_failure_total[1h]) > 0
+      for: 5m
+      labels:
+        severity: critical
+        component: velero
+      annotations:
+        summary: "Velero backup failed"
+        description: "Velero backup '{{ `{{` }} $labels.schedule {{ `}}` }}' has failed in the last hour."
+
+    - alert: VeleroBackupPartialFailure
+      expr: |
+        increase(velero_backup_partial_failure_total[1h]) > 0
+      for: 5m
+      labels:
+        severity: warning
+        component: velero
+      annotations:
+        summary: "Velero backup partially failed"
+        description: "Velero backup '{{ `{{` }} $labels.schedule {{ `}}` }}' has partially failed in the last hour."
+
+    - alert: VeleroBackupMissing
+      expr: |
+        time() - velero_backup_last_successful_timestamp{schedule!=""} > 86400
+      for: 1h
+      labels:
+        severity: warning
+        component: velero
+      annotations:
+        summary: "Velero backup missing"
+        description: "Velero backup schedule '{{ `{{` }} $labels.schedule {{ `}}` }}' hasn't completed successfully in over 24 hours."
+
+    - alert: VeleroRestoreFailed
+      expr: |
+        increase(velero_restore_failed_total[1h]) > 0
+      for: 5m
+      labels:
+        severity: warning
+        component: velero
+      annotations:
+        summary: "Velero restore failed"
+        description: "Velero restore '{{ `{{` }} $labels.schedule {{ `}}` }}' has failed in the last hour."
+
+    - alert: VeleroRestorePartialFailure
+      expr: |
+        increase(velero_restore_partial_failure_total[1h]) > 0
+      for: 5m
+      labels:
+        severity: warning
+        component: velero
+      annotations:
+        summary: "Velero restore partially failed"
+        description: "Velero restore has partially failed in the last hour."
+
+    - alert: VeleroVolumeSnapshotFailed
+      expr: |
+        increase(velero_volume_snapshot_failure_total[1h]) > 0
+      for: 5m
+      labels:
+        severity: warning
+        component: velero
+      annotations:
+        summary: "Velero volume snapshot failed"
+        description: "Velero volume snapshot has failed in the last hour."
+
+    - alert: VeleroHighBackupDuration
+      expr: |
+        velero_backup_duration_seconds{schedule!=""} > 3600
+      for: 5m
+      labels:
+        severity: warning
+        component: velero
+      annotations:
+        summary: "Velero backup taking too long"
+        description: "Velero backup '{{ `{{` }} $labels.schedule {{ `}}` }}' is taking more than 1 hour."
+

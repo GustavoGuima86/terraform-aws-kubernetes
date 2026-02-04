@@ -1,0 +1,6 @@
+apiVersion: v2
+name: velero
+description: A Helm chart for Velero backup in tooling namespace
+version: 0.1.0
+appVersion: 1.17.2
+

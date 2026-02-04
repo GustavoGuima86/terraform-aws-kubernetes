@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: loki
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: observability
+  source:
+    repoURL: {{ .Values.gitRepo.url }}
+    targetRevision: {{ .Values.gitRepo.branch }}
+    path: k8s/observability/loki
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: "loki.loki.storage_config.aws.region"
+          value: "{{ .Values.aws_region }}"
+        - name: "loki.loki.storage_config.aws.bucketnames"
+          value: "{{ .Values.loki_bucket_name }}"
+        - name: "loki.loki.storage.bucketNames.chunks"
+          value: "{{ .Values.loki_bucket_name }}"
+        - name: "loki.loki.storage.bucketNames.ruler"
+          value: "{{ .Values.loki_bucket_name }}"
+        - name: "loki.loki.storage.s3.region"
+          value: "{{ .Values.aws_region }}"
+        - name: "loki.serviceAccount.create"
+          value: "true"
+        - name: "loki.serviceAccount.name"
+          value: "{{ .Values.loki_service_account_name }}"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

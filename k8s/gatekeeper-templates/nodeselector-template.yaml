@@ -1,0 +1,11 @@
+# This file is deprecated and replaced by Assign mutations in gatekeeper-policies/nodepool-mutations.yaml
+# The old ConstraintTemplate mutation approach with Rego is replaced by declarative Assign mutations
+#
+# Modern approach benefits:
+# - Simpler declarative YAML (no Rego needed)
+# - Better performance
+# - Easier to maintain
+#
+# Keeping this file as a placeholder for now.
+# You can delete this file once you confirm the new mutations are working.
+

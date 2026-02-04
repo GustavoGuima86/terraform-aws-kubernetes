@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: falco
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: infrastructure
+  source:
+    repoURL: {{ .Values.gitRepo.url }}
+    targetRevision: {{ .Values.gitRepo.branch }}
+    path: k8s/falco
+    helm:
+      parameters:
+        - name: aws_region
+          value: "{{ .Values.aws_region }}"
+        - name: falco_role_arn
+          value: "{{ .Values.falco_role_arn }}"
+        - name: falco_sa_name
+          value: "{{ .Values.falco_sa_name }}"
+        - name: route.hostname
+          value: "falco.{{ .Values.domain_name }}"
+        - name: kube_prometheus_release
+          value: "{{ .Values.kube_prometheus_release }}"
+        - name: route.enabled
+          value: "true"
+        - name: route.gateway.name
+          value: "tooling-gateway"
+        - name: route.gateway.namespace
+          value: "istio-system"
+        - name: route.gateway.sectionName
+          value: "https"
+        - name: falco.enabled
+          value: "true"
+        - name: falcosidekick.enabled
+          value: "true"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: falco
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=false
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

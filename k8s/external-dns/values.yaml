@@ -1,0 +1,53 @@
+# ==============================================================================
+# External DNS Configuration
+# ==============================================================================
+
+external-dns:
+  provider: aws
+
+  domainFilters:
+    - gustavo.inno-on.cloud
+
+  aws:
+    region: "" # From Terraform
+    zoneType: public
+    preferCNAME: false
+
+  sources:
+    - service
+    - ingress
+    - gateway-httproute
+
+  policy: sync
+  registry: txt
+  txtOwnerId: eks-cluster
+
+  serviceAccount:
+    create: true
+    name: "" # From Terraform
+
+  resources:
+    limits:
+      memory: 256Mi
+      cpu: 100m
+    requests:
+      memory: 128Mi
+      cpu: 50m
+
+  logLevel: info
+  logFormat: json
+  interval: 1m
+  triggerLoopOnEvent: true
+
+  podSecurityContext:
+    fsGroup: 65534
+    runAsNonRoot: true
+    runAsUser: 65534
+
+  securityContext:
+    allowPrivilegeEscalation: false
+    readOnlyRootFilesystem: true
+    capabilities:
+      drop:
+        - ALL
+

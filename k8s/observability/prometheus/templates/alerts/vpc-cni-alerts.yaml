@@ -1,0 +1,102 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: vpc-cni-alerts
+  namespace: observability
+  labels:
+    app: kube-prometheus-stack
+    release: {{ .Release.Name }}
+spec:
+  groups:
+  - name: vpc-cni
+    interval: 30s
+    rules:
+    # VPC CNI Availability Alerts
+    - alert: VPCCNIDown
+      expr: |
+        up{job="aws-vpc-cni"} == 0
+      for: 5m
+      labels:
+        severity: critical
+        component: vpc-cni
+      annotations:
+        summary: "VPC CNI plugin is down"
+        description: "VPC CNI plugin has been down for more than 5 minutes on node {{ `{{` }} $labels.instance {{ `}}` }}."
+
+    - alert: VPCCNIIPAddressExhaustion
+      expr: |
+        awscni_assigned_ip_addresses / awscni_total_ip_addresses > 0.9
+      for: 10m
+      labels:
+        severity: critical
+        component: vpc-cni
+      annotations:
+        summary: "VPC CNI IP address exhaustion"
+        description: "Node {{ `{{` }} $labels.instance {{ `}}` }} has less than 10% IP addresses available ({{ `{{` }} $value | humanizePercentage {{ `}}` }})."
+
+    - alert: VPCCNIIPAddressAllocationErrors
+      expr: |
+        rate(awscni_ip_allocation_errors_total[5m]) > 0
+      for: 5m
+      labels:
+        severity: warning
+        component: vpc-cni
+      annotations:
+        summary: "VPC CNI IP allocation errors"
+        description: "VPC CNI is experiencing IP allocation errors on node {{ `{{` }} $labels.instance {{ `}}` }}."
+
+    - alert: VPCCNIENIAllocationFailed
+      expr: |
+        rate(awscni_eni_allocation_errors_total[5m]) > 0
+      for: 5m
+      labels:
+        severity: critical
+        component: vpc-cni
+      annotations:
+        summary: "VPC CNI ENI allocation failed"
+        description: "VPC CNI failed to allocate ENI on node {{ `{{` }} $labels.instance {{ `}}` }}."
+
+    - alert: VPCCNIHighENIUtilization
+      expr: |
+        awscni_eni_allocated / awscni_eni_max > 0.85
+      for: 10m
+      labels:
+        severity: warning
+        component: vpc-cni
+      annotations:
+        summary: "High ENI utilization"
+        description: "Node {{ `{{` }} $labels.instance {{ `}}` }} is using {{ `{{` }} $value | humanizePercentage {{ `}}` }} of available ENIs."
+
+    - alert: VPCCNIPodDeletionDelay
+      expr: |
+        awscni_pod_eni_cleanup_delay_seconds > 300
+      for: 10m
+      labels:
+        severity: warning
+        component: vpc-cni
+      annotations:
+        summary: "High VPC CNI pod deletion delay"
+        description: "VPC CNI is taking more than 5 minutes to clean up pod ENIs on {{ `{{` }} $labels.instance {{ `}}` }}."
+
+    - alert: VPCCNIReconciliationErrors
+      expr: |
+        rate(awscni_reconciliation_errors_total[5m]) > 0
+      for: 10m
+      labels:
+        severity: warning
+        component: vpc-cni
+      annotations:
+        summary: "VPC CNI reconciliation errors"
+        description: "VPC CNI is experiencing reconciliation errors on node {{ `{{` }} $labels.instance {{ `}}` }}."
+
+    - alert: VPCCNIIMDSErrors
+      expr: |
+        rate(awscni_aws_api_error_total{api="IMDSv2"}[5m]) > 0.1
+      for: 5m
+      labels:
+        severity: warning
+        component: vpc-cni
+      annotations:
+        summary: "VPC CNI IMDS API errors"
+        description: "VPC CNI is experiencing errors communicating with EC2 instance metadata service."
+

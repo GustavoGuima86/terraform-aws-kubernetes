@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: mimir
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: observability
+  source:
+    repoURL: {{ .Values.gitRepo.url }}
+    targetRevision: {{ .Values.gitRepo.branch }}
+    path: k8s/observability/mimir
+    helm:
+      valueFiles:
+        - values.yaml
+      parameters:
+        - name: "awsRegion"
+          value: "{{ .Values.aws_region }}"
+        - name: "clusterName"
+          value: "{{ .Values.eks_cluster_name }}"
+        - name: "mimir-distributed.mimir.structuredConfig.alertmanager_storage.s3.bucket_name"
+          value: "{{ .Values.mimir_bucket_name }}"
+        - name: "mimir-distributed.mimir.structuredConfig.alertmanager_storage.s3.endpoint"
+          value: "s3.{{ .Values.aws_region }}.amazonaws.com"
+        - name: "mimir-distributed.mimir.structuredConfig.blocks_storage.s3.bucket_name"
+          value: "{{ .Values.mimir_bucket_name }}"
+        - name: "mimir-distributed.mimir.structuredConfig.blocks_storage.s3.endpoint"
+          value: "s3.{{ .Values.aws_region }}.amazonaws.com"
+        - name: "mimir-distributed.mimir.structuredConfig.ruler_storage.s3.bucket_name"
+          value: "{{ .Values.mimir_bucket_name }}"
+        - name: "mimir-distributed.mimir.structuredConfig.ruler_storage.s3.endpoint"
+          value: "s3.{{ .Values.aws_region }}.amazonaws.com"
+        - name: "mimir-distributed.serviceAccount.create"
+          value: "true"
+        - name: "mimir-distributed.serviceAccount.name"
+          value: "{{ .Values.mimir_service_account_name }}"
+        - name: "mimir-distributed.metaMonitoring.serviceMonitor.labels.release"
+          value: "{{ .Values.kube_prometheus_release }}"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: observability
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

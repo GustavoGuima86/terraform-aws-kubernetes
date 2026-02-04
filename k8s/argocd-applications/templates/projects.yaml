@@ -1,0 +1,28 @@
+{{- $argocdNamespace := .Values.argocdNamespace | default "argocd" -}}
+
+{{- range $project := .Values.argocdProjects }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: {{ $project.name }}
+  namespace: {{ $argocdNamespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  description: {{ $project.description | trimSuffix "\n" | quote }}
+  sourceRepos:
+  {{- range $repo := $project.sourceRepos }}
+    - {{ $repo | quote }}
+  {{- end }}
+  destinations:
+  {{- range $dest := $project.destinations }}
+    - namespace: {{ $dest.namespace }}
+      server: {{ $dest.server }}
+  {{- end }}
+  clusterResourceWhitelist:
+  {{- range $resource := $project.clusterResourceWhitelist }}
+    - group: {{ $resource.group | quote }}
+      kind: {{ $resource.kind | quote }}
+  {{- end }}
+{{- end }}

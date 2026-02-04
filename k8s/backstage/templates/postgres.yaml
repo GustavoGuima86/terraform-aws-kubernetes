@@ -1,0 +1,60 @@
+{{- if .Values.postgres.enabled }}
+---
+# CloudNativePG Cluster for Backstage
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: backstage-postgres
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: backstage-postgres
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  # Single instance for Backstage (can be increased to 3 for HA)
+  instances: 1
+
+  # PostgreSQL version
+  imageName: ghcr.io/cloudnative-pg/postgresql:15.5
+
+  # Storage configuration
+  storage:
+    size: {{ .Values.postgres.storageSize }}
+    storageClass: {{ .Values.postgres.storageClass }}
+
+  # PostgreSQL configuration parameters
+  postgresql:
+    parameters:
+      max_connections: "200"
+      shared_buffers: "256MB"
+      effective_cache_size: "512MB"
+      maintenance_work_mem: "64MB"
+      checkpoint_completion_target: "0.9"
+      wal_buffers: "16MB"
+      default_statistics_target: "100"
+      random_page_cost: "1.1"
+      effective_io_concurrency: "200"
+      work_mem: "2621kB"
+      min_wal_size: "1GB"
+      max_wal_size: "2GB"
+
+  # Bootstrap configuration - initialize database
+  # CloudNativePG will auto-create:
+  # - Database: {{ .Values.postgres.database }}
+  # - User: app
+  # - Secret: {{ .Values.postgres.secretName }} (with username, password, dbname, host, port)
+  bootstrap:
+    initdb:
+      database: {{ .Values.postgres.database }}
+      owner: app
+
+  # Monitoring configuration
+  monitoring:
+    enablePodMonitor: true
+
+  # Resource limits
+  resources:
+    {{- toYaml .Values.postgres.resources | nindent 4 }}
+# Note: CloudNativePG auto-generates the secret: {{ .Values.postgres.secretName }}
+# This secret contains: username, password, dbname, host, port, uri, etc.
+{{- end }}
