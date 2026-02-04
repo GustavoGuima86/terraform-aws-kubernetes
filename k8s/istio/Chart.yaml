@@ -6,12 +6,12 @@ version: 0.1.0
 
 dependencies:
 - name: base
-  version: "1.28.0" 
+  version: "1.28.3" 
   repository: "https://istio-release.storage.googleapis.com/charts"
   alias: istio-base
 - name: istiod
-  version: "1.28.0"
+  version: "1.28.3"
   repository: "https://istio-release.storage.googleapis.com/charts"
 - name: gateway
-  version: "1.28.0"
+  version: "1.28.3"
   repository: "https://istio-release.storage.googleapis.com/charts"
