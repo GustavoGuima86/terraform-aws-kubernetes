@@ -3,7 +3,9 @@
   "extends": [
     "config:base"
   ],
-  "dependencyDashboard": false,
+  "prHourlyLimit": 0,
+  "prCreation": "immediate",
+  "dependencyDashboard": true,
   "schedule": ["every 7 days"],
   "packageRules": [
     {
