@@ -51,7 +51,7 @@ resource "aws_iam_policy" "loki_s3_access" {
 
 module "loki_s3_pod_identity" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "2.5.0"
+  version = "2.7.0"
 
   name = "${var.cluster_name}-loki-s3"
 
