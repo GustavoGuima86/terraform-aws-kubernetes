@@ -9,10 +9,13 @@
   "regexManagers": [
     {
       "fileMatch": ["^infrastructure/modules/eks/main\\.tf$"],
-      "matchStrings": ["kubernetes_version\\s*=\\s*(?<currentValue>[\\d.]+)"],
+      "matchStrings": [
+        "kubernetes_version\\s*=\\s*(?<currentValue>[\\d.]+)"
+      ],
       "depNameTemplate": "kubernetes/kubernetes",
       "datasourceTemplate": "github-releases",
-      "versioningTemplate": "loose"
+      "versioningTemplate": "loose",
+      "autoReplaceStringTemplate": "kubernetes_version     = {{{newValue}}}"
     },
     {
       "fileMatch": ["^k8s/crds/install-crds\\.sh$"],
