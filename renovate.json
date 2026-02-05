@@ -81,10 +81,9 @@
       "groupName": "k8s"
     },
     {
-      "description": "Group all other dependencies",
-      "matchPackagePatterns": ["*"],
-      "excludePaths": ["infrastructure/**", "k8s/**"],
-      "groupName": "others"
+      "description": "Group workflow dependencies",
+      "matchPaths": [".github/**"],
+      "groupName": "github-workflows"
     }
   ]
 }
