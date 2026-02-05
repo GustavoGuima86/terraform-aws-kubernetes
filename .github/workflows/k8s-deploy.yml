@@ -27,7 +27,7 @@ on:
 env:
   AWS_REGION: 'eu-central-1'
   KUBECTL_VERSION: 'v1.31.0'
-  HELM_VERSION: 'v3.14.0'
+  HELM_VERSION: 'v4.1.0'
 
 permissions:
   id-token: write
@@ -44,10 +44,10 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       
       - name: Configure AWS credentials via OIDC
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v6
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ${{ env.AWS_REGION }}
@@ -59,7 +59,7 @@ jobs:
           echo "AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> $GITHUB_ENV
       
       - name: Download Terraform Outputs
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: terraform-outputs
           path: ./

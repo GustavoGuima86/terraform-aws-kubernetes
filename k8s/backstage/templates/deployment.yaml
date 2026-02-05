@@ -19,7 +19,7 @@ spec:
       # Init container to wait for PostgreSQL to be ready
       initContainers:
         - name: wait-for-postgres
-          image: postgres:15-alpine
+          image: postgres:18-alpine
           command:
             - sh
             - -c
