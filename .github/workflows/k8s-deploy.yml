@@ -27,7 +27,7 @@ on:
 env:
   AWS_REGION: 'eu-central-1'
   KUBECTL_VERSION: 'v1.31.0'
-  HELM_VERSION: 'v3.14.0'
+  HELM_VERSION: 'v3.20.0'
 
 permissions:
   id-token: write
