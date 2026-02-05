@@ -9,9 +9,9 @@
   "regexManagers": [
     {
       "fileMatch": ["^infrastructure/modules/eks/main\\.tf$"],
-      "matchStrings": ["kubernetes_version\\s*=\\s*(?<currentValue>[\\d.]+)"],
-      "depNameTemplate": "kubernetes",
-      "datasourceTemplate": "kubernetes"
+      "matchStrings": ["kubernetes_version\\s*=\\s*\"?(?<currentValue>[\\d.]+)\"?"],
+      "depNameTemplate": "kubernetes/kubernetes",
+      "datasourceTemplate": "github-releases"
     },
     {
       "fileMatch": ["^k8s/crds/install-crds\\.sh$"],
@@ -83,6 +83,7 @@
     {
       "description": "Group all other dependencies",
       "matchPackagePatterns": ["*"],
+      "excludePaths": ["infrastructure/**", "k8s/**"],
       "groupName": "others"
     }
   ]
