@@ -82,7 +82,7 @@
     },
     {
       "description": "Group all other dependencies",
-      "excludeMatchPaths": ["infrastructure/**", "k8s/**"],
+      "matchPackagePatterns": ["*"],
       "groupName": "others"
     }
   ]
