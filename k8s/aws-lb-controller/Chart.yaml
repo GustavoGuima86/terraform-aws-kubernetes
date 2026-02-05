@@ -7,5 +7,5 @@ appVersion: "1.17.0" # Match the version used in Terraform
 
 dependencies:
   - name: aws-load-balancer-controller
-    version: "1.17.0" # Match the version used in Terraform
+    version: "1.17.1" # Match the version used in Terraform
     repository: "https://aws.github.io/eks-charts"
