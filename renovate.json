@@ -15,7 +15,7 @@
       ],
       "depNameTemplate": "kubernetes/kubernetes",
       "datasourceTemplate": "github-releases",
-      "extractVersionTemplate": "^v?(?<version>)$"
+      "extractVersionTemplate": "^v?(?<version>\\d+\\.\\d+)(\\.0)?$"
     },
     {
       "fileMatch": ["^k8s/crds/install-crds\\.sh$"],
