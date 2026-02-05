@@ -33,7 +33,7 @@ kubectl apply -f "https://github.com/kubernetes-sigs/gateway-api/releases/downlo
 
 echo "Installing Gatekeeper CRDs..."
 
-GATEKEEPER_VERSION="3.21.0"
+GATEKEEPER_VERSION="3.21.1"
 
 mapfile -t CRDS < <(
   curl -s \
@@ -89,7 +89,7 @@ done
 echo "All Kube Prometheus Stack CRDs installed successfully."
 
 echo "Installing CloudNativePG CRDs..."
-CNPG_VERSION="1.24.1"
+CNPG_VERSION="1.28.0"
 kubectl apply --server-side -f "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v${CNPG_VERSION}/config/crd/bases/postgresql.cnpg.io_backups.yaml"
 kubectl apply --server-side -f "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v${CNPG_VERSION}/config/crd/bases/postgresql.cnpg.io_clusters.yaml"
 kubectl apply --server-side -f "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v${CNPG_VERSION}/config/crd/bases/postgresql.cnpg.io_clusterimagecatalogs.yaml"
