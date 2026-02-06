@@ -5,13 +5,6 @@ metadata:
   name: tooling-gateway
   namespace: istio-system
   annotations:
-    # These annotations are passed to the Service, instructing AWS to build an NLB
-    service.beta.kubernetes.io/aws-load-balancer-type: "external"
-    service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
-    service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
-    service.beta.kubernetes.io/aws-load-balancer-manage-backend-security-group-rules: "false"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "{{ .Values.acmCertificateArn }}"
-    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
     external-dns.alpha.kubernetes.io/hostname: "{{ .Values.rootDomain }}" # gustavo.inno-on.cloud
 spec:
   gatewayClassName: istio

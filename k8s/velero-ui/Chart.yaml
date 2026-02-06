@@ -1,0 +1,12 @@
+apiVersion: v2
+name: velero-ui
+description: A Helm chart for OTWLD Velero UI, managed locally
+type: application
+version: 0.1.0 # Local chart version
+appVersion: "0.10.0" # OTWLD Velero UI appVersion
+
+dependencies:
+  - name: velero-ui
+    version: "0.14.0" # OTWLD Velero UI chart version
+    repository: "https://helm.otwld.com/"
+    alias: otwld-velero-ui # Alias to avoid name collision and refer to it uniquely

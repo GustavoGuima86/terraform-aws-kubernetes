@@ -1,0 +1,42 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: velero-ui-network-policy
+  namespace: velero-ui
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: velero-ui
+      app.kubernetes.io/instance: velero-ui
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - podSelector: {} # Allow all pods in the same namespace (for potential internal calls)
+        - namespaceSelector: {} # Allow from any namespace (if exposed via Gateway/Ingress)
+      ports:
+        - protocol: TCP
+          port: 80 # Velero UI default port
+  egress:
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: velero
+              app.kubernetes.io/instance: velero
+          namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: velero # Assuming Velero is in 'velero' namespace
+      ports:
+        - protocol: TCP
+          port: 8080 # Default Velero server port
+    - to:
+        - ipBlock:
+            cidr: 0.0.0.0/0 # Allow egress to all IPs for DNS resolution and external services
+      ports:
+        - protocol: TCP
+          port: 53 # DNS (TCP)
+        - protocol: UDP
+          port: 53 # DNS (UDP)
+        - protocol: TCP
+          port: 443 # Egress to Kubernetes API server (and other HTTPS services)

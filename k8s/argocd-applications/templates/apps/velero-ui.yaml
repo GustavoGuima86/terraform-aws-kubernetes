@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: velero-ui
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  project: default
+  source:
+    repoURL: {{ .Values.gitRepo.url }}
+    targetRevision: {{ .Values.gitRepo.branch }} # Use branch for local charts
+    path: k8s/velero-ui
+    helm:
+      valueFiles:
+        - k8s/velero-ui/values.yaml # Path to the local values file
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: velero-ui
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true

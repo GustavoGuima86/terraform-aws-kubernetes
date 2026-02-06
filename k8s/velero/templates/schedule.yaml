@@ -1,0 +1,16 @@
+apiVersion: velero.io/v1
+kind: Schedule
+metadata:
+  name: daily-backup
+  namespace: velero
+spec:
+  schedule: "0 1 * * *" # every day at 1am
+  template:
+    ttl: 168h
+    includedNamespaces:
+      - backstage
+      - default
+      - kube-system
+      - monitoring
+      - velero
+  
