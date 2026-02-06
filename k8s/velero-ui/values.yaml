@@ -6,6 +6,6 @@ route:
     name: tooling-gateway
     namespace: istio-system
     sectionName: https
-  hostname: velero-ui.{{ .Values.global.rootDomain }} # Placeholder, replace with actual domain
-  serviceName: velero-ui # Default service name for OTWLD Velero UI Helm chart
-  servicePort: 80 # Default HTTP port for the OTWLD Velero UI
+  hostname: velero-ui.{{ .Values.global.rootDomain }}
+  serviceName: velero-ui
+  servicePort: 80
