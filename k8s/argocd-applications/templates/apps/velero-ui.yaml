@@ -11,11 +11,11 @@ spec:
   project: default
   source:
     repoURL: {{ .Values.gitRepo.url }}
-    targetRevision: {{ .Values.gitRepo.branch }} # Use branch for local charts
+    targetRevision: {{ .Values.gitRepo.branch }}
     path: k8s/velero-ui
     helm:
       valueFiles:
-        - k8s/velero-ui/values.yaml # Path to the local values file
+        - k8s/velero-ui/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: velero
@@ -24,4 +24,4 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true
+    - CreateNamespace=false

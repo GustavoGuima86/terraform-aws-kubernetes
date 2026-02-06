@@ -6,18 +6,18 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      app.kubernetes.io/name: velero-ui
-      app.kubernetes.io/instance: velero-ui
+      app.kubernetes.io/name: otwld-velero-ui
+      app.kubernetes.io/instance: otwld-velero-ui
   policyTypes:
     - Ingress
     - Egress
   ingress:
     - from:
-        - podSelector: {} # Allow all pods in the same namespace (for potential internal calls)
-        - namespaceSelector: {} # Allow from any namespace (if exposed via Gateway/Ingress)
+        - podSelector: {}
+        - namespaceSelector: {}
       ports:
         - protocol: TCP
-          port: 80 # Velero UI default port
+          port: 80
   egress:
     - to:
         - podSelector:
@@ -26,17 +26,17 @@ spec:
               app.kubernetes.io/instance: velero
           namespaceSelector:
             matchLabels:
-              kubernetes.io/metadata.name: velero # Assuming Velero is in 'velero' namespace
+              kubernetes.io/metadata.name: velero
       ports:
         - protocol: TCP
-          port: 8080 # Default Velero server port
+          port: 8080
     - to:
         - ipBlock:
-            cidr: 0.0.0.0/0 # Allow egress to all IPs for DNS resolution and external services
+            cidr: 0.0.0.0/0
       ports:
         - protocol: TCP
-          port: 53 # DNS (TCP)
+          port: 53
         - protocol: UDP
-          port: 53 # DNS (UDP)
+          port: 53
         - protocol: TCP
-          port: 443 # Egress to Kubernetes API server (and other HTTPS services)
+          port: 443
