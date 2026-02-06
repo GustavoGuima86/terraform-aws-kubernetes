@@ -1,6 +1,0 @@
-# This file is deprecated and replaced by nodepool-mutations.yaml
-# The old ConstraintTemplate mutation approach is replaced by modern Assign mutations
-#
-# Keeping this file as a placeholder for now.
-# You can delete this file once you confirm the new mutations are working.
-

@@ -90,13 +90,13 @@ module "eks" {
         "karpenter.sh/controller" = "true"
       }
       
-      taints = [
-        {
+      taints = {
+        critical = {
           key    = "CriticalAddonsOnly"
           value  = "true"
-          effect = "NoSchedule"
+          effect = "NO_SCHEDULE"
         }
-      ]
+      }
     }
   }
   enable_cluster_creator_admin_permissions = false

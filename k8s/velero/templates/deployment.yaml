@@ -61,7 +61,7 @@ spec:
           args:
             - server
             - --features=
-            - --uploader-type=restic
+            - --uploader-type=kopia
           env:
             - name: AWS_REGION
               value: {{ .Values.configuration.backupStorageLocation.config.region | quote }}

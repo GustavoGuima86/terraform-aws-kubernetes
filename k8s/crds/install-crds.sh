@@ -27,6 +27,13 @@ kubectl apply -k "https://github.com/argoproj/argo-cd/manifests/crds?ref=v2.12.3
 echo "Installing Gateway API CRDs..."
 kubectl apply -f "https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml"
 
+echo "Installing Karpenter CRDs..."
+KARPENTER_VERSION="1.8.6"
+kubectl apply -f "https://raw.githubusercontent.com/aws/karpenter-provider-aws/v${KARPENTER_VERSION}/pkg/apis/crds/karpenter.sh_nodepools.yaml"
+kubectl apply -f "https://raw.githubusercontent.com/aws/karpenter-provider-aws/v${KARPENTER_VERSION}/pkg/apis/crds/karpenter.sh_nodeclaims.yaml"
+kubectl apply -f "https://raw.githubusercontent.com/aws/karpenter-provider-aws/v${KARPENTER_VERSION}/pkg/apis/crds/karpenter.k8s.aws_ec2nodeclasses.yaml"
+echo "Karpenter CRDs installed successfully."
+
 #echo "Installing K8sGPT Operator and CRDs..."
 #helm repo add k8sgpt https://charts.k8sgpt.ai/
 #helm upgrade --install k8sgpt-operator k8sgpt/k8sgpt -n k8sgpt-operator-system --create-namespace
