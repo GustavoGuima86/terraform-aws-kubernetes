@@ -21,6 +21,10 @@ podAnnotations:
 karpenter:
   nodeSelector:
     karpenter.sh/controller: "true"
+  tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
   defaultNodeRole: "" # From Terraform
   settings:
     clusterEndpoint: "" # From Terraform

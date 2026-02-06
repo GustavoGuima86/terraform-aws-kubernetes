@@ -1,0 +1,71 @@
+apiVersion: templates.gatekeeper.sh/v1
+kind: ConstraintTemplate
+metadata:
+  name: k8smanagednodesonly
+  annotations:
+    description: >-
+      Prevents pods from non-critical namespaces from scheduling on managed nodes.
+      Only allows pods from kube-system, karpenter, and other critical namespaces
+      to run on nodes with the karpenter.sh/controller=true label.
+spec:
+  crd:
+    spec:
+      names:
+        kind: K8sManagedNodesOnly
+      validation:
+        openAPIV3Schema:
+          type: object
+          properties:
+            exemptNamespaces:
+              description: >-
+                List of namespaces that are allowed to schedule on managed nodes.
+              type: array
+              items:
+                type: string
+            managedNodeLabel:
+              description: >-
+                The label key and value that identifies managed nodes.
+              type: object
+              properties:
+                key:
+                  type: string
+                value:
+                  type: string
+  targets:
+    - target: admission.k8s.gatekeeper.sh
+      rego: |
+        package k8smanagednodesonly
+
+        violation[{"msg": msg}] {
+          # Get the pod's namespace
+          namespace := input.review.object.metadata.namespace
+          
+          # Check if namespace is exempt
+          not is_exempt_namespace(namespace)
+          
+          # Check if pod is trying to schedule on managed nodes
+          schedules_on_managed_node
+          
+          msg := sprintf("Pod %v in namespace %v cannot be scheduled on managed nodes. Only critical system namespaces are allowed.", [input.review.object.metadata.name, namespace])
+        }
+
+        is_exempt_namespace(namespace) {
+          namespace == input.parameters.exemptNamespaces[_]
+        }
+
+        schedules_on_managed_node {
+          # Check if pod has nodeSelector for managed nodes
+          input.review.object.spec.nodeSelector[input.parameters.managedNodeLabel.key] == input.parameters.managedNodeLabel.value
+        }
+
+        schedules_on_managed_node {
+          # Check if pod has nodeAffinity for managed nodes
+          node_affinity := input.review.object.spec.affinity.nodeAffinity
+          some term
+          term := node_affinity.requiredDuringSchedulingIgnoredDuringExecution.nodeSelectorTerms[_]
+          some expression
+          expression := term.matchExpressions[_]
+          expression.key == input.parameters.managedNodeLabel.key
+          expression.operator == "In"
+          expression.values[_] == input.parameters.managedNodeLabel.value
+        }

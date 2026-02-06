@@ -109,3 +109,9 @@ alloy:
   rbac:
     create: true
 
+  # Tolerations to run on all nodes including managed nodes
+  tolerations:
+    - key: "CriticalAddonsOnly"
+      operator: "Exists"
+      effect: "NoSchedule"
+

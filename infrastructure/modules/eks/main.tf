@@ -89,6 +89,14 @@ module "eks" {
       labels = {
         "karpenter.sh/controller" = "true"
       }
+      
+      taints = [
+        {
+          key    = "CriticalAddonsOnly"
+          value  = "true"
+          effect = "NoSchedule"
+        }
+      ]
     }
   }
   enable_cluster_creator_admin_permissions = false

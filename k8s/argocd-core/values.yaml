@@ -21,10 +21,18 @@ argo-cd:
       enabled: false
     extraArgs:
       - --insecure # Allowing unsecure just for test, when domain is available remove it
+    tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+        effect: "NoSchedule"
 
   repoServer:
     serviceAccount:
       create: true
+    tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+        effect: "NoSchedule"
 
   # Disable components not needed for this specific setup
   applicationSet:
@@ -33,6 +41,10 @@ argo-cd:
   controller:
     argocdProject:
       create: false
+    tolerations:
+      - key: "CriticalAddonsOnly"
+        operator: "Exists"
+        effect: "NoSchedule"
 
   # Prevent conflicts if you are managing resources via GitOps later
   createClusterResources: false

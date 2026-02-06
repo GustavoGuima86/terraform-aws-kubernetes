@@ -1,0 +1,25 @@
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sManagedNodesOnly
+metadata:
+  name: restrict-managed-nodes
+spec:
+  enforcementAction: deny
+  match:
+    kinds:
+      - apiGroups: [""]
+        kinds: ["Pod"]
+    namespaces:
+      - "*"
+  parameters:
+    exemptNamespaces:
+      - kube-system
+      - kube-public
+      - kube-node-lease
+      - karpenter
+      - gatekeeper-system
+      - observability
+      - falco
+      - argocd
+    managedNodeLabel:
+      key: "karpenter.sh/controller"
+      value: "true"

@@ -35,7 +35,10 @@ echo "Installing Gatekeeper CRDs..."
 
 GATEKEEPER_VERSION="3.21.1"
 
-mapfile -t CRDS < <(
+CRDS=()
+while IFS= read -r crd; do
+  CRDS+=("$crd")
+done < <(
   curl -s \
     -H "Accept: application/vnd.github.v3+json" \
     "https://api.github.com/repos/open-policy-agent/gatekeeper/contents/charts/gatekeeper/crds?ref=v${GATEKEEPER_VERSION}" |
@@ -58,7 +61,10 @@ echo "Fetching CRD list for ${CHART_VERSION}..."
 
 # 2. Get the list of CRD files via GitHub API
 #    The CRDs are located in a subchart within the main chart directory.
-mapfile -t CRDS < <(
+CRDS=()
+while IFS= read -r crd; do
+  CRDS+=("$crd")
+done < <(
   curl -s \
     -H "Accept: application/vnd.github.v3+json" \
     "https://api.github.com/repos/prometheus-community/helm-charts/contents/charts/kube-prometheus-stack/charts/crds/crds?ref=${CHART_VERSION}" |

@@ -132,6 +132,7 @@ This stage deploys ArgoCD Core and then all other Kubernetes-native applications
 1.  **Deploy ArgoCD Core Helm Chart**: This installs the core ArgoCD components.
 
     ```bash
+    helm dependency build k8s/argocd-core
     helm upgrade --install argocd-core k8s/argocd-core \
       --namespace argocd --create-namespace \
       --set installCRDs=false \
@@ -179,7 +180,7 @@ This stage deploys ArgoCD Core and then all other Kubernetes-native applications
       --set secrets_csi_driver_sa_name=$(jq -r .secrets_csi_driver_sa_name.value infrastructure/environments/tf_outputs.json) \
       --set kube_prometheus_release="kube-prometheus-stack" \
       --set gitRepo.url="https://github.com/GustavoGuima86/terraform-aws-kubernetes" \
-      --set gitRepo.branch="new-2026-features"
+      --set gitRepo.branch="main"
     ```
 
 ### Parameter Mapping Table
