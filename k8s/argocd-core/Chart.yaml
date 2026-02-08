@@ -6,5 +6,5 @@ version: 0.1.0
 
 dependencies:
   - name: argo-cd
-    version: "9.4.0"  # Corresponds roughly to Argo CD v2.13.x/v2.12.x
+    version: "9.4.1"  # Corresponds roughly to Argo CD v2.13.x/v2.12.x
     repository: "https://argoproj.github.io/argo-helm"

@@ -102,7 +102,7 @@ done
 echo "All Kube Prometheus Stack CRDs installed successfully."
 
 echo "Installing CloudNativePG CRDs..."
-CNPG_VERSION="1.28.0"
+CNPG_VERSION="1.28.1"
 kubectl apply --server-side -f "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v${CNPG_VERSION}/config/crd/bases/postgresql.cnpg.io_backups.yaml"
 kubectl apply --server-side -f "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v${CNPG_VERSION}/config/crd/bases/postgresql.cnpg.io_clusters.yaml"
 kubectl apply --server-side -f "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v${CNPG_VERSION}/config/crd/bases/postgresql.cnpg.io_clusterimagecatalogs.yaml"
