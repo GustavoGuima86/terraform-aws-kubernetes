@@ -3,9 +3,38 @@ kube-prometheus-stack:
     replicas: 1
     ingress:
       enabled: false
+
+    # Route hostname (overridden by ArgoCD parameter)
+    route:
+      hostname: "grafana.gustavo.inno-on.cloud"
+
+    # Keycloak OIDC SSO — dynamic values (URLs, client_secret) are overridden
+    # by the kube-prometheus-stack ArgoCD Application helm parameters.
+    "grafana.ini":
+      server:
+        root_url: ""  # overridden: https://grafana.<domain>
+        enable_gzip: true
+      analytics:
+        check_for_updates: false
+        check_for_plugin_updates: false
+        reporting_enabled: false
+      "auth.generic_oauth":
+        enabled: true
+        name: Keycloak
+        allow_sign_up: true
+        client_id: grafana
+        client_secret: ""  # overridden by ArgoCD parameter keycloak_grafana_client_secret
+        scopes: "openid profile email groups"
+        auth_url: ""       # overridden: https://keycloak.<domain>/realms/platform/protocol/openid-connect/auth
+        token_url: ""      # overridden: https://keycloak.<domain>/realms/platform/protocol/openid-connect/token
+        api_url: ""        # overridden: https://keycloak.<domain>/realms/platform/protocol/openid-connect/userinfo
+        role_attribute_path: "contains(groups[*], 'grafana-admins') && 'Admin' || contains(groups[*], 'grafana-editors') && 'Editor' || 'Viewer'"
+        login_attribute_path: preferred_username
+        groups_attribute_path: groups
     additionalDataSources:
       - name: Loki
         type: loki
+        uid: loki
         isDefault: false
         editable: true
         access: proxy
@@ -13,15 +42,25 @@ kube-prometheus-stack:
         jsonData:
           timeout: 60
           maxLines: 1000
+          # Derived fields enable traceID extraction from logs for trace correlation
+          derivedFields:
+            - matcherRegex: '"trace_id"\s*:\s*"(\w+)"'
+              name: TraceID
+              datasourceUid: ""
+              url: "${__value.raw}"
         version: 1
       - name: Mimir
         type: prometheus
+        uid: mimir
         isDefault: false
         editable: true
         access: proxy
         url: "" # Set by ArgoCD
         jsonData:
           timeout: 60
+          timeInterval: 1m
+          incrementalQuerying: true
+          incrementalQueryOverlapWindow: 10m
         version: 1
 
     # Import community dashboards
@@ -37,6 +76,38 @@ kube-prometheus-stack:
           editable: true
           options:
             path: /var/lib/grafana/dashboards/default
+        - name: 'kubernetes'
+          orgId: 1
+          folder: 'Kubernetes'
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/kubernetes
+        - name: 'node'
+          orgId: 1
+          folder: 'Nodes'
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/node
+        - name: 'loki'
+          orgId: 1
+          folder: 'Logs'
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/loki
+        - name: 'cloudnative-pg'
+          orgId: 1
+          folder: 'Databases'
+          type: file
+          disableDeletion: false
+          editable: true
+          options:
+            path: /var/lib/grafana/dashboards/cloudnative-pg
         - name: 'istio'
           orgId: 1
           folder: 'Istio'
@@ -79,8 +150,78 @@ kube-prometheus-stack:
             path: /var/lib/grafana/dashboards/falco
 
     dashboards:
+      # ===========================================================
+      # Kubernetes cluster-level dashboards (dotdc k8s-views series)
+      # Industry standard for kube-prometheus-stack as of 2024-2026
+      # ===========================================================
+      kubernetes:
+        k8s-views-global:
+          gnetId: 15760
+          revision: 37
+          datasource: Prometheus
+        k8s-views-namespaces:
+          gnetId: 15759
+          revision: 30
+          datasource: Prometheus
+        k8s-views-nodes:
+          gnetId: 15758
+          revision: 37
+          datasource: Prometheus
+        k8s-views-pods:
+          gnetId: 15757
+          revision: 43
+          datasource: Prometheus
+        k8s-views-coredns:
+          gnetId: 15761
+          revision: 19
+          datasource: Prometheus
+        k8s-pvc-usage:
+          gnetId: 13646
+          revision: 2
+          datasource: Prometheus
+        k8s-api-server:
+          gnetId: 15761
+          revision: 19
+          datasource: Prometheus
+
+      # ===========================================================
+      # Node-level dashboards
+      # ===========================================================
+      node:
+        # Node Exporter Full — most widely used node dashboard
+        node-exporter-full:
+          gnetId: 1860
+          revision: 37
+          datasource: Prometheus
+        # Node cluster summary
+        node-overview:
+          gnetId: 11074
+          revision: 9
+          datasource: Prometheus
+
+      # ===========================================================
+      # Logs (Loki) dashboards
+      # ===========================================================
+      loki:
+        # Kubernetes logs explorer — requires Loki datasource
+        loki-kubernetes-logs:
+          gnetId: 15141
+          revision: 1
+          datasource: Loki
+
+      # ===========================================================
+      # CloudNativePG (PostgreSQL operator) — official dashboard
+      # ===========================================================
+      cloudnative-pg:
+        cloudnative-pg:
+          gnetId: 20417
+          revision: 3
+          datasource: Prometheus
+
+      # ===========================================================
+      # Istio service mesh dashboards
+      # ===========================================================
       istio:
-        # Official Istio dashboards
         istio-control-plane:
           gnetId: 7645
           revision: 203
@@ -102,8 +243,10 @@ kube-prometheus-stack:
           revision: 203
           datasource: Prometheus
 
+      # ===========================================================
+      # Karpenter node scaling dashboards
+      # ===========================================================
       karpenter:
-        # Karpenter dashboard
         karpenter-capacity:
           gnetId: 20449
           revision: 1
@@ -113,8 +256,10 @@ kube-prometheus-stack:
           revision: 1
           datasource: Prometheus
 
+      # ===========================================================
+      # ArgoCD GitOps dashboards
+      # ===========================================================
       argocd:
-        # ArgoCD operational dashboard
         argocd-operational:
           gnetId: 14584
           revision: 1
@@ -124,27 +269,34 @@ kube-prometheus-stack:
           revision: 1
           datasource: Prometheus
 
+      # ===========================================================
+      # Velero backup dashboards
+      # ===========================================================
       velero:
-        # Velero dashboard
         velero-stats:
           gnetId: 11055
           revision: 2
           datasource: Prometheus
 
+      # ===========================================================
+      # Falco runtime security dashboard
+      # ===========================================================
       falco:
-        # Falco security dashboard
         falco-dashboard:
           gnetId: 11914
           revision: 1
           datasource: Prometheus
 
+      # ===========================================================
+      # Default folder — AWS and policy dashboards
+      # ===========================================================
       default:
-        # AWS VPC CNI dashboard
-        aws-cni-metrics:
+        # AWS VPC CNI IP allocation monitoring
+        aws-vpc-cni:
           gnetId: 12548
           revision: 1
           datasource: Prometheus
-        # Gatekeeper dashboard
+        # OPA Gatekeeper policy violations
         gatekeeper:
           gnetId: 15243
           revision: 1
@@ -275,25 +427,37 @@ kube-prometheus-stack:
       global:
         resolve_timeout: 5m
       route:
-        group_by: ['alertname', 'cluster', 'service']
-        group_wait: 10s
-        group_interval: 10s
-        repeat_interval: 12h
         receiver: 'null'
+        group_by: ['alertname', 'cluster', 'namespace', 'severity']
+        group_wait: 30s
+        group_interval: 5m
+        repeat_interval: 12h
         routes:
-        - match:
-            alertname: Watchdog
-          receiver: 'null'
-        - match:
-            severity: critical
-          receiver: 'null'
-          continue: true
-        - match:
-            severity: warning
-          receiver: 'null'
-          continue: true
+          # Suppress always-firing Watchdog heartbeat alert
+          - matchers:
+              - alertname = "Watchdog"
+            receiver: 'null'
+          # Critical alerts route — add a real receiver here when ready (e.g. PagerDuty/Slack)
+          - matchers:
+              - severity = "critical"
+            receiver: 'null'
+            group_wait: 10s
+            repeat_interval: 1h
+            continue: true
+          # Warning alerts route
+          - matchers:
+              - severity = "warning"
+            receiver: 'null'
+            continue: true
       receivers:
-      - name: 'null'
+        - name: 'null'
+      # Suppress warning-level alerts when a critical alert already fires for the same thing
+      inhibit_rules:
+        - source_matchers:
+            - severity = "critical"
+          target_matchers:
+            - severity = "warning"
+          equal: ['alertname', 'namespace', 'pod']
 
   # Add placeholders for consistency
   clusterName: "" # Set by ArgoCD

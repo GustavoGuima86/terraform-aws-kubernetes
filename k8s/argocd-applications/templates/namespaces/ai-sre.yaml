@@ -4,5 +4,8 @@ metadata:
   name: ai-sre
   labels:
     nodepool: ai-sre
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
   annotations:
     argocd.argoproj.io/sync-wave: "-1"

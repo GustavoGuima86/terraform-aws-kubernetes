@@ -93,6 +93,11 @@ route:
     namespace: istio-system
     sectionName: https
 
+# Keycloak OIDC configuration (set by ArgoCD helm parameters)
+keycloak:
+  realmUrl: ""  # https://keycloak.<domain>/realms/platform
+  clientSecret: ""
+
 # RBAC configuration
 rbac:
   create: true

@@ -14,6 +14,8 @@ alloy:
         valueFrom:
           fieldRef:
             fieldPath: spec.nodeName
+      - name: CLUSTER_NAME
+        value: ""  # Overridden by ArgoCD parameter alloy.alloy.extraEnv[1].value
 
     # Alloy River configuration
     configMap:
@@ -87,7 +89,7 @@ alloy:
 
           stage.static_labels {
             values = {
-              cluster = "eks-cluster",
+              cluster = sys.env("CLUSTER_NAME"),
             }
           }
         }

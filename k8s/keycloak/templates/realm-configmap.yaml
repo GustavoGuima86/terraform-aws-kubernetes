@@ -1,0 +1,122 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keycloak-realm-config
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+data:
+  platform-realm.json: |
+    {
+      "realm": "platform",
+      "enabled": true,
+      "sslRequired": "external",
+      "registrationAllowed": false,
+      "loginWithEmailAllowed": true,
+      "duplicateEmailsAllowed": false,
+      "resetPasswordAllowed": true,
+      "editUsernameAllowed": false,
+      "bruteForceProtected": true,
+      "groups": [
+        { "name": "argocd-admins", "path": "/argocd-admins" },
+        { "name": "grafana-admins", "path": "/grafana-admins" },
+        { "name": "grafana-editors", "path": "/grafana-editors" },
+        { "name": "backstage-users", "path": "/backstage-users" },
+        { "name": "platform-admins", "path": "/platform-admins" }
+      ],
+      "clients": [
+        {
+          "clientId": "argocd",
+          "name": "ArgoCD",
+          "enabled": true,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "argocd-client-secret",
+          "redirectUris": [
+            "https://argocd.{{ .Values.domain_name }}/auth/callback"
+          ],
+          "webOrigins": [
+            "https://argocd.{{ .Values.domain_name }}"
+          ],
+          "standardFlowEnabled": true,
+          "directAccessGrantsEnabled": false,
+          "publicClient": false,
+          "protocol": "openid-connect",
+          "protocolMappers": [
+            {
+              "name": "groups",
+              "protocol": "openid-connect",
+              "protocolMapper": "oidc-group-membership-mapper",
+              "config": {
+                "full.path": "false",
+                "id.token.claim": "true",
+                "access.token.claim": "true",
+                "claim.name": "groups",
+                "userinfo.token.claim": "true"
+              }
+            }
+          ]
+        },
+        {
+          "clientId": "grafana",
+          "name": "Grafana",
+          "enabled": true,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "grafana-client-secret",
+          "redirectUris": [
+            "https://grafana.{{ .Values.domain_name }}/login/generic_oauth"
+          ],
+          "webOrigins": [
+            "https://grafana.{{ .Values.domain_name }}"
+          ],
+          "standardFlowEnabled": true,
+          "directAccessGrantsEnabled": false,
+          "publicClient": false,
+          "protocol": "openid-connect",
+          "protocolMappers": [
+            {
+              "name": "groups",
+              "protocol": "openid-connect",
+              "protocolMapper": "oidc-group-membership-mapper",
+              "config": {
+                "full.path": "false",
+                "id.token.claim": "true",
+                "access.token.claim": "true",
+                "claim.name": "groups",
+                "userinfo.token.claim": "true"
+              }
+            }
+          ]
+        },
+        {
+          "clientId": "backstage",
+          "name": "Backstage",
+          "enabled": true,
+          "clientAuthenticatorType": "client-secret",
+          "secret": "backstage-client-secret",
+          "redirectUris": [
+            "https://backstage.{{ .Values.domain_name }}/api/auth/keycloak/handler/frame"
+          ],
+          "webOrigins": [
+            "https://backstage.{{ .Values.domain_name }}"
+          ],
+          "standardFlowEnabled": true,
+          "directAccessGrantsEnabled": false,
+          "publicClient": false,
+          "protocol": "openid-connect",
+          "protocolMappers": [
+            {
+              "name": "groups",
+              "protocol": "openid-connect",
+              "protocolMapper": "oidc-group-membership-mapper",
+              "config": {
+                "full.path": "false",
+                "id.token.claim": "true",
+                "access.token.claim": "true",
+                "claim.name": "groups",
+                "userinfo.token.claim": "true"
+              }
+            }
+          ]
+        }
+      ]
+    }

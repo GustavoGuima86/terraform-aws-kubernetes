@@ -44,6 +44,11 @@ spec:
           value: "gp3-secure"
         - name: postgres.storageSize
           value: "20Gi"
+        # Keycloak OIDC SSO
+        - name: keycloak.realmUrl
+          value: "https://keycloak.{{ .Values.domain_name }}/realms/platform"
+        - name: keycloak.clientSecret
+          value: "{{ .Values.keycloak_backstage_client_secret }}"
   destination:
     server: https://kubernetes.default.svc
     namespace: backstage

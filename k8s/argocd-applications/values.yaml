@@ -63,6 +63,12 @@ velero_sa_name: ""
 falco_role_arn: ""
 falco_sa_name: ""
 
+# Keycloak
+keycloak_admin_password: ""
+keycloak_argocd_client_secret: ""
+keycloak_grafana_client_secret: ""
+keycloak_backstage_client_secret: ""
+
 # OpenCost Cost Monitoring
 opencost_role_arn: ""
 opencost_sa_name: ""
@@ -105,6 +111,8 @@ argocdProjects:
       - namespace: "external-dns"
         server: "https://kubernetes.default.svc"
       - namespace: "falco"
+        server: "https://kubernetes.default.svc"
+      - namespace: "keycloak"
         server: "https://kubernetes.default.svc"
     clusterResourceWhitelist:
       - group: "*"

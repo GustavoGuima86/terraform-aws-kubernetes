@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: tooling
+  name: argocd
   labels:
     nodepool: tooling
     pod-security.kubernetes.io/enforce: baseline

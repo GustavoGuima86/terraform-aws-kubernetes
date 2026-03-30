@@ -9,7 +9,7 @@ spec:
       namespace: istio-system
       sectionName: https
   hostnames:
-    - "grafana.gustavo.inno-on.cloud"
+    - "{{ .Values.route.hostname }}"
   rules:
     - matches:
         - path:

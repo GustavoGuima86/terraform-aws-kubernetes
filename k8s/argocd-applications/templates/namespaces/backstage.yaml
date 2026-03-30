@@ -4,5 +4,8 @@ metadata:
   name: backstage
   labels:
     nodepool: business-apps
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
   annotations:
     argocd.argoproj.io/sync-wave: "-1"

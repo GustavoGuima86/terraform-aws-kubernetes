@@ -1,0 +1,37 @@
+{{- if .Values.postgres.enabled }}
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: keycloak-postgres
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: keycloak-postgres
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  instances: 1
+
+  imageName: ghcr.io/cloudnative-pg/postgresql:15.5
+
+  storage:
+    size: {{ .Values.postgres.storageSize }}
+    storageClass: {{ .Values.postgres.storageClass }}
+
+  postgresql:
+    parameters:
+      max_connections: "100"
+      shared_buffers: "128MB"
+      effective_cache_size: "256MB"
+
+  bootstrap:
+    initdb:
+      database: {{ .Values.postgres.database }}
+      owner: app
+
+  monitoring:
+    enablePodMonitor: true
+
+  resources:
+    {{- toYaml .Values.postgres.resources | nindent 4 }}
+{{- end }}

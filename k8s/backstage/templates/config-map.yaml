@@ -27,3 +27,22 @@ data:
         # Use a single database with schemas per plugin (not separate databases)
         # The app user cannot create databases, only schemas
         pluginDivisionMode: schema
+
+    # Keycloak OIDC authentication
+    # Requires @backstage/plugin-auth-backend-module-oidc-provider installed in the app
+    auth:
+      environment: production
+      session:
+        secret: ${BACKEND_SECRET}
+      providers:
+        oidc:
+          production:
+            metadataUrl: ${KEYCLOAK_REALM_URL}/.well-known/openid-configuration
+            clientId: ${KEYCLOAK_CLIENT_ID}
+            clientSecret: ${KEYCLOAK_CLIENT_SECRET}
+            prompt: auto
+            callbackUrl: ${APP_BASE_URL}/api/auth/oidc/handler/frame
+            signIn:
+              resolvers:
+                - resolver: emailMatchingUserEntityProfileEmail
+                - resolver: emailLocalPartMatchingUserEntityName

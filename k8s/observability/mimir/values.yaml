@@ -9,7 +9,7 @@ mimir-distributed:
         s3:
           bucket_name: "" # From Terraform
           endpoint: "" # From Terraform
-          insecure: true
+          insecure: false
       usage_stats:
         enabled: false
         installation_mode: helm
@@ -20,7 +20,7 @@ mimir-distributed:
         s3:
           bucket_name: "" # Set by ArgoCD
           endpoint: "" # Set by ArgoCD
-          insecure: true
+          insecure: false
         tsdb:
           dir: /data/tsdb
       compactor:
@@ -59,7 +59,7 @@ mimir-distributed:
         s3:
           bucket_name: "" # Set by ArgoCD
           endpoint: "" # Set by ArgoCD
-          insecure: true
+          insecure: false
       runtime_config:
         file: /var/{{ include "mimir.name" . }}/runtime.yaml
 

@@ -4,5 +4,11 @@ metadata:
   name: istio-system
   labels:
     nodepool: tooling
+    # Istio gateway/proxy requires privileged access for network configuration.
+    # Set to privileged on all three modes so the admission controller
+    # does not block Istio's own pods in this system namespace.
+    pod-security.kubernetes.io/enforce: privileged
+    pod-security.kubernetes.io/audit: privileged
+    pod-security.kubernetes.io/warn: privileged
   annotations:
     argocd.argoproj.io/sync-wave: "-1"

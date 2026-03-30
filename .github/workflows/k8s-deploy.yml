@@ -149,6 +149,26 @@ jobs:
       - name: Deploy ArgoCD Core
         run: |
           echo "Deploying ArgoCD Core..."
+
+          # Generate a values override file so the multiline oidc.config renders
+          # correctly with the domain name (--set does not handle multiline YAML).
+          cat > /tmp/argocd-oidc-values.yaml << EOF
+          argo-cd:
+            configs:
+              cm:
+                url: "https://argocd.${DOMAIN_NAME}"
+                oidc.config: |
+                  name: Keycloak
+                  issuer: https://keycloak.${DOMAIN_NAME}/realms/platform
+                  clientID: argocd
+                  clientSecret: \$oidc.keycloak.clientSecret
+                  requestedScopes:
+                    - openid
+                    - profile
+                    - email
+                    - groups
+          EOF
+
           helm upgrade --install argocd-core k8s/argocd-core \
             --namespace argocd \
             --create-namespace \
@@ -156,6 +176,9 @@ jobs:
             --set argo-cd.crds.install=false \
             --set argo-cd.applicationSet.enabled=false \
             --set argo-cd.notifications.enabled=false \
+            --set domain_name="$DOMAIN_NAME" \
+            --set "argo-cd.configs.secret.extra.oidc\.keycloak\.clientSecret=${{ secrets.KEYCLOAK_ARGOCD_CLIENT_SECRET }}" \
+            --values /tmp/argocd-oidc-values.yaml \
             --wait \
             --timeout 10m
           
@@ -262,6 +285,10 @@ jobs:
             --set ebs_csi_controller_sa_name="$EBS_CSI_SA" \
             --set secrets_csi_driver_sa_name="$SECRETS_CSI_SA" \
             --set kube_prometheus_release="kube-prometheus-stack" \
+            --set keycloak_admin_password="${{ secrets.KEYCLOAK_ADMIN_PASSWORD }}" \
+            --set keycloak_argocd_client_secret="${{ secrets.KEYCLOAK_ARGOCD_CLIENT_SECRET }}" \
+            --set keycloak_grafana_client_secret="${{ secrets.KEYCLOAK_GRAFANA_CLIENT_SECRET }}" \
+            --set keycloak_backstage_client_secret="${{ secrets.KEYCLOAK_BACKSTAGE_CLIENT_SECRET }}" \
             --set gitRepo.url="https://github.com/${{ github.repository }}" \
             --set gitRepo.branch="${{ github.ref_name }}" \
             --wait \

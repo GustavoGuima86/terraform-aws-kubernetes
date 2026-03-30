@@ -1,0 +1,85 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: keycloak-realm-import
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  backoffLimit: 5
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: realm-import
+          image: curlimages/curl:8.5.0
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              KEYCLOAK_URL="http://keycloak-http.{{ .Release.Namespace }}.svc.cluster.local:8080"
+
+              echo "Waiting for Keycloak to be ready..."
+              until curl -sf "$KEYCLOAK_URL/health/ready" > /dev/null 2>&1; do
+                echo "Keycloak not ready yet, retrying in 10s..."
+                sleep 10
+              done
+              echo "Keycloak is ready."
+
+              # Get admin token
+              TOKEN=$(curl -sf -X POST "$KEYCLOAK_URL/realms/master/protocol/openid-connect/token" \
+                -H "Content-Type: application/x-www-form-urlencoded" \
+                -d "username=$KEYCLOAK_ADMIN" \
+                -d "password=$KEYCLOAK_ADMIN_PASSWORD" \
+                -d "grant_type=password" \
+                -d "client_id=admin-cli" | sed 's/.*"access_token":"\([^"]*\)".*/\1/')
+
+              if [ -z "$TOKEN" ]; then
+                echo "ERROR: Failed to get admin token"
+                exit 1
+              fi
+
+              # Check if realm already exists
+              REALM_STATUS=$(curl -sf -o /dev/null -w "%{http_code}" \
+                -H "Authorization: Bearer $TOKEN" \
+                "$KEYCLOAK_URL/admin/realms/platform")
+
+              if [ "$REALM_STATUS" = "200" ]; then
+                echo "Realm 'platform' already exists, skipping import."
+              else
+                echo "Importing realm 'platform'..."
+                HTTP_CODE=$(curl -sf -o /dev/null -w "%{http_code}" -X POST \
+                  "$KEYCLOAK_URL/admin/realms" \
+                  -H "Authorization: Bearer $TOKEN" \
+                  -H "Content-Type: application/json" \
+                  -d @/config/platform-realm.json)
+
+                if [ "$HTTP_CODE" = "201" ]; then
+                  echo "Realm imported successfully."
+                else
+                  echo "ERROR: Realm import failed with HTTP $HTTP_CODE"
+                  exit 1
+                fi
+              fi
+          env:
+            - name: KEYCLOAK_ADMIN
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-admin-secret
+                  key: username
+            - name: KEYCLOAK_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: keycloak-admin-secret
+                  key: password
+          volumeMounts:
+            - name: realm-config
+              mountPath: /config
+              readOnly: true
+      volumes:
+        - name: realm-config
+          configMap:
+            name: keycloak-realm-config

@@ -37,11 +37,14 @@ spec:
         - protocol: TCP
           port: 443
     
-    # Allow access to Loki
+    # Allow access to Loki gateway (port 8080 is the container port behind svc:80)
+    # and directly to Loki ingester/query-frontend (port 3100)
     - to:
         - podSelector:
             matchLabels:
               app.kubernetes.io/name: loki
       ports:
+        - protocol: TCP
+          port: 8080
         - protocol: TCP
           port: 3100

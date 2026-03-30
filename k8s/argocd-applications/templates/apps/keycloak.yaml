@@ -1,33 +1,38 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: alloy
+  name: keycloak
   namespace: argocd
   finalizers:
-  - resources-finalizer.argocd.argoproj.io
+    - resources-finalizer.argocd.argoproj.io
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
-  project: observability
+  project: infrastructure
   source:
     repoURL: {{ .Values.gitRepo.url }}
     targetRevision: {{ .Values.gitRepo.branch }}
-    path: k8s/observability/alloy
+    path: k8s/keycloak
     helm:
       valueFiles:
         - values.yaml
       parameters:
-        - name: "alloy.alloy.extraEnv[1].value"
-          value: "{{ .Values.eks_cluster_name }}"
+        - name: route.hostname
+          value: "keycloak.{{ .Values.domain_name }}"
+        - name: domain_name
+          value: "{{ .Values.domain_name }}"
+        - name: keycloak_admin_password
+          value: "{{ .Values.keycloak_admin_password }}"
   destination:
     server: https://kubernetes.default.svc
-    namespace: observability
+    namespace: keycloak
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
-    - CreateNamespace=true
+      - CreateNamespace=true
+      - ServerSideApply=true
     retry:
       limit: 5
       backoff:

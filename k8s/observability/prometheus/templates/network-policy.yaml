@@ -74,15 +74,38 @@ spec:
           port: 443
     
     # Allow scraping metrics from all namespaces
+    # Ports cover: standard metrics (9090,9100,9102), app metrics (8080,8081,8088),
+    # ArgoCD (8082,8083,8084,8085), Falco (8765), Gatekeeper (8888),
+    # Istio (15014,15090), VPC CNI (61678), Karpenter (8000), general (10254)
     - to:
         - namespaceSelector: {}
       ports:
         - protocol: TCP
+          port: 8000
+        - protocol: TCP
           port: 8080
+        - protocol: TCP
+          port: 8081
+        - protocol: TCP
+          port: 8082
+        - protocol: TCP
+          port: 8083
+        - protocol: TCP
+          port: 8084
+        - protocol: TCP
+          port: 8085
+        - protocol: TCP
+          port: 8088
         - protocol: TCP
           port: 8443
         - protocol: TCP
+          port: 8765
+        - protocol: TCP
+          port: 8888
+        - protocol: TCP
           port: 9090
+        - protocol: TCP
+          port: 9091
         - protocol: TCP
           port: 9100
         - protocol: TCP
@@ -93,3 +116,9 @@ spec:
           port: 9103
         - protocol: TCP
           port: 10254
+        - protocol: TCP
+          port: 15014
+        - protocol: TCP
+          port: 15090
+        - protocol: TCP
+          port: 61678

@@ -7,7 +7,7 @@
   "aws_lb_controller_role_arn": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:iam::156041418374:role/aws-lbc-20260206071834008800000007"
+    "value": "arn:aws:iam::156041418374:role/aws-lbc-20260206124708594600000008"
   },
   "aws_lb_controller_sa_name": {
     "sensitive": false,
@@ -22,7 +22,7 @@
   "certificate_arn": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:acm:eu-central-1:156041418374:certificate/8cf6160e-e9a8-4a69-bc31-f038f7f53421"
+    "value": "arn:aws:acm:eu-central-1:156041418374:certificate/60d83bdd-6427-4924-ae34-6a5bc76b7b42"
   },
   "db_port": {
     "sensitive": false,
@@ -32,7 +32,7 @@
   "db_secret_arn": {
     "sensitive": true,
     "type": "string",
-    "value": "arn:aws:secretsmanager:eu-central-1:156041418374:secret:rds!db-060faee6-4062-4c72-b0ae-97d2fef57b9a-54q33h"
+    "value": "arn:aws:secretsmanager:eu-central-1:156041418374:secret:rds!db-83c5c14b-8abe-48d0-abfc-71b1c6195f84-jIvfHf"
   },
   "db_url": {
     "sensitive": false,
@@ -47,7 +47,7 @@
   "ebs_csi_controller_role_arn": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:iam::156041418374:role/aws-ebs-csi-20260206071833113600000004"
+    "value": "arn:aws:iam::156041418374:role/aws-ebs-csi-20260206124708438700000006"
   },
   "ebs_csi_controller_sa_name": {
     "sensitive": false,
@@ -57,12 +57,12 @@
   "eks_cluster_ca_certificate": {
     "sensitive": false,
     "type": "string",
-    "value": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJR01XTWhQQUh0RzB3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TmpBeU1EWXdOekU1TURCYUZ3MHpOakF5TURRd056STBNREJhTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUUQyKzVxVjFNdmV0OTl2bVlWUDZJeDlzbVhQYy9tbmFxdS9pT0pSWGNXeFNQNUpweGd1OVdnQldtcGQKL0Rlb29Ub2NRa0RraFByS3R1bkRLbDZwY1ZHZk5yS0krNVVrNWpOdzQydGJhb3gvUzZFYXNrL3NMSnR5YnlJVwpUL1hHOFJZRmxLVzJKalk0TjFvY2tQcmx2VVd0TGhmeW9UMDRLRWxEQkNCMk4rRG5pRFhYTGRuWHFMMENWV2pTCkxoUkJTc3ZlcWhMczV0M3VnNWpKb1l3bkNxUTZpejc1R2ZmRnBJcWxMTTVvamRWakNvSHJOd1NkWkNqREVzbWEKS3F3c3ZoczdVWWNlcEM4K21Pb1Yxb0JHam1UT2JaOVRQMVBRZFpnVXgweUJwVi83ZlN1NUV3VWRoMk0xSnlYdApwWWtoQS9oTFI4QUY1dEVPcldselpEdnVFSDNOQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJTTzRoL21NK0swYysrc3YyaGZGdGtmUVFRNDREQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQTF0NEQwZHAzSgpYRnF6RjdWT2RYRXN6WWNvLzZZMlpFcUVHdnhqRm1iakVxeGlzWHdDcEZRZWNUQzVaWStQWXJzQ3dldGZjeHdvCkl5MFkybXlDY004aUxtVGV4WEdaUVNJQ3liYnBTeEtCM3lKeWFZS0ZOT2psUW1oRzF2cHorSTJsV2YyZ2hoMTkKWFRiVmtCSUhaMEZ3MzJhYjNDRzJhT0Y5SUdLc2twdkdFazBxS1FXWGFTTzRwQXZabkZFM1pTR2lnbTFjUlI4SwpqVy9USi9wWHkvUU5qTWpoOEJ2SUQ3TDkyckdFbVVOZzhKdnA2KzJKUS9JalZDTTNEMVNCMmg2UTlRMVk1Z0J5ClJsOXptb0NNUDFOQnVTQzNwVTh3V3dhRkNxQkQ5ZE9Yb3RQY1VsMXZ2OXFmY3J5K3laTW1La2NNeklLZmJYV1gKNDJFY3FIZTJwQ2NmCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+    "value": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJWmNkWmdvdnV2dDR3RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TmpBeU1EWXhNalEzTXpkYUZ3MHpOakF5TURReE1qVXlNemRhTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUUN3SThjbU5jbE9CQ0ZrOHpZMjlWQ3dYMzQ5OWxKS2RSWG5VNG13RmFwR0xoenYxdVRjSzlYQ1gxTEwKNGYrQ1cvcW1hMU1zZExLRHZrcWlpUzJSSFQzUjdHWEJKUC9VaWpsNXZjTVJmTnFUU1hPeGRYRjZENzdEWi9oawp3L20xOTFXTndKL2FvSDB2T1NMTVV5UjIyODN5S1RFclhrTWpnMzNEY1Q2YmVYeDBkVmU4SmJNNnNTM05NelRZCkRhYjA4SFF0QS9WMlZzL3pBbHd0VmdvS2l2K0prKzEyeDhMcFRiQm80NzBzTU1VQzQveElmR2tNWWtaREF1aVEKS1Z1eEd0OWFRd01nNm5WWktTN2tnNGRLMEpkdTVyL1BBS1BRODFoUWFadDFVaVVaZWhWb2luR2IyZzhqWC9xNwo3cTNHU255KzRmQ2Q4eTR4RXFRdUxVbFkxZ0hWQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJUVjVnRXIrN3BJQXpxQkRycXFLbXdxU3F2OHd6QVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQTJKSXhnYmFCcgplUDQ3K1pOeWoyTCtMS3VVM3pHSGduTkkvMWQvYmJDRHorYUFmYVBGdmhFV1BhZ3htNEhkL1FKV1BrbVZxZDhuCkk1dmpSdkxhZnIwRUNoSmNpSXZYRm9lWW5DcUlHaW5lcVM4VzJpWE1McVNEUUlORlFKWEJLRTJ2Unl1WktielMKdUZabjR0c0svRWJJczBBdStCeVViLy8yWnJacjBURnpFRG9sNWRMcTRJK2ptcUJWZWVmV1M1UkRhMjF0YlA1ego3cHllYmQ5MnhmTmRGK00wWUNrRVJxUlpsK05tcDJROTRSY0xxU0FaMEh6OFhvUVAzSDhPOVZYVnU2Rktsam9jClgxOTZ4OW1yT0l3b1c3MzVYQ3JhdVNzNzZVa0tJZDNqeTZIcEp0dC9teVpFOFE2Nm9hMzgzZUF0VHZYbVNRWW8KWEFUQ2lFR2F3TjdKCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
   },
   "eks_cluster_endpoint": {
     "sensitive": false,
     "type": "string",
-    "value": "https://F6955E1314D042611CA6378F7040831E.gr7.eu-central-1.eks.amazonaws.com"
+    "value": "https://E96E8B6BD45900DA5802D9CB5C6075A8.gr7.eu-central-1.eks.amazonaws.com"
   },
   "eks_cluster_name": {
     "sensitive": false,
@@ -72,7 +72,7 @@
   "external_dns_role_arn": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:iam::156041418374:role/gustavo-external-dns-20260206071834008800000006"
+    "value": "arn:aws:iam::156041418374:role/gustavo-external-dns-20260206124708594400000007"
   },
   "external_dns_sa_name": {
     "sensitive": false,
@@ -82,7 +82,7 @@
   "falco_role_arn": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:iam::156041418374:role/gustavo-falco-20260206073056206400000025"
+    "value": "arn:aws:iam::156041418374:role/gustavo-falco-20260206125852191900000027"
   },
   "falco_sa_name": {
     "sensitive": false,
@@ -97,7 +97,7 @@
   "karpenter_controller_iam_role_arn": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:iam::156041418374:role/KarpenterController-20260206073056207000000026"
+    "value": "arn:aws:iam::156041418374:role/KarpenterController-20260206125852191900000026"
   },
   "karpenter_interruption_queue_name": {
     "sensitive": false,
@@ -112,7 +112,7 @@
   "karpenter_node_iam_role_name": {
     "sensitive": false,
     "type": "string",
-    "value": "Karpenter-gustavo-2026020607305637550000002a"
+    "value": "Karpenter-gustavo-2026020612585249880000002a"
   },
   "karpenter_sa_name": {
     "sensitive": false,
@@ -132,7 +132,7 @@
   "loki_service_account_role_arn": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:iam::156041418374:role/gustavo-loki-s3-20260206073534602300000003"
+    "value": "arn:aws:iam::156041418374:role/gustavo-loki-s3-20260206130010875800000003"
   },
   "mimir_bucket_name": {
     "sensitive": false,
@@ -147,12 +147,12 @@
   "mimir_service_account_role_arn": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:iam::156041418374:role/gustavo-mimir-s3-20260206073534682900000004"
+    "value": "arn:aws:iam::156041418374:role/gustavo-mimir-s3-20260206130011634700000004"
   },
   "opencost_role_arn": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:iam::156041418374:role/gustavo-opencost-20260206073056207300000027"
+    "value": "arn:aws:iam::156041418374:role/gustavo-opencost-20260206125852205500000028"
   },
   "opencost_sa_name": {
     "sensitive": false,
@@ -162,7 +162,7 @@
   "secrets_csi_driver_role_arn": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:iam::156041418374:role/aws-ebs-csi-secret-20260206071833112600000002"
+    "value": "arn:aws:iam::156041418374:role/aws-ebs-csi-secret-20260206124707592500000005"
   },
   "secrets_csi_driver_sa_name": {
     "sensitive": false,
@@ -187,11 +187,11 @@
   "velero_service_account_role_arn": {
     "sensitive": false,
     "type": "string",
-    "value": "arn:aws:iam::156041418374:role/gustavo-velero-s3-20260206073056207500000028"
+    "value": "arn:aws:iam::156041418374:role/gustavo-velero-s3-20260206125852190100000025"
   },
   "vpc_id": {
     "sensitive": false,
     "type": "string",
-    "value": "vpc-0c83c6cc5080f6213"
+    "value": "vpc-0667d43acad2625a1"
   }
 }

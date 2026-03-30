@@ -5,5 +5,10 @@ metadata:
   labels:
     kubernetes.io/metadata.name: observability
     nodepool: tooling
+    # baseline is appropriate: Alloy uses hostPath volumes (/var/log) which are
+    # allowed at baseline but would be blocked at restricted.
+    pod-security.kubernetes.io/enforce: baseline
+    pod-security.kubernetes.io/audit: restricted
+    pod-security.kubernetes.io/warn: restricted
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
