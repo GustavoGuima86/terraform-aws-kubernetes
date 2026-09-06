@@ -29,7 +29,7 @@ on:
   #     - '.github/workflows/terraform-deploy.yml'
 
 env:
-  TF_VERSION: '1.14.4'
+  TF_VERSION: '1.16.1'
   AWS_REGION: 'eu-central-1'
 
 permissions:
@@ -52,7 +52,7 @@ jobs:
     
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       
       - name: Configure AWS credentials via OIDC
         uses: aws-actions/configure-aws-credentials@v6
@@ -67,7 +67,7 @@ jobs:
           echo "AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> $GITHUB_ENV
       
       - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+        uses: hashicorp/setup-terraform@v4
         with:
           terraform_version: ${{ env.TF_VERSION }}
           terraform_wrapper: false  # Disable wrapper to get raw output
@@ -107,7 +107,7 @@ jobs:
       
       - name: Comment PR with Plan
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         with:
           script: |
             const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
@@ -159,7 +159,7 @@ jobs:
       
       - name: Upload Terraform Outputs as Artifact
         if: steps.apply.outcome == 'success' || (github.ref == 'refs/heads/main' && github.event_name == 'push')
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: terraform-outputs
           path: infrastructure/environments/tf_outputs.json
