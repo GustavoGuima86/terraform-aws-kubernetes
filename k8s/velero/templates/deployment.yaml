@@ -55,7 +55,7 @@ spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
       containers:
         - name: velero
-          image: velero/velero:v1.17.2
+          image: velero/velero:v1.18.2
           command:
             - /velero
           args:

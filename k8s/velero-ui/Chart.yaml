@@ -7,6 +7,6 @@ appVersion: "0.10.0" # OTWLD Velero UI appVersion
 
 dependencies:
   - name: velero-ui
-    version: "0.14.0" # OTWLD Velero UI chart version
+    version: "0.15.0" # OTWLD Velero UI chart version
     repository: "https://helm.otwld.com/"
     alias: otwld-velero-ui # Alias to avoid name collision and refer to it uniquely
