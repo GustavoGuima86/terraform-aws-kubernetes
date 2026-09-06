@@ -25,7 +25,7 @@ serviceAccount:
 
 initContainers:
   - name: velero-plugin-for-aws
-    image: velero/velero-plugin-for-aws:v1.13.2 # Use compatible version
+    image: velero/velero-plugin-for-aws:v1.14.2 # Use compatible version
     imagePullPolicy: IfNotPresent
     volumeMounts:
       - mountPath: /target

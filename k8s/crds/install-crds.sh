@@ -2,7 +2,7 @@
 set -euo pipefail
 
 echo "Installing Velero CRDs..."
-VELERO_VERSION="v1.17.2"
+VELERO_VERSION="v1.18.2"
 
 # Install Velero CRDs for v1.17.2 (includes all v1 and v2alpha1 CRDs)
 kubectl apply -f "https://raw.githubusercontent.com/vmware-tanzu/velero/${VELERO_VERSION}/config/crd/v1/bases/velero.io_backups.yaml"
@@ -40,7 +40,7 @@ echo "Karpenter CRDs installed successfully."
 
 echo "Installing Gatekeeper CRDs..."
 
-GATEKEEPER_VERSION="3.21.1"
+GATEKEEPER_VERSION="3.23.1"
 
 CRDS=()
 while IFS= read -r crd; do
@@ -102,7 +102,7 @@ done
 echo "All Kube Prometheus Stack CRDs installed successfully."
 
 echo "Installing CloudNativePG CRDs..."
-CNPG_VERSION="1.28.1"
+CNPG_VERSION="1.30.0"
 kubectl apply --server-side -f "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v${CNPG_VERSION}/config/crd/bases/postgresql.cnpg.io_backups.yaml"
 kubectl apply --server-side -f "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v${CNPG_VERSION}/config/crd/bases/postgresql.cnpg.io_clusters.yaml"
 kubectl apply --server-side -f "https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/v${CNPG_VERSION}/config/crd/bases/postgresql.cnpg.io_clusterimagecatalogs.yaml"
