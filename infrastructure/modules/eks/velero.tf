@@ -6,7 +6,7 @@ resource "aws_s3_bucket" "velero_bucket" {
 
 module "velero_s3_pod_identity" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "2.7.0"
+  version = "2.9.0"
 
   name = "${var.cluster_name}-velero-s3"
 

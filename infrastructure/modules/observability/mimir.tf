@@ -64,7 +64,7 @@ resource "aws_iam_policy" "mimir_s3_access" {
 
 module "mimir_s3_pod_identity" {
   source  = "terraform-aws-modules/eks-pod-identity/aws"
-  version = "2.7.0"
+  version = "2.9.0"
 
   name = "${var.cluster_name}-mimir-s3"
 
