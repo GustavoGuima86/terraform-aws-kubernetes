@@ -14,12 +14,12 @@ terraform {
 
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.8.0"
+      version = "~> 3.9.0"
     }
 
     tls = {
       source  = "hashicorp/tls"
-      version = "~> 4.2.0"
+      version = "~> 4.4.0"
     }
     helm = {
       source  = "hashicorp/helm"
